@@ -1,0 +1,6 @@
+{
+  "name": "泉心生活 Spring Heart Living",
+  "description": "泉心生活 Spring Heart Living 官方商品展示網頁，精選超音波氣泡SPA水療設備、漢方精油、養生健康生活美學系列。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
