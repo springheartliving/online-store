@@ -1,8 +1,57 @@
+# ── 依賴套件 ──────────────────────────
 node_modules/
-build/
+
+# ── 建置產出 ──────────────────────────
 dist/
+build/
+.vite/
+
+# ── 測試覆蓋率 ─────────────────────────
 coverage/
-.DS_Store
-*.log
-.env*
+
+# ── 環境變數（隱私） ──────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# 但保留範本檔供協作者參考
 !.env.example
+
+# ── 日誌 ─────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── 作業系統暫存檔 ────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ── IDE / 編輯器 ─────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── TypeScript 增量編譯快取 ──────────
+*.tsbuildinfo
+
+# ── 其他暫存 ─────────────────────────
+.cache/
+.parcel-cache/
+.turbo/
