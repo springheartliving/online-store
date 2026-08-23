@@ -11,7 +11,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { CartItem, CustomerInfo, Quotation, LineOfficialConfig } from "../types";
-import { formatNTD, generateQuoteNumber } from "../utils/formatters";
+import { formatNTD, generateQuoteNumber, formatImageUrl } from "../utils/formatters";
 
 interface QuoteCalculatorProps {
   isOpen: boolean;
@@ -71,7 +71,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
         price: item.product.price,
         quantity: item.quantity,
         category: item.product.categories?.[0]?.name || "泉心生活",
-        image: item.product.images?.[0]?.src,
+        image: formatImageUrl(item.product.images?.[0]?.src),
       })),
       subtotal,
       discountRate: 0,
@@ -167,7 +167,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                         <div className="flex items-start gap-3 flex-1 min-w-0">
                           {item.product.images?.[0]?.src ? (
                             <img
-                              src={item.product.images[0].src}
+                              src={formatImageUrl(item.product.images[0].src)}
                               alt={item.product.name}
                               referrerPolicy="no-referrer"
                               className="w-14 h-14 sm:w-16 sm:h-16 rounded-xs object-contain bg-[#F0EEE6] p-1 border border-[#E5E2D9] shrink-0"

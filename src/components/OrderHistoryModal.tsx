@@ -11,7 +11,7 @@ import {
   EyeOff
 } from "lucide-react";
 import { Quotation, LineOfficialConfig } from "../types";
-import { formatNTD, DEFAULT_LINE_CONFIG } from "../utils/formatters";
+import { formatNTD, DEFAULT_LINE_CONFIG, formatImageUrl } from "../utils/formatters";
 import { sendQuoteViaLiff } from "../utils/liff";
 
 interface OrderHistoryModalProps {
@@ -183,7 +183,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
                             <div className="flex items-center gap-2 min-w-0">
                               {item.image ? (
                                 <img
-                                  src={item.image}
+                                  src={formatImageUrl(item.image)}
                                   alt={item.name}
                                   className="w-8 h-8 object-cover rounded-xs border border-[#E5E2D9] shrink-0"
                                   referrerPolicy="no-referrer"
