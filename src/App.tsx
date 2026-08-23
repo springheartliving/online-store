@@ -26,6 +26,14 @@ import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG, getLineConsultationUrl, formatQuoteForLineText } from "./utils/formatters";
 import { sendQuoteViaLiff } from "./utils/liff";
+import {
+  fetchProductsFromFirestore,
+  fetchCategoriesFromFirestore,
+  seedInitialDataToFirestore,
+  fetchQuotationsFromFirestore,
+  saveQuotationToFirestore,
+  deleteQuotationFromFirestore
+} from "./lib/firebase";
 
 // Initial bundled fallback data
 import initialProductsData from "./data/products.json";
@@ -83,7 +91,7 @@ export default function App() {
     } catch {}
   }, [cart]);
 
-  // Save order to history
+  // Save order to history (saved both locally and in Firestore Database)
   const saveQuotationToHistory = (quote: Quotation) => {
     setOrderHistory((prev) => {
       const filtered = prev.filter((q) => q.quoteNo !== quote.quoteNo);
@@ -93,30 +101,65 @@ export default function App() {
       } catch {}
       return updated;
     });
+    // Save to Firestore database
+    saveQuotationToFirestore(quote);
   };
 
-  // Sync products from server/API on mount
+  // Load data from Firestore Database on mount
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
-          setProducts(data.products);
+    async function loadFirestoreData() {
+      // 1. Fetch order history from Firestore
+      try {
+        const firestoreHistory = await fetchQuotationsFromFirestore();
+        if (firestoreHistory && firestoreHistory.length > 0) {
+          setOrderHistory(firestoreHistory);
+          try {
+            localStorage.setItem("springheart_history", JSON.stringify(firestoreHistory));
+          } catch {}
         }
-      })
-      .catch((err) => console.log("Using local data fallback:", err));
+      } catch (err) {
+        console.error("Error loading order history from Firestore:", err);
+      }
 
-    fetch("/api/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
-          setCategories(data.categories);
+      // 2. Fetch products and categories from Firestore
+      try {
+        const fsProducts = await fetchProductsFromFirestore();
+        const fsCategories = await fetchCategoriesFromFirestore();
+
+        if (fsProducts && fsProducts.length > 0) {
+          setProducts(fsProducts);
+          if (fsCategories && fsCategories.length > 0) {
+            setCategories(fsCategories);
+          }
+        } else {
+          // If Firestore is empty, fetch from API/JSON and seed to Firestore
+          const res = await fetch("/api/products");
+          const data = await res.json();
+          const loadedProducts = (data.success && Array.isArray(data.products) && data.products.length > 0)
+            ? data.products
+            : (initialProductsData as Product[]);
+
+          const catRes = await fetch("/api/categories");
+          const catData = await catRes.json();
+          const loadedCategories = (catData.success && Array.isArray(catData.categories) && catData.categories.length > 0)
+            ? catData.categories
+            : (initialCategoriesData as Category[]);
+
+          setProducts(loadedProducts);
+          setCategories(loadedCategories);
+
+          // Seed data to Firestore database for initial setup
+          await seedInitialDataToFirestore(loadedProducts, loadedCategories);
         }
-      })
-      .catch(() => {});
+      } catch (err) {
+        console.error("Error fetching or seeding Firestore products:", err);
+      }
+    }
+
+    loadFirestoreData();
   }, []);
 
-  // Trigger live sync
+  // Trigger live sync and store to Firestore
   const handleSyncData = async () => {
     setIsSyncing(true);
     setSyncMessage(null);
@@ -127,7 +170,17 @@ export default function App() {
         setSyncMessage(`✓ ${data.message}`);
         const prodRes = await fetch("/api/products");
         const prodData = await prodRes.json();
+        const catRes = await fetch("/api/categories");
+        const catData = await catRes.json();
+
         if (prodData.products) setProducts(prodData.products);
+        if (catData.categories) setCategories(catData.categories);
+
+        // Save updated products and categories to Firestore database
+        if (prodData.products && prodData.products.length > 0) {
+          await seedInitialDataToFirestore(prodData.products, catData.categories || []);
+        }
+
         setTimeout(() => setSyncMessage(null), 4000);
       } else {
         setSyncMessage(`✗ 同步失敗: ${data.error || "網路逾時"}`);
@@ -181,6 +234,9 @@ export default function App() {
   };
 
   const handleClearHistory = () => {
+    orderHistory.forEach((q) => {
+      deleteQuotationFromFirestore(q.quoteNo);
+    });
     setOrderHistory([]);
     try {
       localStorage.removeItem("springheart_history");
@@ -189,6 +245,7 @@ export default function App() {
   };
 
   const handleDeleteHistoryItem = (quoteNo: string) => {
+    deleteQuotationFromFirestore(quoteNo);
     setOrderHistory((prev) => {
       const updated = prev.filter((q) => q.quoteNo !== quoteNo);
       try {
@@ -376,6 +433,7 @@ export default function App() {
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
           productCountsByCategory={productCountsByCategory}
+          totalProductsCount={products.length}
         />
       </div>
 

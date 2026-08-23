@@ -192,6 +192,35 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                                 單價 {formatNTD(item.product.price)}
                               </span>
                             </div>
+
+                            {/* Product Attributes in Cart */}
+                            {item.product.attributes && item.product.attributes.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {item.product.attributes.map((attr, idx) => (
+                                  <span
+                                    key={`cart-attr-${idx}-${attr.id || attr.name}`}
+                                    className="text-[10px] px-1.5 py-0.5 rounded-xs bg-[#FAF9F6] text-[#6E6A5E] border border-[#E5E2D9] inline-flex items-center gap-0.5"
+                                  >
+                                    <span className="font-medium text-[#8A8576]">{attr.name}:</span>
+                                    <span>{attr.terms.join(", ")}</span>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Product Tags in Cart */}
+                            {item.product.tags && item.product.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                {item.product.tags.map((t, idx) => (
+                                  <span
+                                    key={`cart-tag-${idx}-${t.id || t.name}`}
+                                    className="text-[10px] px-1.5 py-0.5 rounded-xs bg-white text-[#8A8576] border border-dashed border-[#E5E2D9] inline-flex items-center"
+                                  >
+                                    #{t.name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
 

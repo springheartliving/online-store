@@ -232,8 +232,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* 2. Product Details & Specifications */}
           <div className="p-4 sm:p-6 space-y-4">
-            {/* Category & SKU */}
+            {/* SKU, Category & Tags */}
             <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs bg-white text-[#8A8576] border border-[#E5E2D9]">
+                SKU: {product.sku}
+              </span>
               {product.categories.map((c, idx) => (
                 <span
                   key={`cat-${idx}-${c.id || c.name}`}
@@ -242,9 +245,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   {c.name}
                 </span>
               ))}
-              <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs bg-white text-[#8A8576] border border-[#E5E2D9]">
-                SKU: {product.sku}
-              </span>
+              {product.tags && product.tags.length > 0 && product.tags.map((t, idx) => (
+                <span
+                  key={`tag-${idx}-${t.id || t.name}`}
+                  className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold rounded-xs bg-white text-[#8A8576] border border-dashed border-[#E5E2D9]"
+                >
+                  #{t.name}
+                </span>
+              ))}
             </div>
 
             {/* Title */}

@@ -15,6 +15,7 @@ interface CategoryNavProps {
   selectedCategory: string;
   onSelectCategory: (slug: string) => void;
   productCountsByCategory: Record<string, number>;
+  totalProductsCount?: number;
 }
 
 export const CategoryNav: React.FC<CategoryNavProps> = ({
@@ -22,6 +23,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   selectedCategory,
   onSelectCategory,
   productCountsByCategory,
+  totalProductsCount,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
@@ -53,10 +55,12 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
     return <Flame className="w-4 h-4" />;
   };
 
-  const totalAll = Object.values(productCountsByCategory).reduce<number>(
-    (a, b) => a + Number(b || 0),
-    0
-  );
+  const totalAll = totalProductsCount !== undefined
+    ? totalProductsCount
+    : Object.values(productCountsByCategory).reduce<number>(
+        (a, b) => a + Number(b || 0),
+        0
+      );
 
   return (
     <nav 

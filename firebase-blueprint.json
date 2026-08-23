@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "products": {
+      "title": "Products",
+      "description": "Catalog of items available for inquiry and order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "sku": { "type": "string" },
+        "price": { "type": "number" },
+        "regular_price": { "type": "number" },
+        "sale_price": { "type": ["number", "null"] },
+        "isOnSale": { "type": "boolean" },
+        "currency": { "type": "string" },
+        "currency_symbol": { "type": "string" },
+        "short_description": { "type": "string" },
+        "description": { "type": "string" },
+        "features": { "type": "array", "items": { "type": "string" } },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "number" },
+              "name": { "type": "string" },
+              "slug": { "type": "string" }
+            }
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "number" },
+              "name": { "type": "string" },
+              "slug": { "type": "string" }
+            }
+          }
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "number" },
+              "src": { "type": "string" },
+              "thumbnail": { "type": "string" },
+              "alt": { "type": "string" }
+            }
+          }
+        },
+        "in_stock": { "type": "boolean" }
+      },
+      "required": ["id", "name", "price", "sku"]
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "Product categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "name", "slug"]
+    },
+    "quotations": {
+      "title": "Quotations",
+      "description": "Historical consultation and quote records",
+      "type": "object",
+      "properties": {
+        "quoteNo": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "discountRate": { "type": "number" },
+        "discountAmount": { "type": "number" },
+        "shippingMethod": { "type": "string" },
+        "shippingFee": { "type": "number" },
+        "includeTax": { "type": "boolean" },
+        "taxAmount": { "type": "number" },
+        "totalAmount": { "type": "number" },
+        "customer": { "type": "object" },
+        "status": { "type": "string" }
+      },
+      "required": ["quoteNo", "createdAt", "totalAmount"]
+    }
+  }
+}
