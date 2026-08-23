@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Check, Eye, Sparkles, Layers } from "lucide-react";
 import { Product } from "../types";
-import { formatNTD } from "../utils/formatters";
+import { formatNTD, formatImageUrl } from "../utils/formatters";
 
 interface ProductCardProps {
   product: Product;
@@ -27,8 +27,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setTimeout(() => setJustAdded(false), 1200);
   };
 
-  const imageSrc = product.images?.[0]?.src || "";
+  const imageSrc = formatImageUrl(product.images?.[0]?.src);
   const primaryCategory = product.categories?.[0]?.name || "養生美學";
+
 
   return (
     <div

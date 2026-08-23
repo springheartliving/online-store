@@ -6,7 +6,7 @@ import {
   Layers
 } from "lucide-react";
 import { Product } from "../types";
-import { formatNTD } from "../utils/formatters";
+import { formatNTD, formatImageUrl } from "../utils/formatters";
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -55,7 +55,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!isOpen || !product) return null;
 
   const images = product.images && product.images.length > 0 ? product.images : [];
-  const currentImg = images[selectedImgIndex]?.src || "";
+  const currentImg = formatImageUrl(images[selectedImgIndex]?.src);
+
 
   const handlePrevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -217,7 +218,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         aria-label={`切換至第 ${idx + 1} 張圖片`}
                       >
                         <img
-                          src={img.src}
+                          src={formatImageUrl(img.src)}
                           alt="thumbnail"
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-contain pointer-events-none"
