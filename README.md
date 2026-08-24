@@ -44,6 +44,17 @@ cp .env.example .env
 
 > **Firebase** 設定直接寫在 `firebase-applet-config.json`（已含公開 API Key，無需加進 `.env`）
 
+部署至 GitHub Pages 時，請在 GitHub Repository → **Settings** → **Secrets and variables** → **Actions** → **Variables** 建立以下 Repository Variables。GitHub Actions 會在建置時將它們注入 `DEFAULT_LINE_CONFIG`：
+
+| Variable | 說明 |
+|----------|------|
+| `VITE_LINE_ID` | LINE 官方帳號 ID（如 `@springheart`） |
+| `VITE_LINE_URL` | LINE 官方帳號加入好友連結 |
+| `VITE_LIFF_ID` | LINE LIFF App ID |
+| `VITE_LIFF_URL` | LINE LIFF 應用程式 URL |
+
+本機開發則使用 `.env` 中相同名稱的變數。
+
 ### 3. 啟動開發伺服器
 
 ```bash

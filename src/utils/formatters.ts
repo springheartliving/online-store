@@ -14,8 +14,8 @@ export function generateQuoteNumber(): string {
 }
 
 export const DEFAULT_LINE_CONFIG: LineOfficialConfig = {
-  lineId: (import.meta as any).env?.VITE_LINE_ID || "@springheart",
-  lineUrl: (import.meta as any).env?.VITE_LINE_URL || "https://line.me/R/ti/p/@springheart",
+  lineId: (import.meta as any).env?.VITE_LINE_ID || "",
+  lineUrl: (import.meta as any).env?.VITE_LINE_URL || "",
   liffId: (import.meta as any).env?.VITE_LIFF_ID || "",
   liffUrl: (import.meta as any).env?.VITE_LIFF_URL || "",
   useOaMessage: true,

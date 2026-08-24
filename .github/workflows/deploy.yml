@@ -39,6 +39,10 @@ jobs:
         run: npm run build
         env:
           GITHUB_ACTIONS: true
+          VITE_LINE_ID: ${{ vars.VITE_LINE_ID }}
+          VITE_LINE_URL: ${{ vars.VITE_LINE_URL }}
+          VITE_LIFF_ID: ${{ vars.VITE_LIFF_ID }}
+          VITE_LIFF_URL: ${{ vars.VITE_LIFF_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
