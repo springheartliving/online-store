@@ -185,13 +185,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="flex flex-col items-center justify-center text-[#8A8576]">
                   <Sparkles className="w-12 h-12 text-[#7C8B7C] mb-2" />
                   <span className="text-xs font-mono tracking-wider">{product.sku}</span>
-                  <span className="text-[11px] font-light text-[#6E6A5E] mt-0.5">泉心生活 精品</span>
+                  <span className="text-[11px] font-light text-[#6E6A5E] mt-0.5">精選商品</span>
                 </div>
               )}
 
               {product.isOnSale && (
                 <span className="absolute top-3 left-3 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-xs bg-[#2D2D2D] text-white">
-                  精選推薦
+                  熱銷推薦
                 </span>
               )}
             </div>

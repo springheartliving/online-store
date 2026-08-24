@@ -83,16 +83,13 @@ export function formatQuoteForLineText(quote: {
     .join("\n");
 
   return `🌿【泉心生活 Spring Heart Living - 官方諮詢】
-您好！我在線上挑選了以下喜愛的商品清單，想向小編諮詢與報價：
 
 📄 諮詢單號：${quote.quoteNo}
 ━━━━━━━━━━━━━━
 📦 諮詢商品明細：
 ${itemsText}
 ━━━━━━━━━━━━━━
-💰 預估諮詢總額：NT$ ${quote.totalAmount.toLocaleString()}
-
-請小編協助確認庫存、配送與專人安排，謝謝！`;
+💰 總金額：NT$ ${quote.totalAmount.toLocaleString()}`;
 }
 
 /**
