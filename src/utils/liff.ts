@@ -198,31 +198,18 @@ export async function sendQuoteViaLiff(
   if (liffId) {
     const initialized = await initLiffIfNeeded(liffId);
     if (initialized && liff.isInClient()) {
-      // LIFF login outside the LINE client redirects to the LIFF app instead
-      // of sending the quotation to the configured Official Account.
-      if (!liff.isLoggedIn()) {
-        try {
-          liff.login();
-          return { success: true, method: "liff_send", message: "正為您引導 LIFF 登入..." };
-        } catch (loginErr) {
-          console.warn("LIFF login error:", loginErr);
-        }
-      }
-
       let lastError = "請確認 LIFF 權限與開啟來源";
 
-      if (liff.isApiAvailable("sendMessages")) {
-        try {
-          await liff.sendMessages(messagesPayload as any);
-          return {
-            success: true,
-            method: "liff_send",
-            message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
-          };
-        } catch (sendErr: any) {
-          console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
-          lastError = sendErr?.message || lastError;
-        }
+      try {
+        await liff.sendMessages(messagesPayload as any);
+        return {
+          success: true,
+          method: "liff_send",
+          message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
+        };
+      } catch (sendErr: any) {
+        console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
+        lastError = sendErr?.message || lastError;
       }
 
       // Let the user choose the Official Account when the current chat cannot receive it.
