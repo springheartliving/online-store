@@ -27,28 +27,25 @@ export const DEFAULT_LINE_CONFIG: LineOfficialConfig = {
 export function getLineConsultationUrl(config: LineOfficialConfig, messageText: string): string {
   const encodedText = encodeURIComponent(messageText);
 
-  // 1. If LIFF URL is configured and provided
+  // Official Account Deep Link (oaMessage) opens the target chat directly.
+  // If lineId is provided (e.g. "@springheart" or "springheart")
+  const rawId = config.lineId ? config.lineId.trim() : "";
+  if (rawId) {
+    const formattedId = rawId.startsWith("@") ? rawId : `@${rawId}`;
+    return `https://line.me/R/oaMessage/${encodeURIComponent(formattedId)}/?${encodedText}`;
+  }
+
+  // Use LIFF as a fallback only when no Official Account ID is configured.
   if (config.liffUrl && config.liffUrl.trim()) {
     const baseUrl = config.liffUrl.trim();
     const separator = baseUrl.includes("?") ? "&" : "?";
     return `${baseUrl}${separator}text=${encodedText}`;
   }
 
-  // 2. If LIFF ID is provided
   if (config.liffId && config.liffId.trim()) {
     return `https://liff.line.me/${config.liffId.trim()}?text=${encodedText}`;
   }
 
-  // 3. Official Account Deep Link (oaMessage)
-  // If lineId is provided (e.g. "@springheart" or "springheart")
-  const rawId = config.lineId ? config.lineId.trim() : "";
-  if (rawId) {
-    const formattedId = rawId.startsWith("@") ? rawId : `@${rawId}`;
-    // Deep Link to open Official Account and pre-fill message
-    return `https://line.me/R/oaMessage/${encodeURIComponent(formattedId)}/?${encodedText}`;
-  }
-
-  // 4. Universal text share deep link
   return `https://line.me/R/msg/text/?${encodedText}`;
 }
 

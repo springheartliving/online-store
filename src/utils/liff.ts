@@ -197,8 +197,9 @@ export async function sendQuoteViaLiff(
 
   if (liffId) {
     const initialized = await initLiffIfNeeded(liffId);
-    if (initialized) {
-      // 1. Check if user is logged in via LIFF
+    if (initialized && liff.isInClient()) {
+      // LIFF login outside the LINE client redirects to the LIFF app instead
+      // of sending the quotation to the configured Official Account.
       if (!liff.isLoggedIn()) {
         try {
           liff.login();
@@ -208,21 +209,18 @@ export async function sendQuoteViaLiff(
         }
       }
 
-      // 2. If inside LINE in-app browser
-      if (liff.isInClient()) {
-        try {
-          await liff.sendMessages(messagesPayload as any);
-          return {
-            success: true,
-            method: "liff_send",
-            message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
-          };
-        } catch (sendErr) {
-          console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
-        }
+      try {
+        await liff.sendMessages(messagesPayload as any);
+        return {
+          success: true,
+          method: "liff_send",
+          message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
+        };
+      } catch (sendErr) {
+        console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
       }
 
-      // 3. Share Target Picker (Select target chat / official account)
+      // Share Target Picker is only needed when the LIFF client cannot send.
       if (liff.isApiAvailable("shareTargetPicker")) {
         try {
           const res = await liff.shareTargetPicker(messagesPayload as any);
