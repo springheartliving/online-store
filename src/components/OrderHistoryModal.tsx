@@ -50,7 +50,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
               <History className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-serif italic text-[#2D2D2D]">歷史諮詢紀錄</h3>
+              <h3 className="text-base sm:text-lg font-light text-[#2D2D2D]">歷史諮詢紀錄</h3>
               <p className="text-xs text-[#8A8576] font-light mt-0.5">
                 本機已儲存 {history.length} 筆諮詢單
               </p>
@@ -75,7 +75,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
           {history.length === 0 ? (
             <div className="p-12 text-center text-[#8A8576] bg-white rounded-sm border border-dashed border-[#E5E2D9]">
               <FileText className="w-10 h-10 text-[#7C8B7C] mx-auto mb-2" />
-              <p className="text-sm font-serif italic text-[#2D2D2D]">尚未有儲存的諮詢單</p>
+              <p className="text-sm font-light text-[#2D2D2D]">尚未有儲存的諮詢單</p>
               <p className="text-xs text-[#8A8576] mt-1 font-light">
                 在諮詢清單中送出 LINE 諮詢，系統將自動為您備份紀錄。
               </p>

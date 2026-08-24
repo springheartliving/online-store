@@ -524,7 +524,7 @@ export default function App() {
         ) : filteredProducts.length === 0 ? (
           <div className="p-10 sm:p-16 text-center bg-white rounded-sm border border-dashed border-[#E5E2D9] max-w-lg mx-auto my-8 sm:my-12">
             <Droplets className="w-10 sm:w-12 h-10 sm:h-12 text-[#8A8576] mx-auto mb-3" />
-            <h3 className="text-base font-serif italic text-[#2D2D2D]">找不到符合條件的商品</h3>
+            <h3 className="text-base font-light text-[#2D2D2D]">找不到符合條件的商品</h3>
             <p className="text-xs text-[#8A8576] mt-1 mb-4">
               請嘗試調整分類或搜尋關鍵字（如：水療、氣泡、精油、沐浴鹽、洗髮精）。
             </p>

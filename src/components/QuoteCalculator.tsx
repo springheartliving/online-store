@@ -102,7 +102,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
               <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-serif italic text-[#2D2D2D] flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-light text-[#2D2D2D] flex items-center gap-2">
                 諮詢清單
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-xs bg-[#F0EEE6] text-[#7C8B7C] border border-[#E5E2D9]">
                   {cart.length} 項
@@ -145,7 +145,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
             {cart.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-sm border border-dashed border-[#E5E2D9]">
                 <Sparkles className="w-8 h-8 text-[#7C8B7C] mx-auto mb-2" />
-                <p className="text-sm font-serif italic text-[#2D2D2D]">
+                <p className="text-sm font-light text-[#2D2D2D]">
                   諮詢清單目前尚無商品
                 </p>
                 <p className="text-xs text-[#8A8576] mt-1 font-light">
@@ -179,7 +179,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                           )}
 
                           <div className="flex-1 min-w-0 pr-1">
-                            <h4 className="text-xs sm:text-sm font-serif font-medium text-[#2D2D2D] leading-snug group-hover:text-[#7C8B7C] transition-colors break-words">
+                            <h4 className="text-xs sm:text-sm font-light font-medium text-[#2D2D2D] leading-snug group-hover:text-[#7C8B7C] transition-colors break-words">
                               {item.product.name}
                             </h4>
                             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-[#8A8576] mt-1">

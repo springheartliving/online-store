@@ -45,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-serif font-bold text-lg sm:text-2xl tracking-[0.08em] text-[#2D2D2D] group-hover:text-[#7C8B7C] transition-colors">
+                <span className="font-mono font-bold text-lg sm:text-2xl tracking-[0.08em] text-[#2D2D2D] group-hover:text-[#7C8B7C] transition-colors">
                   泉心生活
                 </span>
                 <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#7C8B7C] font-mono font-medium hidden xs:inline">

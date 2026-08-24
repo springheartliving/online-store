@@ -185,7 +185,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="flex flex-col items-center justify-center text-[#8A8576]">
                   <Sparkles className="w-12 h-12 text-[#7C8B7C] mb-2" />
                   <span className="text-xs font-mono tracking-wider">{product.sku}</span>
-                  <span className="text-[11px] font-serif italic text-[#6E6A5E] mt-0.5">泉心生活 精品</span>
+                  <span className="text-[11px] font-light text-[#6E6A5E] mt-0.5">泉心生活 精品</span>
                 </div>
               )}
 
@@ -257,7 +257,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
 
             {/* Title */}
-            <h2 className="text-xl sm:text-2xl font-serif italic text-[#2D2D2D] leading-snug">
+            <h2 className="text-xl sm:text-2xl font-light text-[#2D2D2D] leading-snug">
               {product.name}
             </h2>
 

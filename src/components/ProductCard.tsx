@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <div className="flex flex-col items-center justify-center text-[#8A8576] p-4 text-center">
               <Sparkles className="w-8 h-8 text-[#7C8B7C] mb-1.5" />
               <span className="text-[10px] font-mono tracking-widest">{product.sku}</span>
-              <span className="text-[11px] font-serif italic text-[#6E6A5E] mt-0.5">精選商品</span>
+              <span className="text-[11px] font-light text-[#6E6A5E] mt-0.5">精選商品</span>
             </div>
           )}
 
@@ -88,7 +88,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Content */}
         <div>
           <h3
-            className="text-sm sm:text-base font-serif italic text-[#2D2D2D] line-clamp-2 group-hover:text-[#7C8B7C] transition-colors leading-snug mb-1.5"
+            className="text-sm sm:text-base font-light text-[#2D2D2D] line-clamp-2 group-hover:text-[#7C8B7C] transition-colors leading-snug mb-1.5"
             title={product.name}
           >
             {product.name}
@@ -99,7 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {product.short_description}
             </p>
           ) : (
-            <p className="text-xs text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light italic">
+            <p className="text-xs text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light">
               泉心生活 Spring Heart Living 頂級水療與漢方養生系列，專為身心療癒設計。
             </p>
           )}
