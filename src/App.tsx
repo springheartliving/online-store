@@ -35,16 +35,15 @@ import {
   deleteQuotationFromFirestore
 } from "./lib/firebase";
 
-// Initial bundled fallback data
-import initialProductsData from "./data/products.json";
-import initialCategoriesData from "./data/categories.json";
+
 
 export default function App() {
-  const [products, setProducts] = useState<Product[]>(initialProductsData as Product[]);
-  const [categories, setCategories] = useState<Category[]>(initialCategoriesData as Category[]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "name">("default");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
 
   // Cart & Quotation State
@@ -132,27 +131,31 @@ export default function App() {
             setCategories(fsCategories);
           }
         } else {
-          // If Firestore is empty, fetch from API/JSON and seed to Firestore
+          // If Firestore is empty, fetch from API and seed to Firestore
           const res = await fetch("/api/products");
           const data = await res.json();
           const loadedProducts = (data.success && Array.isArray(data.products) && data.products.length > 0)
             ? data.products
-            : (initialProductsData as Product[]);
+            : [];
 
           const catRes = await fetch("/api/categories");
           const catData = await catRes.json();
           const loadedCategories = (catData.success && Array.isArray(catData.categories) && catData.categories.length > 0)
             ? catData.categories
-            : (initialCategoriesData as Category[]);
+            : [];
 
           setProducts(loadedProducts);
           setCategories(loadedCategories);
 
-          // Seed data to Firestore database for initial setup
-          await seedInitialDataToFirestore(loadedProducts, loadedCategories);
+          if (loadedProducts.length > 0) {
+            // Seed data to Firestore database for initial setup
+            await seedInitialDataToFirestore(loadedProducts, loadedCategories);
+          }
         }
       } catch (err) {
         console.error("Error fetching or seeding Firestore products:", err);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -293,12 +296,16 @@ export default function App() {
     }
 
     // Sort
-    if (sortBy === "price-asc") {
+    if (sortBy === "default") {
+      list.sort((a, b) => {
+        const orderA = a.sort_order !== undefined ? a.sort_order : a.id;
+        const orderB = b.sort_order !== undefined ? b.sort_order : b.id;
+        return orderA - orderB;
+      });
+    } else if (sortBy === "price-asc") {
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price-desc") {
       list.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "name") {
-      list.sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"));
     }
 
     return list;
@@ -505,7 +512,12 @@ export default function App() {
 
       {/* 6. Product Grid */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 flex-1 w-full">
-        {filteredProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col justify-center items-center h-64 text-[#8A8576]">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent border-[#7C8B7C] mb-3"></div>
+            <span className="text-[11px] uppercase tracking-wider">載入最新商品中...</span>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="p-10 sm:p-16 text-center bg-white rounded-sm border border-dashed border-[#E5E2D9] max-w-lg mx-auto my-8 sm:my-12">
             <Droplets className="w-10 sm:w-12 h-10 sm:h-12 text-[#8A8576] mx-auto mb-3" />
             <h3 className="text-base font-serif italic text-[#2D2D2D]">找不到符合條件的商品</h3>

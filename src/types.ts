@@ -48,6 +48,7 @@ export interface Product {
   attributes: ProductAttribute[];
   in_stock: boolean;
   has_options?: boolean;
+  sort_order?: number;
 }
 
 export interface CartItem {

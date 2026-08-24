@@ -40,7 +40,11 @@ export async function fetchProductsFromFirestore(): Promise<Product[]> {
     snapshot.forEach((docSnap) => {
       products.push(docSnap.data() as Product);
     });
-    return products;
+    return products.sort((a, b) => {
+      const orderA = a.sort_order !== undefined ? a.sort_order : a.id;
+      const orderB = b.sort_order !== undefined ? b.sort_order : b.id;
+      return orderA - orderB;
+    });
   } catch (error) {
     console.error("Failed to fetch products from Firestore:", error);
     return [];
