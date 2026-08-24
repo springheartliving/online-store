@@ -44,6 +44,21 @@
   scrollbar-width: none;
 }
 
+.category-scroll {
+  touch-action: pan-x;
+}
+
+@media (max-width: 639px) {
+  .category-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .category-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 @keyframes scale {
   0% { transform: scale(0.95); }
   50% { transform: scale(1.05); }

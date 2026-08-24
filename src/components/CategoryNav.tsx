@@ -65,12 +65,13 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   return (
     <nav 
       id="category-filter-nav"
-      className="w-full bg-[#FAF9F6]/95 backdrop-blur-md border-b border-[#E5E2D9] py-2.5 sm:py-3 px-3 sm:px-6 shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all"
+      className="w-full bg-[#FAF9F6]/95 backdrop-blur-md border-b border-[#E5E2D9] py-2.5 sm:py-3 shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all"
     >
       <div 
         ref={scrollContainerRef}
-        className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5"
+        className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 category-scroll overflow-x-auto scroll-smooth py-0.5"
       >
+        <div className="flex w-max min-w-full items-center justify-center gap-2 pb-1">
         
         {/* All Products Tab */}
         <button
@@ -128,6 +129,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           );
         })}
 
+        </div>
       </div>
     </nav>
   );
