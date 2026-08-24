@@ -10,7 +10,6 @@ import {
   query,
   orderBy,
   limit,
-  writeBatch
 } from "firebase/firestore";
 import firebaseConfig from "../../firebase-applet-config.json";
 import { Product, Category, Quotation } from "../types";
@@ -69,35 +68,6 @@ export async function fetchCategoriesFromFirestore(): Promise<Category[]> {
   } catch (error) {
     console.error("Failed to fetch categories from Firestore:", error);
     return [];
-  }
-}
-
-/**
- * Save/seed products and categories to Firestore database
- */
-export async function seedInitialDataToFirestore(
-  products: Product[],
-  categories: Category[]
-): Promise<void> {
-  try {
-    const batch = writeBatch(db);
-
-    // Seed products
-    for (const prod of products) {
-      const docRef = doc(db, PRODUCTS_COLLECTION, String(prod.id));
-      batch.set(docRef, prod, { merge: true });
-    }
-
-    // Seed categories
-    for (const cat of categories) {
-      const docRef = doc(db, CATEGORIES_COLLECTION, String(cat.id));
-      batch.set(docRef, cat, { merge: true });
-    }
-
-    await batch.commit();
-    console.log(`Successfully seeded ${products.length} products and ${categories.length} categories to Firestore.`);
-  } catch (error) {
-    console.error("Failed to seed data to Firestore:", error);
   }
 }
 

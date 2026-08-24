@@ -29,7 +29,6 @@ import { sendQuoteViaLiff } from "./utils/liff";
 import {
   fetchProductsFromFirestore,
   fetchCategoriesFromFirestore,
-  seedInitialDataToFirestore,
   fetchQuotationsFromFirestore,
   saveQuotationToFirestore,
   deleteQuotationFromFirestore
@@ -73,10 +72,6 @@ export default function App() {
       return [];
     }
   });
-
-  // Sync state
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   // Line notify sending state
   const [isSendingLine, setIsSendingLine] = useState(false);
@@ -127,30 +122,9 @@ export default function App() {
 
         if (fsProducts && fsProducts.length > 0) {
           setProducts(fsProducts);
-          if (fsCategories && fsCategories.length > 0) {
-            setCategories(fsCategories);
-          }
-        } else {
-          // If Firestore is empty, fetch from API and seed to Firestore
-          const res = await fetch("/api/products");
-          const data = await res.json();
-          const loadedProducts = (data.success && Array.isArray(data.products) && data.products.length > 0)
-            ? data.products
-            : [];
-
-          const catRes = await fetch("/api/categories");
-          const catData = await catRes.json();
-          const loadedCategories = (catData.success && Array.isArray(catData.categories) && catData.categories.length > 0)
-            ? catData.categories
-            : [];
-
-          setProducts(loadedProducts);
-          setCategories(loadedCategories);
-
-          if (loadedProducts.length > 0) {
-            // Seed data to Firestore database for initial setup
-            await seedInitialDataToFirestore(loadedProducts, loadedCategories);
-          }
+        }
+        if (fsCategories && fsCategories.length > 0) {
+          setCategories(fsCategories);
         }
       } catch (err) {
         console.error("Error fetching or seeding Firestore products:", err);
@@ -161,39 +135,6 @@ export default function App() {
 
     loadFirestoreData();
   }, []);
-
-  // Trigger live sync and store to Firestore
-  const handleSyncData = async () => {
-    setIsSyncing(true);
-    setSyncMessage(null);
-    try {
-      const res = await fetch("/api/sync-data", { method: "POST" });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setSyncMessage(`✓ ${data.message}`);
-        const prodRes = await fetch("/api/products");
-        const prodData = await prodRes.json();
-        const catRes = await fetch("/api/categories");
-        const catData = await catRes.json();
-
-        if (prodData.products) setProducts(prodData.products);
-        if (catData.categories) setCategories(catData.categories);
-
-        // Save updated products and categories to Firestore database
-        if (prodData.products && prodData.products.length > 0) {
-          await seedInitialDataToFirestore(prodData.products, catData.categories || []);
-        }
-
-        setTimeout(() => setSyncMessage(null), 4000);
-      } else {
-        setSyncMessage(`✗ 同步失敗: ${data.error || "網路逾時"}`);
-      }
-    } catch (err: any) {
-      setSyncMessage(`✗ 連線錯誤: ${err.message}`);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
 
   // Cart operations
   const handleAddToCart = (product: Product, quantity: number = 1) => {
@@ -425,18 +366,9 @@ export default function App() {
           onSearchChange={setSearchQuery}
           onOpenCart={() => setIsCartOpen(true)}
           onOpenHistory={() => setIsHistoryModalOpen(true)}
-          onSyncData={handleSyncData}
-          isSyncing={isSyncing}
           totalAmount={totalCartAmount}
           onLogoClick={handleResetToHome}
         />
-
-        {/* Sync Message Alert if any */}
-        {syncMessage && (
-          <div className="bg-[#7C8B7C] text-white text-xs py-2.5 px-4 text-center border-b border-[#6A796A] animate-in fade-in tracking-wider uppercase">
-            {syncMessage}
-          </div>
-        )}
 
         {/* Category Filter Bar */}
         <CategoryNav

@@ -10,8 +10,6 @@ interface HeaderProps {
   onSearchChange: (q: string) => void;
   onOpenCart: () => void;
   onOpenHistory: () => void;
-  onSyncData?: () => void;
-  isSyncing?: boolean;
   totalAmount: number;
   onLogoClick?: () => void;
 }

@@ -145,7 +145,7 @@ online-store/
 | `categories` | 商品分類 |
 | `quotations` | 客戶報價記錄（`quoteNo` 為 doc ID） |
 
-初次載入時，若 Firestore 為空，會自動從 `src/data/products.json` seeding 資料。
+商品與分類資料由 Firestore 提供；請先在 `products` 與 `categories` collection 建立資料。
 
 ---
 
@@ -160,4 +160,4 @@ online-store/
 
 - `firebase-applet-config.json` 含有 Firebase Web API Key，此為 Firebase 設計的公開用 Key，透過 **Firestore Security Rules** 控管存取權限
 - 請勿將 `.env` 提交到 git（已加入 `.gitignore`）
-- 商品資料更新：直接到 Firebase Console 修改 `products` collection，或使用原 `server.ts` 的 `/api/sync-data` 在本機執行 sync 後將 JSON 提交
+- 商品資料更新：直接到 Firebase Console 修改 `products` 與 `categories` collection
