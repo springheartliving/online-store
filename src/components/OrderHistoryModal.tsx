@@ -50,9 +50,9 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
               <History className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-serif italic text-[#2D2D2D]">歷史商品諮詢紀錄</h3>
+              <h3 className="text-base sm:text-lg font-serif italic text-[#2D2D2D]">歷史諮詢紀錄</h3>
               <p className="text-xs text-[#8A8576] font-light mt-0.5">
-                本機已儲存 {history.length} 筆商品諮詢單
+                本機已儲存 {history.length} 筆諮詢單
               </p>
             </div>
           </div>
@@ -77,7 +77,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
               <FileText className="w-10 h-10 text-[#7C8B7C] mx-auto mb-2" />
               <p className="text-sm font-serif italic text-[#2D2D2D]">尚未有儲存的諮詢單</p>
               <p className="text-xs text-[#8A8576] mt-1 font-light">
-                在諮詢清單中送出 LINE 諮詢或匯出圖檔時，系統將自動為您備份紀錄。
+                在諮詢清單中送出 LINE 諮詢，系統將自動為您備份紀錄。
               </p>
             </div>
           ) : (
@@ -100,7 +100,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
                         </span>
                       </div>
                       <div className="text-xs text-[#6E6A5E] font-light">
-                        共 {quote.items.length} 項品項
+                        共 {quote.items.length} 項商品
                       </div>
                       <div className="text-sm font-mono font-bold text-[#2D2D2D] mt-1">
                         總計：{formatNTD(quote.totalAmount)}

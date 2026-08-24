@@ -236,7 +236,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* SKU, Category & Tags */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs bg-white text-[#8A8576] border border-[#E5E2D9]">
-                SKU: {product.sku}
+                {product.sku}
               </span>
               {product.categories.map((c, idx) => (
                 <span

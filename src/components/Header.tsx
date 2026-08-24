@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="搜尋商品名稱、型號、SKU或草本成分..."
+                placeholder="搜尋商品名稱、型號、草本成分..."
                 className="w-full bg-[#FAF9F6] text-xs sm:text-sm text-[#2D2D2D] placeholder-[#8A8576] pl-10 pr-4 py-2 rounded-sm border border-[#E5E2D9] focus:outline-none focus:border-[#7C8B7C] focus:bg-white transition-colors"
               />
               {searchQuery && (

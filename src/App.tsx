@@ -565,9 +565,9 @@ export default function App() {
               {cart.reduce((a, b) => a + b.quantity, 0)}
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#8A8576]">諮詢清單：{cart.length} 項品項</div>
+              <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#8A8576]">諮詢清單：{cart.length} 項商品</div>
               <div className="text-xs sm:text-sm font-mono font-bold text-[#2D2D2D] truncate">
-                預估金額：<span className="text-[#7C8B7C]">NT$ {totalCartAmount.toLocaleString()}</span>
+                總金額：<span className="text-[#7C8B7C]">NT$ {totalCartAmount.toLocaleString()}</span>
               </div>
             </div>
           </div>

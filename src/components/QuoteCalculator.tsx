@@ -103,9 +103,9 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-serif italic text-[#2D2D2D] flex items-center gap-2">
-                商品選購與諮詢清單
+                諮詢清單
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-xs bg-[#F0EEE6] text-[#7C8B7C] border border-[#E5E2D9]">
-                  {cart.length} ITEMS
+                  {cart.length} 項
                 </span>
               </h2>
               <p className="text-xs text-[#8A8576] font-light mt-0.5">
@@ -149,7 +149,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                   諮詢清單目前尚無商品
                 </p>
                 <p className="text-xs text-[#8A8576] mt-1 font-light">
-                  請在商品展示區瀏覽並點擊「加入諮詢」以整理選購清單與專人洽詢。
+                  請在商品展示區瀏覽並點擊「加入諮詢」以整理諮詢清單。
                 </p>
               </div>
             ) : (

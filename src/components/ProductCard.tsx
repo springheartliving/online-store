@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <div className="flex flex-col items-center justify-center text-[#8A8576] p-4 text-center">
               <Sparkles className="w-8 h-8 text-[#7C8B7C] mb-1.5" />
               <span className="text-[10px] font-mono tracking-widest">{product.sku}</span>
-              <span className="text-[11px] font-serif italic text-[#6E6A5E] mt-0.5">泉心生活 精品</span>
+              <span className="text-[11px] font-serif italic text-[#6E6A5E] mt-0.5">精選商品</span>
             </div>
           )}
 
@@ -72,11 +72,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* SKU Badge Top Right */}
-          <div className="absolute top-2.5 right-2.5 z-20">
+          {/* <div className="absolute top-2.5 right-2.5 z-20">
             <span className="px-1.5 py-0.5 text-[10px] font-mono rounded-xs bg-white/80 backdrop-blur-xs text-[#8A8576] border border-[#E5E2D9]">
               {product.sku}
             </span>
-          </div>
+          </div> */}
 
           {/* Quick View overlay button */}
           <div className="absolute inset-0 m-auto w-24 h-8 rounded-sm bg-[#2D2D2D]/90 text-white text-[10px] uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md z-20 hidden sm:flex">
