@@ -185,7 +185,7 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
 export async function sendQuoteViaLiff(
   quotation: Quotation,
   config: LineOfficialConfig
-): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink"; message?: string }> {
+): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const flexMessage = createQuoteFlexMessage(quotation);
   const textMessage = {
     type: "text" as const,
@@ -209,18 +209,23 @@ export async function sendQuoteViaLiff(
         }
       }
 
-      try {
-        await liff.sendMessages(messagesPayload as any);
-        return {
-          success: true,
-          method: "liff_send",
-          message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
-        };
-      } catch (sendErr) {
-        console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
+      let lastError = "請確認 LIFF 權限與開啟來源";
+
+      if (liff.isApiAvailable("sendMessages")) {
+        try {
+          await liff.sendMessages(messagesPayload as any);
+          return {
+            success: true,
+            method: "liff_send",
+            message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
+          };
+        } catch (sendErr: any) {
+          console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
+          lastError = sendErr?.message || lastError;
+        }
       }
 
-      // Share Target Picker is only needed when the LIFF client cannot send.
+      // Let the user choose the Official Account when the current chat cannot receive it.
       if (liff.isApiAvailable("shareTargetPicker")) {
         try {
           const res = await liff.shareTargetPicker(messagesPayload as any);
@@ -231,10 +236,17 @@ export async function sendQuoteViaLiff(
               message: "已成功透過 LIFF 轉發結構化諮詢單！",
             };
           }
-        } catch (shareErr) {
+        } catch (shareErr: any) {
           console.warn("LIFF shareTargetPicker failed or user canceled:", shareErr);
+          lastError = shareErr?.message || lastError;
         }
       }
+
+      return {
+        success: false,
+        method: "error",
+        message: `Flex Message 傳送失敗：${lastError}`,
+      };
     }
   }
 

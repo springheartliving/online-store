@@ -345,8 +345,12 @@ export default function App() {
       // Send via LIFF structure (Flex Message + Text) or Deep Link fallback
       const result = await sendQuoteViaLiff(quotation, lineConfig);
 
-      setLineNotifySuccess(result.message || "已為您產生商品清單並傳送至官方 LINE！");
-      handleClearCart();
+      if (result.success) {
+        setLineNotifySuccess(result.message || "已為您產生商品清單並傳送至官方 LINE！");
+        handleClearCart();
+      } else {
+        setLineNotifyError(result.message || "Flex Message 傳送失敗，請稍後再試。 ");
+      }
     } catch (err: any) {
       setLineNotifyError(`開啟 LINE 失敗: ${err.message}`);
     } finally {
