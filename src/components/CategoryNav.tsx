@@ -71,7 +71,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
         ref={scrollContainerRef}
         className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 category-scroll overflow-x-auto scroll-smooth py-0.5"
       >
-        <div className="flex w-max min-w-full items-center justify-center gap-2 pb-1">
+        <div className="flex w-max min-w-full items-center justify-start gap-2 pb-1">
         
         {/* All Products Tab */}
         <button
@@ -100,7 +100,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
         {/* Dynamic Category Tabs */}
         {categories.map((cat, idx) => {
           const isSelected = selectedCategory === cat.slug || selectedCategory === cat.name;
-          const count = productCountsByCategory[cat.name] || cat.count || 0;
+          const count = productCountsByCategory[cat.name] ?? 0;
 
           return (
             <button

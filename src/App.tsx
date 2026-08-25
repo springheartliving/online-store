@@ -379,7 +379,7 @@ export default function App() {
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
           productCountsByCategory={productCountsByCategory}
-          totalProductsCount={products.length}
+          totalProductsCount={products.filter((product) => product.is_published !== false).length}
         />
       </div>
 
