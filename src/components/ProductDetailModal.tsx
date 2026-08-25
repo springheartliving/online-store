@@ -135,6 +135,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   const handleAdd = () => {
+    if (!product.in_stock) return;
+
     onAddToCart(product, qty);
     setQty(1);
     onClose();
@@ -274,6 +276,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </span>
                 )}
               </div>
+              <div className={`mt-2 text-xs font-medium ${product.in_stock ? "text-[#7C8B7C]" : "text-rose-700"}`}>
+                {product.in_stock ? "庫存充足，可加入諮詢清單" : "目前缺貨，暫停加入諮詢清單"}
+              </div>
             </div>
 
             {/* Description & Key Features */}
@@ -335,6 +340,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <button
               type="button"
               onClick={() => setQty(Math.max(1, qty - 1))}
+              disabled={!product.in_stock}
               className="w-9 sm:w-10 h-10 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-sm font-bold"
               aria-label="減少數量"
             >
@@ -346,6 +352,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <button
               type="button"
               onClick={() => setQty(qty + 1)}
+              disabled={!product.in_stock}
               className="w-9 sm:w-10 h-10 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-sm font-bold"
               aria-label="增加數量"
             >
@@ -357,10 +364,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <button
             id="modal-add-to-quote-btn"
             onClick={handleAdd}
-            className="flex-1 h-10 px-4 sm:px-6 rounded-sm text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs bg-[#7C8B7C] hover:bg-[#6A796A] text-white active:scale-98"
+            disabled={!product.in_stock}
+            className={`flex-1 h-10 px-4 sm:px-6 rounded-sm text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 shadow-xs active:scale-98 ${product.in_stock ? "cursor-pointer bg-[#7C8B7C] hover:bg-[#6A796A] text-white" : "cursor-not-allowed bg-[#D1CEC4] text-[#8A8576]"}`}
           >
             <Plus className="w-4 h-4 shrink-0" />
-            <span className="truncate">加入諮詢清單 ({formatNTD(product.price * qty)})</span>
+            <span className="truncate">
+              {product.in_stock ? `加入諮詢清單 (${formatNTD(product.price * qty)})` : "目前缺貨"}
+            </span>
           </button>
         </div>
       </div>

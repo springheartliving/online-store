@@ -30,24 +30,17 @@ export interface Product {
   name: string;
   slug: string;
   sku: string;
-  permalink?: string;
   price: number;
   regular_price: number;
-  sale_price?: number | null;
   isOnSale?: boolean;
-  currency: string;
-  currency_symbol: string;
   short_description: string;
   description: string;
   features?: string[];
-  raw_short_description?: string;
-  raw_description?: string;
   categories: { id: number; name: string; slug: string }[];
   tags: { id: number; name: string; slug: string }[];
   images: ProductImage[];
   attributes: ProductAttribute[];
   in_stock: boolean;
-  has_options?: boolean;
   sort_order?: number;
 }
 

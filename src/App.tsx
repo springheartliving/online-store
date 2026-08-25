@@ -138,6 +138,8 @@ export default function App() {
 
   // Cart operations
   const handleAddToCart = (product: Product, quantity: number = 1) => {
+    if (!product.in_stock) return;
+
     setCart((prev) => {
       const existingIdx = prev.findIndex((item) => item.product.id === product.id);
       if (existingIdx >= 0) {
@@ -325,8 +327,6 @@ export default function App() {
                 sku: item.sku,
                 price: item.price,
                 regular_price: item.price,
-                currency: "TWD",
-                currency_symbol: "NT$",
                 short_description: "",
                 description: "",
                 categories: [{ id: 0, name: item.category, slug: "custom" }],

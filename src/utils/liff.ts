@@ -142,7 +142,7 @@ export function createQuoteFlexMessage(quote: Quotation) {
             action: {
               type: "uri",
               label: "泉心生活 官方網站",
-              uri: "https://meetspa.lohastime.com.tw/",
+              uri: "https://springheartliving.github.io/online-store",
             },
             style: "secondary",
             color: "#FAF9F6",

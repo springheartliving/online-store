@@ -10,7 +10,7 @@ export function generateQuoteNumber(): string {
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
   const rand = Math.floor(1000 + Math.random() * 9000);
-  return `MEET-${yyyy}${mm}${dd}-${rand}`;
+  return `SH-${yyyy}${mm}${dd}-${rand}`;
 }
 
 export const DEFAULT_LINE_CONFIG: LineOfficialConfig = {

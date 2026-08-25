@@ -22,6 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!product.in_stock) return;
     onAddToCart(product, qty);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
@@ -67,6 +68,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.isOnSale && (
               <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
                 熱銷推薦
+              </span>
+            )}
+            {!product.in_stock && (
+              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-rose-700 text-white">
+                暫停供應
               </span>
             )}
           </div>
@@ -145,6 +151,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <button
               type="button"
               onClick={() => setQty(Math.max(1, qty - 1))}
+              disabled={!product.in_stock}
               className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs"
               aria-label="減少數量"
             >
@@ -156,6 +163,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <button
               type="button"
               onClick={() => setQty(qty + 1)}
+              disabled={!product.in_stock}
               className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs"
               aria-label="增加數量"
             >
@@ -166,12 +174,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             id={`add-to-inquiry-btn-${product.id}`}
             onClick={handleAdd}
+            disabled={!product.in_stock}
             className={`flex-1 h-8 px-2.5 sm:px-3 rounded-sm text-[11px] uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               justAdded
                 ? "bg-[#6A796A] text-white"
                 : inCartCount > 0
                 ? "bg-[#7C8B7C] text-white hover:bg-[#6A796A]"
-                : "bg-[#7C8B7C] hover:bg-[#6A796A] text-white"
+                : product.in_stock
+                ? "bg-[#7C8B7C] hover:bg-[#6A796A] text-white"
+                : "bg-[#D1CEC4] text-[#8A8576] cursor-not-allowed"
             }`}
           >
             {justAdded ? (
@@ -181,9 +192,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               </>
             ) : (
               <>
-                <Plus className="w-3 h-3" />
+                {product.in_stock ? <Plus className="w-3 h-3" /> : null}
                 <span>
-                  {inCartCount > 0 ? `已選 (${inCartCount})` : "加入諮詢"}
+                  {product.in_stock
+                    ? inCartCount > 0 ? `已選 (${inCartCount})` : "加入諮詢"
+                    : "暫停供應"}
                 </span>
               </>
             )}
