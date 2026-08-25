@@ -312,7 +312,7 @@ export default function App() {
                 description: "",
                 categories: [{ id: 0, name: item.category, slug: "custom" }],
                 tags: [],
-                images: item.image ? [{ id: 0, src: item.image, alt: item.name }] : [],
+                images: item.image ? [{ id: 0, src: item.image }] : [],
                 attributes: [],
                 in_stock: true,
                 slug: `item-${item.id}`,

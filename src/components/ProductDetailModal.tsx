@@ -191,7 +191,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
               )}
 
-              {product.isOnSale && (
+              {product.isOnHot && (
                 <span className="absolute top-3 left-3 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-xs bg-[#2D2D2D] text-white">
                   熱銷推薦
                 </span>

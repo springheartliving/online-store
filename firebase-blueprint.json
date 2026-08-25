@@ -12,7 +12,7 @@
         "price": { "type": "number" },
         "regular_price": { "type": "number" },
         "sale_price": { "type": ["number", "null"] },
-        "isOnSale": { "type": "boolean" },
+        "isOnHot": { "type": "boolean" },
         "currency": { "type": "string" },
         "currency_symbol": { "type": "string" },
         "short_description": { "type": "string" },
@@ -46,9 +46,7 @@
             "type": "object",
             "properties": {
               "id": { "type": "number" },
-              "src": { "type": "string" },
-              "thumbnail": { "type": "string" },
-              "alt": { "type": "string" }
+              "src": { "type": "string" }
             }
           }
         },
@@ -63,8 +61,7 @@
       "properties": {
         "id": { "type": "number" },
         "name": { "type": "string" },
-        "slug": { "type": "string" },
-        "description": { "type": "string" }
+        "slug": { "type": "string" }
       },
       "required": ["id", "name", "slug"]
     }

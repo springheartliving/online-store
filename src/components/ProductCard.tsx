@@ -65,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-xs bg-white/90 backdrop-blur-xs text-[#7C8B7C] border border-[#E5E2D9]">
               {primaryCategory}
             </span>
-            {product.isOnSale && (
+            {product.isOnHot && (
               <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
                 熱銷推薦
               </span>

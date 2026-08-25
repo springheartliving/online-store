@@ -2,14 +2,6 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
-  description?: string;
-  parent?: number;
-  count?: number;
-  image?: {
-    id: number;
-    src: string;
-    thumbnail?: string;
-  };
 }
 
 export interface ProductAttribute {
@@ -21,8 +13,6 @@ export interface ProductAttribute {
 export interface ProductImage {
   id: number;
   src: string;
-  thumbnail?: string;
-  alt: string;
 }
 
 export interface Product {
@@ -33,7 +23,7 @@ export interface Product {
   price: number;
   regular_price: number;
   is_published: boolean;
-  isOnSale?: boolean;
+  isOnHot?: boolean;
   short_description: string;
   description: string;
   features?: string[];
@@ -48,7 +38,6 @@ export interface Product {
 export interface CartItem {
   product: Product;
   quantity: number;
-  customNote?: string;
 }
 
 export interface CustomerInfo {
