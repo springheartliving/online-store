@@ -32,6 +32,7 @@ export interface Product {
   sku: string;
   price: number;
   regular_price: number;
+  is_published: boolean;
   isOnSale?: boolean;
   short_description: string;
   description: string;

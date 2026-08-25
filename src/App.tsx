@@ -205,6 +205,8 @@ export default function App() {
   const productCountsByCategory = useMemo(() => {
     const counts: Record<string, number> = {};
     products.forEach((p) => {
+      if (p.is_published === false) return;
+
       p.categories.forEach((c) => {
         counts[c.name] = (counts[c.name] || 0) + 1;
       });
@@ -214,7 +216,7 @@ export default function App() {
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let list = [...products];
+    let list = products.filter((p) => p.is_published !== false);
 
     // Filter Category
     if (selectedCategory !== "all") {
@@ -327,6 +329,7 @@ export default function App() {
                 sku: item.sku,
                 price: item.price,
                 regular_price: item.price,
+                is_published: true,
                 short_description: "",
                 description: "",
                 categories: [{ id: 0, name: item.category, slug: "custom" }],
