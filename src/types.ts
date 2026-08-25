@@ -1,5 +1,5 @@
 export interface Category {
-  id: number;
+  id: number | string;
   name: string;
   slug: string;
 }
@@ -27,7 +27,7 @@ export interface Product {
   short_description: string;
   description: string;
   features?: string[];
-  categories: { id: number; name: string; slug: string }[];
+  categories: { id: number | string; name: string; slug: string }[];
   tags: { id: number; name: string; slug: string }[];
   images: ProductImage[];
   attributes: ProductAttribute[];

@@ -26,6 +26,7 @@ import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG, getLineConsultationUrl, formatQuoteForLineText } from "./utils/formatters";
 import { sendQuoteViaLiff } from "./utils/liff";
+import { resolveProductCategories } from "./utils/categories";
 import {
   fetchProductsFromFirestore,
   fetchCategoriesFromFirestore,
@@ -103,7 +104,17 @@ export default function App() {
         const fsCategories = await fetchCategoriesFromFirestore();
 
         if (fsProducts && fsProducts.length > 0) {
-          setProducts(fsProducts);
+          setProducts(
+            fsProducts.map((product) =>
+              resolveProductCategories(product, fsCategories)
+            )
+          );
+          setCart((prevCart) =>
+            prevCart.map((item) => ({
+              ...item,
+              product: resolveProductCategories(item.product, fsCategories),
+            }))
+          );
         }
         if (fsCategories && fsCategories.length > 0) {
           setCategories(fsCategories);

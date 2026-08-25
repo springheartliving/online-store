@@ -54,7 +54,12 @@ export async function fetchCategoriesFromFirestore(): Promise<Category[]> {
     }
     const categories: Category[] = [];
     snapshot.forEach((docSnap) => {
-      categories.push(docSnap.data() as Category);
+      const data = docSnap.data() as Partial<Category>;
+      categories.push({
+        id: data.id ?? docSnap.id,
+        name: data.name ?? "",
+        slug: data.slug ?? docSnap.id,
+      });
     });
     return categories;
   } catch (error) {

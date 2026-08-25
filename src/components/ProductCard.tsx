@@ -29,7 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const imageSrc = formatImageUrl(product.images?.[0]?.src);
-  const primaryCategory = product.categories?.[0]?.name || "養生美學";
+  const primaryCategory = product.categories?.[0]?.name;
 
 
   return (
