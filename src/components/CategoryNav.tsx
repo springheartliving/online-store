@@ -46,14 +46,14 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
     }
   }, [selectedCategory]);
 
-  const getCategoryIcon = (name: string) => {
-    if (name.includes("水療") || name.includes("設備")) return <Droplets className="w-4 h-4" />;
-    if (name.includes("香氛") || name.includes("沐浴") || name.includes("精油")) return <Sparkles className="w-4 h-4" />;
-    if (name.includes("養生") || name.includes("健康")) return <HeartPulse className="w-4 h-4" />;
-    if (name.includes("護膚") || name.includes("美容")) return <Sparkle className="w-4 h-4" />;
-    if (name.includes("清潔") || name.includes("家用")) return <Home className="w-4 h-4" />;
-    return <Flame className="w-4 h-4" />;
-  };
+  // const getCategoryIcon = (name: string) => {
+  //   if (name.includes("水療") || name.includes("設備")) return <Droplets className="w-4 h-4" />;
+  //   if (name.includes("香氛") || name.includes("沐浴") || name.includes("精油")) return <Sparkles className="w-4 h-4" />;
+  //   if (name.includes("養生") || name.includes("健康")) return <HeartPulse className="w-4 h-4" />;
+  //   if (name.includes("護膚") || name.includes("美容")) return <Sparkle className="w-4 h-4" />;
+  //   if (name.includes("清潔") || name.includes("家用")) return <Home className="w-4 h-4" />;
+  //   return <Flame className="w-4 h-4" />;
+  // };
 
   const totalAll = totalProductsCount !== undefined
     ? totalProductsCount
@@ -115,7 +115,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                   : "bg-white text-[#6E6A5E] hover:bg-[#F0EEE6] hover:text-[#2D2D2D] border border-[#E5E2D9]"
               }`}
             >
-              {getCategoryIcon(cat.name)}
+              {/* {getCategoryIcon(cat.name)} */}
               <span>{cat.name}</span>
               <span
                 className={`text-[10px] font-mono px-1.5 py-0.5 rounded-xs ${
