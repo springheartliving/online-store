@@ -143,7 +143,6 @@ online-store/
 |------------|------|
 | `products` | 商品資料（`id` 為 doc ID） |
 | `categories` | 商品分類 |
-| `quotations` | 客戶報價記錄（`quoteNo` 為 doc ID） |
 
 商品與分類資料由 Firestore 提供；請先在 `products` 與 `categories` collection 建立資料。
 
@@ -161,3 +160,4 @@ online-store/
 - `firebase-applet-config.json` 含有 Firebase Web API Key，此為 Firebase 設計的公開用 Key，透過 **Firestore Security Rules** 控管存取權限
 - 請勿將 `.env` 提交到 git（已加入 `.gitignore`）
 - 商品資料更新：直接到 Firebase Console 修改 `products` 與 `categories` collection
+- 歷史諮詢紀錄僅儲存在使用者瀏覽器的 `localStorage`，不會寫入 Firestore

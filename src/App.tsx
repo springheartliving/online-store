@@ -29,9 +29,6 @@ import { sendQuoteViaLiff } from "./utils/liff";
 import {
   fetchProductsFromFirestore,
   fetchCategoriesFromFirestore,
-  fetchQuotationsFromFirestore,
-  saveQuotationToFirestore,
-  deleteQuotationFromFirestore
 } from "./lib/firebase";
 
 
@@ -85,7 +82,7 @@ export default function App() {
     } catch {}
   }, [cart]);
 
-  // Save order to history (saved both locally and in Firestore Database)
+  // Save order history locally for this browser
   const saveQuotationToHistory = (quote: Quotation) => {
     setOrderHistory((prev) => {
       const filtered = prev.filter((q) => q.quoteNo !== quote.quoteNo);
@@ -95,27 +92,12 @@ export default function App() {
       } catch {}
       return updated;
     });
-    // Save to Firestore database
-    saveQuotationToFirestore(quote);
   };
 
   // Load data from Firestore Database on mount
   useEffect(() => {
     async function loadFirestoreData() {
-      // 1. Fetch order history from Firestore
-      try {
-        const firestoreHistory = await fetchQuotationsFromFirestore();
-        if (firestoreHistory && firestoreHistory.length > 0) {
-          setOrderHistory(firestoreHistory);
-          try {
-            localStorage.setItem("springheart_history", JSON.stringify(firestoreHistory));
-          } catch {}
-        }
-      } catch (err) {
-        console.error("Error loading order history from Firestore:", err);
-      }
-
-      // 2. Fetch products and categories from Firestore
+      // Fetch products and categories from Firestore
       try {
         const fsProducts = await fetchProductsFromFirestore();
         const fsCategories = await fetchCategoriesFromFirestore();
@@ -127,7 +109,7 @@ export default function App() {
           setCategories(fsCategories);
         }
       } catch (err) {
-        console.error("Error fetching or seeding Firestore products:", err);
+        console.error("Error fetching Firestore products:", err);
       } finally {
         setIsLoading(false);
       }
@@ -180,9 +162,6 @@ export default function App() {
   };
 
   const handleClearHistory = () => {
-    orderHistory.forEach((q) => {
-      deleteQuotationFromFirestore(q.quoteNo);
-    });
     setOrderHistory([]);
     try {
       localStorage.removeItem("springheart_history");
@@ -191,7 +170,6 @@ export default function App() {
   };
 
   const handleDeleteHistoryItem = (quoteNo: string) => {
-    deleteQuotationFromFirestore(quoteNo);
     setOrderHistory((prev) => {
       const updated = prev.filter((q) => q.quoteNo !== quoteNo);
       try {

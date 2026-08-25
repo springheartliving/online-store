@@ -67,27 +67,6 @@
         "description": { "type": "string" }
       },
       "required": ["id", "name", "slug"]
-    },
-    "quotations": {
-      "title": "Quotations",
-      "description": "Historical consultation and quote records",
-      "type": "object",
-      "properties": {
-        "quoteNo": { "type": "string" },
-        "createdAt": { "type": "string" },
-        "items": { "type": "array" },
-        "subtotal": { "type": "number" },
-        "discountRate": { "type": "number" },
-        "discountAmount": { "type": "number" },
-        "shippingMethod": { "type": "string" },
-        "shippingFee": { "type": "number" },
-        "includeTax": { "type": "boolean" },
-        "taxAmount": { "type": "number" },
-        "totalAmount": { "type": "number" },
-        "customer": { "type": "object" },
-        "status": { "type": "string" }
-      },
-      "required": ["quoteNo", "createdAt", "totalAmount"]
     }
   }
 }

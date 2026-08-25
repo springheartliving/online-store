@@ -4,15 +4,9 @@ import {
   collection,
   doc,
   getDocs,
-  getDoc,
-  setDoc,
-  deleteDoc,
-  query,
-  orderBy,
-  limit,
 } from "firebase/firestore";
 import firebaseConfig from "../../firebase-applet-config.json";
-import { Product, Category, Quotation } from "../types";
+import { Product, Category } from "../types";
 
 // Initialize Firebase App
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -23,7 +17,6 @@ export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || "(defa
 // Collections references
 const PRODUCTS_COLLECTION = "products";
 const CATEGORIES_COLLECTION = "categories";
-const QUOTATIONS_COLLECTION = "quotations";
 
 /**
  * Fetch all products from Firestore database
@@ -49,7 +42,6 @@ export async function fetchProductsFromFirestore(): Promise<Product[]> {
     return [];
   }
 }
-
 /**
  * Fetch categories from Firestore database
  */
@@ -71,59 +63,3 @@ export async function fetchCategoriesFromFirestore(): Promise<Category[]> {
   }
 }
 
-/**
- * Fetch historical quotation orders from Firestore
- */
-export async function fetchQuotationsFromFirestore(): Promise<Quotation[]> {
-  try {
-    const colRef = collection(db, QUOTATIONS_COLLECTION);
-    const q = query(colRef, orderBy("createdAt", "desc"), limit(100));
-    const snapshot = await getDocs(q);
-    const quotations: Quotation[] = [];
-    snapshot.forEach((docSnap) => {
-      quotations.push(docSnap.data() as Quotation);
-    });
-    return quotations;
-  } catch (error) {
-    console.error("Failed to fetch quotations from Firestore:", error);
-    // Fallback if index not ready
-    try {
-      const colRef = collection(db, QUOTATIONS_COLLECTION);
-      const snapshot = await getDocs(colRef);
-      const list: Quotation[] = [];
-      snapshot.forEach((docSnap) => list.push(docSnap.data() as Quotation));
-      return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    } catch {
-      return [];
-    }
-  }
-}
-
-/**
- * Save a new or updated quotation order to Firestore database
- */
-export async function saveQuotationToFirestore(quotation: Quotation): Promise<void> {
-  try {
-    const docRef = doc(db, QUOTATIONS_COLLECTION, quotation.quoteNo);
-    await setDoc(docRef, {
-      ...quotation,
-      updatedAt: new Date().toISOString()
-    }, { merge: true });
-    console.log(`Quotation ${quotation.quoteNo} saved to Firestore.`);
-  } catch (error) {
-    console.error("Failed to save quotation to Firestore:", error);
-  }
-}
-
-/**
- * Delete a quotation record from Firestore
- */
-export async function deleteQuotationFromFirestore(quoteNo: string): Promise<void> {
-  try {
-    const docRef = doc(db, QUOTATIONS_COLLECTION, quoteNo);
-    await deleteDoc(docRef);
-    console.log(`Quotation ${quoteNo} deleted from Firestore.`);
-  } catch (error) {
-    console.error("Failed to delete quotation from Firestore:", error);
-  }
-}
