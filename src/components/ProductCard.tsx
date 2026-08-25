@@ -66,12 +66,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {primaryCategory}
             </span>
             {product.isOnHot && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
+              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-rose-700 text-white">
                 熱銷推薦
               </span>
             )}
             {!product.in_stock && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-rose-700 text-white">
+              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
                 暫停供應
               </span>
             )}
