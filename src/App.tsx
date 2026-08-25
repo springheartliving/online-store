@@ -186,7 +186,8 @@ export default function App() {
       if (p.is_published === false) return;
 
       p.categories.forEach((c) => {
-        counts[c.name] = (counts[c.name] || 0) + 1;
+        const categoryKey = String(c.id);
+        counts[categoryKey] = (counts[categoryKey] || 0) + 1;
       });
     });
     return counts;
@@ -200,7 +201,7 @@ export default function App() {
     if (selectedCategory !== "all") {
       list = list.filter((p) =>
         p.categories.some(
-          (c) => c.name === selectedCategory || c.slug === selectedCategory
+          (c) => String(c.id) === selectedCategory
         )
       );
     }

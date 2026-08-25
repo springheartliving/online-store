@@ -13,7 +13,7 @@ import { Category } from "../types";
 interface CategoryNavProps {
   categories: Category[];
   selectedCategory: string;
-  onSelectCategory: (slug: string) => void;
+  onSelectCategory: (categoryId: string) => void;
   productCountsByCategory: Record<string, number>;
   totalProductsCount?: number;
 }
@@ -99,15 +99,16 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
         {/* Dynamic Category Tabs */}
         {categories.map((cat, idx) => {
-          const isSelected = selectedCategory === cat.slug || selectedCategory === cat.name;
-          const count = productCountsByCategory[cat.name] ?? 0;
+          const categoryId = String(cat.id);
+          const isSelected = selectedCategory === categoryId;
+          const count = productCountsByCategory[categoryId] ?? 0;
 
           return (
             <button
               key={`category-tab-${cat.id || cat.slug || idx}-${idx}`}
               id={`category-tab-${cat.id}`}
               ref={isSelected ? activeTabRef : null}
-              onClick={() => onSelectCategory(cat.name)}
+              onClick={() => onSelectCategory(categoryId)}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs uppercase tracking-wider font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                 isSelected
                   ? "bg-[#7C8B7C] text-white shadow-xs"
