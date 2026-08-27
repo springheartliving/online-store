@@ -3,7 +3,9 @@ import {
   X, 
   Plus, 
   Sparkles, 
-  Layers
+  Layers,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
@@ -24,6 +26,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 }) => {
   const [selectedImgIndex, setSelectedImgIndex] = useState(0);
   const [qty, setQty] = useState(1);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
   // Swipe / Drag state
   const touchStartX = useRef<number | null>(null);
@@ -32,12 +35,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const isDragging = useRef<boolean>(false);
   const thumbnailsContainerRef = useRef<HTMLDivElement | null>(null);
   const activeThumbnailRef = useRef<HTMLButtonElement | null>(null);
+  const images = product?.images && product.images.length > 0 ? product.images : [];
+  const currentImg = formatImageUrl(images[selectedImgIndex]?.src);
 
   // Reset states when product changes
   useEffect(() => {
     if (product) {
       setSelectedImgIndex(0);
       setQty(1);
+      setIsImageViewerOpen(false);
     }
   }, [product?.id, isOpen]);
 
@@ -52,11 +58,28 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     }
   }, [selectedImgIndex]);
 
+  useEffect(() => {
+    if (!isImageViewerOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsImageViewerOpen(false);
+      if (e.key === "ArrowLeft") {
+        setSelectedImgIndex((prev) =>
+          images.length > 0 ? (prev > 0 ? prev - 1 : images.length - 1) : prev
+        );
+      }
+      if (e.key === "ArrowRight") {
+        setSelectedImgIndex((prev) =>
+          images.length > 0 ? (prev < images.length - 1 ? prev + 1 : 0) : prev
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isImageViewerOpen, product?.id]);
+
   if (!isOpen || !product) return null;
-
-  const images = product.images && product.images.length > 0 ? product.images : [];
-  const currentImg = formatImageUrl(images[selectedImgIndex]?.src);
-
 
   const handlePrevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -181,7 +204,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   alt={product.name}
                   referrerPolicy="no-referrer"
                   draggable={false}
-                  className="w-full h-full object-contain pointer-events-none animate-img-fade"
+                  onClick={() => setIsImageViewerOpen(true)}
+                  className="w-full h-full object-contain cursor-zoom-in animate-img-fade"
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center text-[#8A8576]">
@@ -373,6 +397,65 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </span>
           </button>
         </div>
+
+        {isImageViewerOpen && currentImg && (
+          <div
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-3 pb-14 sm:p-8 sm:pb-16"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${product.name} 圖片瀏覽器`}
+            onClick={() => setIsImageViewerOpen(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <button
+              type="button"
+              onClick={() => setIsImageViewerOpen(false)}
+              className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10 p-2.5 rounded-sm bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+              aria-label="關閉圖片瀏覽器"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevImage(e);
+              }}
+              className="hidden md:flex absolute left-3 lg:left-8 z-20 items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#2D2D2D]/85 hover:bg-[#2D2D2D] text-white shadow-lg transition cursor-pointer"
+              aria-label="上一張圖片"
+            >
+              <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7" strokeWidth={2.5} />
+            </button>
+
+            <img
+              src={currentImg}
+              alt={product.name}
+              referrerPolicy="no-referrer"
+              draggable={false}
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-full max-h-full object-contain select-none animate-img-fade"
+            />
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNextImage(e);
+              }}
+              className="hidden md:flex absolute right-3 lg:right-8 z-20 items-center justify-center w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#2D2D2D]/85 hover:bg-[#2D2D2D] text-white shadow-lg transition cursor-pointer"
+              aria-label="下一張圖片"
+            >
+              <ChevronRight className="w-6 h-6 lg:w-7 lg:h-7" strokeWidth={2.5} />
+            </button>
+
+            <span className="absolute bottom-3 sm:bottom-5 left-1/2 z-20 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs text-white font-mono">
+              {selectedImgIndex + 1} / {images.length}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
