@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
+import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -37,6 +38,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const activeThumbnailRef = useRef<HTMLButtonElement | null>(null);
   const images = product?.images && product.images.length > 0 ? product.images : [];
   const currentImg = formatImageUrl(images[selectedImgIndex]?.src);
+
+  useBodyScrollLock(isOpen);
 
   // Reset states when product changes
   useEffect(() => {
@@ -166,7 +169,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/50 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overscroll-contain p-2 sm:p-4 md:p-6 bg-black/50 backdrop-blur-xs">
       <div 
         id="product-detail-modal"
         className="relative w-full max-w-2xl bg-[#FAF9F6] border border-[#E5E2D9] rounded-sm overflow-hidden shadow-2xl text-[#2D2D2D] max-h-[92vh] flex flex-col select-none sm:select-auto"

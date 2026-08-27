@@ -13,6 +13,7 @@ import {
 import { Quotation, LineOfficialConfig } from "../types";
 import { formatNTD, DEFAULT_LINE_CONFIG, formatImageUrl } from "../utils/formatters";
 import { sendQuoteViaLiff } from "../utils/liff";
+import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 
 interface OrderHistoryModalProps {
   isOpen: boolean;
@@ -34,11 +35,12 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
   lineConfig = DEFAULT_LINE_CONFIG,
 }) => {
   const [expandedQuoteNo, setExpandedQuoteNo] = useState<string | null>(null);
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overscroll-contain p-4 bg-black/40 backdrop-blur-xs overflow-hidden">
       <div 
         id="order-history-modal"
         className="relative w-full max-w-2xl bg-[#FAF9F6] border border-[#E5E2D9] rounded-sm overflow-hidden shadow-2xl text-[#2D2D2D] p-6 sm:p-7 max-h-[90vh] flex flex-col"
@@ -71,7 +73,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
         </div>
 
         {/* Content list */}
-        <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+        <div className="flex-1 overflow-y-auto overscroll-contain space-y-3 pr-1">
           {history.length === 0 ? (
             <div className="p-12 text-center text-[#8A8576] bg-white rounded-sm border border-dashed border-[#E5E2D9]">
               <FileText className="w-10 h-10 text-[#7C8B7C] mx-auto mb-2" />

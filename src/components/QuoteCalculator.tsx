@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { CartItem, CustomerInfo, Quotation, LineOfficialConfig } from "../types";
 import { formatNTD, generateQuoteNumber, formatImageUrl } from "../utils/formatters";
+import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 
 interface QuoteCalculatorProps {
   isOpen: boolean;
@@ -40,6 +41,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   lineNotifySuccess,
   lineNotifyError,
 }) => {
+  useBodyScrollLock(isOpen);
 
   // Dynamic calculations
   const subtotal = useMemo(() => {
@@ -89,7 +91,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs overflow-hidden">
+    <div className="fixed inset-0 z-50 flex justify-end overscroll-contain bg-black/40 backdrop-blur-xs overflow-hidden">
       <div 
         id="quote-calculator-drawer"
         className="w-full max-w-2xl bg-[#FAF9F6] text-[#2D2D2D] h-full flex flex-col shadow-2xl border-l border-[#E5E2D9] animate-in slide-in-from-right duration-300"
@@ -128,7 +130,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
         </div>
 
         {/* Scrollable Main Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-6">
           
           {/* 1. Item List */}
           <div>
