@@ -52,7 +52,7 @@ export async function sendQuoteViaLiff(
         return {
           success: true,
           method: "liff_send",
-          message: "已成功透過 LIFF 將諮詢單傳送至 LINE 聊天室！",
+          message: "已將諮詢單傳送至官方 LINE 聊天室！",
         };
       } catch (sendErr: any) {
         console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
@@ -67,7 +67,7 @@ export async function sendQuoteViaLiff(
             return {
               success: true,
               method: "liff_share",
-              message: "已成功透過 LIFF 轉發諮詢單！",
+              message: "已成功轉發諮詢單！",
             };
           }
         } catch (shareErr: any) {
@@ -92,6 +92,6 @@ export async function sendQuoteViaLiff(
   return {
     success: true,
     method: "deeplink",
-    message: "已開啟 LINE 對話框，請在對話框點擊送出即可由小編即時為您服務。",
+    message: "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
   };
 }
