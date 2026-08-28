@@ -1,4 +1,4 @@
-import { LineOfficialConfig } from "../types";
+import { LineOfficialConfig, Quotation } from "../types";
 
 export function formatNTD(amount: number): string {
   return `NT$ ${Math.round(amount).toLocaleString()}`;
@@ -90,6 +90,137 @@ export function formatQuoteForLineText(quote: {
 ${itemsText}
 ━━━━━━━━━━━━━━
 💰 總金額：NT$ ${quote.totalAmount.toLocaleString()}`;
+}
+
+export function createQuoteFlexMessage(quote: Quotation) {
+  const itemRows = quote.items.map((item, idx) => ({
+    type: "box",
+    layout: "horizontal",
+    spacing: "sm",
+    margin: idx > 0 ? "sm" : "none",
+    contents: [
+      {
+        type: "text",
+        text: `${idx + 1}. ${item.name}`,
+        size: "xs",
+        color: "#2D2D2D",
+        weight: "bold",
+        flex: 4,
+        wrap: true,
+      },
+      {
+        type: "text",
+        text: `x${item.quantity}`,
+        size: "xs",
+        color: "#8A8576",
+        flex: 1,
+        align: "center",
+      },
+      {
+        type: "text",
+        text: `NT$ ${(item.price * item.quantity).toLocaleString()}`,
+        size: "xs",
+        color: "#2D2D2D",
+        flex: 2,
+        align: "end",
+      },
+    ],
+  }));
+
+  return {
+    type: "flex" as const,
+    altText: `【泉心生活】商品諮詢單 ${quote.quoteNo}`,
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#7C8B7C",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: "泉心生活 Spring Heart Living",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "md",
+          },
+          {
+            type: "text",
+            text: "商品諮詢單",
+            color: "#E5E2D9",
+            size: "xs",
+            margin: "xs",
+          },
+        ],
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "box",
+            layout: "horizontal",
+            contents: [
+              {
+                type: "text",
+                text: "諮詢單號",
+                size: "xs",
+                color: "#8A8576",
+                flex: 0,
+              },
+              {
+                type: "text",
+                text: quote.quoteNo,
+                size: "xs",
+                color: "#2D2D2D",
+                align: "end",
+                weight: "bold",
+              },
+            ],
+          },
+          {
+            type: "separator",
+            color: "#E5E2D9",
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "xs",
+            contents: itemRows,
+          },
+          {
+            type: "separator",
+            color: "#E5E2D9",
+          },
+          {
+            type: "box",
+            layout: "horizontal",
+            contents: [
+              {
+                type: "text",
+                text: "諮詢清單總計",
+                weight: "bold",
+                color: "#2D2D2D",
+                size: "sm",
+              },
+              {
+                type: "text",
+                text: `NT$ ${quote.totalAmount.toLocaleString()}`,
+                weight: "bold",
+                color: "#7C8B7C",
+                size: "md",
+                align: "end",
+              },
+            ],
+          },
+        ],
+      },
+    },
+  };
 }
 
 /**

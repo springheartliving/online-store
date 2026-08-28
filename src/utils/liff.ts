@@ -1,6 +1,10 @@
 import liff from "@line/liff";
 import { Quotation, LineOfficialConfig } from "../types";
-import { formatQuoteForLineText, getLineConsultationUrl } from "./formatters";
+import {
+  createQuoteFlexMessage,
+  formatQuoteForLineText,
+  getLineConsultationUrl,
+} from "./formatters";
 
 let isLiffInitialized = false;
 
@@ -34,17 +38,13 @@ export async function sendQuoteViaLiff(
   quotation: Quotation,
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
-  const textMessage = {
-    type: "text" as const,
-    text: formatQuoteForLineText(quotation),
-  };
-  const messagesPayload = [textMessage];
-
   const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
 
   if (liffId) {
     const initialized = await initLiffIfNeeded(liffId);
     if (initialized && liff.isInClient()) {
+      const flexMessage = createQuoteFlexMessage(quotation);
+      const messagesPayload = [flexMessage];
       let lastError = "請確認 LIFF 權限與開啟來源";
 
       try {
