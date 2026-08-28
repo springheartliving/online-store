@@ -82,7 +82,7 @@ export function formatQuoteForLineText(quote: {
     )
     .join("\n");
 
-  return `🌿【泉心生活 - 官方諮詢】
+  return `🌿【泉心生活】商品諮詢單
 
 📄 諮詢單號：${quote.quoteNo}
 ━━━━━━━━━━━━━━
@@ -101,7 +101,7 @@ export function createQuoteFlexMessage(quote: Quotation) {
     contents: [
       {
         type: "text",
-        text: `${idx + 1}. ${item.name}`,
+        text: `${item.name}`,
         size: "xs",
         color: "#2D2D2D",
         weight: "bold",
