@@ -1,20 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import confetti from "canvas-confetti";
 import { 
-  Sparkles, 
-  SlidersHorizontal, 
   ArrowUpDown, 
-  Check, 
   Droplets, 
-  Flame, 
-  HeartPulse, 
-  ShieldCheck, 
   ShoppingBag, 
-  TrendingUp, 
-  Zap, 
-  ExternalLink,
-  ChevronDown,
-  Info
 } from "lucide-react";
 
 import { Product, Category, CartItem, CustomerInfo, Quotation } from "./types";
@@ -24,7 +13,7 @@ import { ProductCard } from "./components/ProductCard";
 import { ProductDetailModal } from "./components/ProductDetailModal";
 import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
-import { DEFAULT_LINE_CONFIG, getLineConsultationUrl, formatQuoteForLineText } from "./utils/formatters";
+import { DEFAULT_LINE_CONFIG } from "./utils/formatters";
 import { getLiffCustomer, sendQuoteViaLiff } from "./utils/liff";
 import { resolveProductCategories } from "./utils/categories";
 import {
@@ -41,8 +30,6 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
-
   // Cart & Quotation State
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {

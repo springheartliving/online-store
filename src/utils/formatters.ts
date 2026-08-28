@@ -49,22 +49,6 @@ export function getLineConsultationUrl(config: LineOfficialConfig, messageText: 
   return `https://line.me/R/msg/text/?${encodedText}`;
 }
 
-/**
- * Generates official LINE add-friend deep link
- */
-export function getLineAddFriendUrl(config: LineOfficialConfig): string {
-  if (config.lineUrl && config.lineUrl.trim()) {
-    return config.lineUrl.trim();
-  }
-  const rawId = config.lineId ? config.lineId.trim() : "@springheart";
-  const formattedId = rawId.startsWith("@") ? rawId : `@${rawId}`;
-  return `https://line.me/R/ti/p/${encodeURIComponent(formattedId)}`;
-}
-
-export function getLineShareUrl(text: string): string {
-  return `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
-}
-
 export function formatQuoteForLineText(quote: {
   quoteNo: string;
   items: { name: string; sku?: string; quantity: number; price: number }[];

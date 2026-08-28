@@ -1,12 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { 
   Grid, 
-  Droplets, 
-  HeartPulse, 
-  Sparkles, 
-  Sparkle, 
-  Home, 
-  Flame 
 } from "lucide-react";
 import { Category } from "../types";
 

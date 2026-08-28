@@ -7,10 +7,6 @@
     color: #2D2D2D;
   }
 
-  .font-serif {
-    font-family: 'Noto Serif TC', 'Cinzel', serif;
-  }
-
   .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
@@ -57,16 +53,6 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-}
-
-@keyframes scale {
-  0% { transform: scale(0.95); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.animate-scale {
-  animation: scale 0.3s ease-in-out;
 }
 
 @keyframes imgFadeIn {

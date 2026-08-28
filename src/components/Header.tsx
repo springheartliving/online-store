@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, ShoppingBag, Bell, History, Search, MessageSquare } from "lucide-react";
+import { ShoppingBag, History, Search } from "lucide-react";
 import { CartItem } from "../types";
 import { formatNTD } from "../utils/formatters";
 import { BrandLogo } from "./BrandLogo";

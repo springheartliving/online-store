@@ -13,7 +13,7 @@
 | 建置工具 | Vite 6 |
 | 樣式 | Tailwind CSS v4 |
 | 資料庫 | Firebase Firestore |
-| 動畫 | Motion (Framer Motion) |
+| 動畫 | CSS animations |
 | LINE 整合 | LIFF SDK v2 |
 | 部署 | GitHub Pages（自動 CI/CD） |
 
@@ -42,7 +42,7 @@ cp .env.example .env
 | `VITE_LIFF_ID` | LINE LIFF App ID |
 | `VITE_LIFF_URL` | LINE LIFF 應用程式 URL |
 
-> **Firebase** 設定直接寫在 `firebase-applet-config.json`（已含公開 API Key，無需加進 `.env`）
+> **Firebase** 設定直接寫在 `firebase-applet-config.json`（已含公開 API Key，無需加進 `.env`）。
 
 部署至 GitHub Pages 時，請在 GitHub Repository → **Settings** → **Secrets and variables** → **Actions** → **Variables** 建立以下 Repository Variables。GitHub Actions 會在建置時將它們注入 `DEFAULT_LINE_CONFIG`：
 
@@ -119,7 +119,6 @@ online-store/
 ├── public/                     # 靜態資源
 ├── src/
 │   ├── components/             # React UI 元件
-│   ├── data/                   # 本地商品資料 JSON（Firestore fallback）
 │   ├── lib/
 │   │   └── firebase.ts         # Firebase / Firestore 整合
 │   ├── types.ts                # TypeScript 型別定義
@@ -137,6 +136,15 @@ online-store/
 
 ---
 
+## 使用流程
+
+1. 從 Firestore 載入已發布商品與分類
+2. 瀏覽、搜尋、篩選商品，並加入諮詢清單
+3. 在諮詢清單調整數量後送出 LINE 諮詢
+4. 在歷史紀錄查看或重新加入過往諮詢單
+
+商品圖片支援一般圖片網址，也會自動轉換 Google Drive 圖片連結。
+
 ## Firebase Firestore 資料結構
 
 | Collection | 說明 |
@@ -150,8 +158,9 @@ online-store/
 
 ## LINE 整合說明
 
-- **LIFF（LINE Front-end Framework）**：在 LINE 內嵌瀏覽器中開啟，可傳送純文字諮詢單
-- **LINE 深層連結 fallback**：非 LIFF 環境下，自動產生一鍵跳轉 LINE 官方帳號的連結
+- **LIFF（LINE Front-end Framework）**：在 LINE 內嵌瀏覽器中開啟，優先傳送 Flex Message 諮詢單；若直接傳送失敗，會嘗試讓使用者選擇轉發對象
+- **LINE 深層連結 fallback**：非 LIFF 環境下，以文字諮詢單產生一鍵跳轉 LINE 官方帳號的連結
+- LIFF profile 會記錄顯示名稱與 user ID，並保存於本機歷史諮詢單
 
 ---
 
@@ -160,4 +169,4 @@ online-store/
 - `firebase-applet-config.json` 含有 Firebase Web API Key，此為 Firebase 設計的公開用 Key，透過 **Firestore Security Rules** 控管存取權限
 - 請勿將 `.env` 提交到 git（已加入 `.gitignore`）
 - 商品資料更新：直接到 Firebase Console 修改 `products` 與 `categories` collection
-- 歷史諮詢紀錄僅儲存在使用者瀏覽器的 `localStorage`，不會寫入 Firestore
+- 歷史諮詢紀錄僅儲存在使用者瀏覽器的 `localStorage`，目前會保存諮詢單號、建立時間、商品、總金額與 LINE profile 的顯示名稱和 user ID
