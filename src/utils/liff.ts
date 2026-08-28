@@ -2,158 +2,6 @@ import liff from "@line/liff";
 import { Quotation, LineOfficialConfig } from "../types";
 import { formatQuoteForLineText, getLineConsultationUrl } from "./formatters";
 
-/**
- * Creates a LINE Flex Message payload for the consultation quotation
- */
-export function createQuoteFlexMessage(quote: Quotation) {
-  const itemRows: any[] = quote.items.map((item, idx) => ({
-    type: "box",
-    layout: "horizontal",
-    spacing: "sm",
-    margin: idx > 0 ? "sm" : "none",
-    contents: [
-      {
-        type: "text",
-        text: `${idx + 1}. ${item.name}`,
-        size: "xs",
-        color: "#2D2D2D",
-        weight: "bold",
-        flex: 4,
-        wrap: true,
-      },
-      {
-        type: "text",
-        text: `x${item.quantity}`,
-        size: "xs",
-        color: "#8A8576",
-        flex: 1,
-        align: "center",
-      },
-      {
-        type: "text",
-        text: `NT$ ${(item.price * item.quantity).toLocaleString()}`,
-        size: "xs",
-        color: "#2D2D2D",
-        flex: 2,
-        align: "end",
-      },
-    ],
-  }));
-
-  return {
-    type: "flex" as const,
-    altText: `【泉心生活】官方諮詢單 ${quote.quoteNo}`,
-    contents: {
-      type: "bubble",
-      size: "mega",
-      header: {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: "#7C8B7C",
-        paddingAll: "16px",
-        contents: [
-          {
-            type: "text",
-            text: "泉心生活 Spring Heart Living",
-            color: "#FFFFFF",
-            weight: "bold",
-            size: "md",
-          },
-          {
-            type: "text",
-            text: "官方商品諮詢單",
-            color: "#E5E2D9",
-            size: "xs",
-            margin: "xs",
-          },
-        ],
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        paddingAll: "16px",
-        contents: [
-          {
-            type: "box",
-            layout: "horizontal",
-            contents: [
-              {
-                type: "text",
-                text: "諮詢單號",
-                size: "xs",
-                color: "#8A8576",
-                flex: 0,
-              },
-              {
-                type: "text",
-                text: quote.quoteNo,
-                size: "xs",
-                color: "#2D2D2D",
-                align: "end",
-                weight: "bold",
-              },
-            ],
-          },
-          {
-            type: "separator",
-            color: "#E5E2D9",
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            spacing: "xs",
-            contents: itemRows,
-          },
-          {
-            type: "separator",
-            color: "#E5E2D9",
-          },
-          {
-            type: "box",
-            layout: "horizontal",
-            contents: [
-              {
-                type: "text",
-                text: "預估諮詢總額",
-                weight: "bold",
-                color: "#2D2D2D",
-                size: "sm",
-              },
-              {
-                type: "text",
-                text: `NT$ ${quote.totalAmount.toLocaleString()}`,
-                weight: "bold",
-                color: "#7C8B7C",
-                size: "md",
-                align: "end",
-              },
-            ],
-          },
-        ],
-      },
-      footer: {
-        type: "box",
-        layout: "vertical",
-        paddingAll: "12px",
-        contents: [
-          {
-            type: "button",
-            action: {
-              type: "uri",
-              label: "泉心生活 官方網站",
-              uri: "https://springheartliving.github.io/online-store",
-            },
-            style: "secondary",
-            color: "#FAF9F6",
-            height: "sm",
-          },
-        ],
-      },
-    },
-  };
-}
-
 let isLiffInitialized = false;
 
 /**
@@ -180,18 +28,17 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
 }
 
 /**
- * Transmits consultation message using LIFF structure (Flex Message + Text) or falls back to Deep Link
+ * Transmits consultation message using LIFF text messaging or falls back to Deep Link
  */
 export async function sendQuoteViaLiff(
   quotation: Quotation,
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
-  const flexMessage = createQuoteFlexMessage(quotation);
   const textMessage = {
     type: "text" as const,
     text: formatQuoteForLineText(quotation),
   };
-  const messagesPayload = [flexMessage, textMessage];
+  const messagesPayload = [textMessage];
 
   const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
 
@@ -205,7 +52,7 @@ export async function sendQuoteViaLiff(
         return {
           success: true,
           method: "liff_send",
-          message: "已成功透過 LIFF Flex Message 將諮詢單傳送至 LINE 聊天室！",
+          message: "已成功透過 LIFF 將諮詢單傳送至 LINE 聊天室！",
         };
       } catch (sendErr: any) {
         console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
@@ -220,7 +67,7 @@ export async function sendQuoteViaLiff(
             return {
               success: true,
               method: "liff_share",
-              message: "已成功透過 LIFF 轉發結構化諮詢單！",
+              message: "已成功透過 LIFF 轉發諮詢單！",
             };
           }
         } catch (shareErr: any) {
@@ -232,7 +79,7 @@ export async function sendQuoteViaLiff(
       return {
         success: false,
         method: "error",
-        message: `Flex Message 傳送失敗：${lastError}`,
+        message: `LINE 訊息傳送失敗：${lastError}`,
       };
     }
   }

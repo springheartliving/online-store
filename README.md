@@ -150,7 +150,7 @@ online-store/
 
 ## LINE 整合說明
 
-- **LIFF（LINE Front-end Framework）**：在 LINE 內嵌瀏覽器中開啟，可傳送 Flex Message
+- **LIFF（LINE Front-end Framework）**：在 LINE 內嵌瀏覽器中開啟，可傳送純文字諮詢單
 - **LINE 深層連結 fallback**：非 LIFF 環境下，自動產生一鍵跳轉 LINE 官方帳號的連結
 
 ---
