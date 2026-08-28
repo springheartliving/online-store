@@ -1,5 +1,5 @@
 import liff from "@line/liff";
-import { Quotation, LineOfficialConfig } from "../types";
+import { CustomerInfo, Quotation, LineOfficialConfig } from "../types";
 import {
   createQuoteFlexMessage,
   formatQuoteForLineText,
@@ -28,6 +28,24 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
   } catch (err) {
     console.warn("LIFF initialization error:", err);
     return false;
+  }
+}
+
+export async function getLiffCustomer(config: LineOfficialConfig): Promise<CustomerInfo | null> {
+  const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
+  if (!liffId || !(await initLiffIfNeeded(liffId)) || !liff.isLoggedIn()) {
+    return null;
+  }
+
+  try {
+    const profile = await liff.getProfile();
+    return {
+      name: profile.displayName,
+      lineId: profile.userId,
+    };
+  } catch (err) {
+    console.warn("Unable to load LINE profile:", err);
+    return null;
   }
 }
 

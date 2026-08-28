@@ -18,6 +18,7 @@ interface QuoteCalculatorProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
+  customer: CustomerInfo;
   onUpdateQuantity: (productId: number, newQty: number) => void;
   onRemoveItem: (productId: number) => void;
   onSendLineNotify: (quotation: Quotation, customer: CustomerInfo) => void;
@@ -30,6 +31,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   isOpen,
   onClose,
   cart,
+  customer,
   onUpdateQuantity,
   onRemoveItem,
   onSendLineNotify,
@@ -45,17 +47,6 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   }, [cart]);
 
   const totalAmount = subtotal;
-
-  const emptyCustomer: CustomerInfo = useMemo(() => ({
-    name: "",
-    phone: "",
-    email: "",
-    lineId: "",
-    address: "",
-    taxId: "",
-    companyTitle: "",
-    notes: "",
-  }), []);
 
   // Build Quotation payload
   const currentQuotation: Quotation = useMemo(() => {
@@ -79,10 +70,10 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
       includeTax: false,
       taxAmount: 0,
       totalAmount,
-      customer: emptyCustomer,
+      customer,
       status: "draft",
     };
-  }, [cart, subtotal, totalAmount, emptyCustomer]);
+  }, [cart, subtotal, totalAmount, customer]);
 
   if (!isOpen) return null;
 
@@ -316,7 +307,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
               <button
                 id="send-line-notify-btn"
                 type="button"
-                onClick={() => onSendLineNotify(currentQuotation, emptyCustomer)}
+                onClick={() => onSendLineNotify(currentQuotation, customer)}
                 disabled={isSendingLine}
                 className="w-full py-3 px-3 sm:px-4 rounded-sm bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer transition active:scale-98 disabled:opacity-60"
               >

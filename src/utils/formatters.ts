@@ -73,7 +73,6 @@ export function formatQuoteForLineText(quote: {
   shippingFee?: number;
   taxAmount?: number;
   totalAmount: number;
-  customer?: { name?: string; phone?: string; notes?: string };
 }): string {
   const itemsText = quote.items
     .map(

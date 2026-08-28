@@ -42,13 +42,7 @@ export interface CartItem {
 
 export interface CustomerInfo {
   name: string;
-  phone: string;
-  email: string;
   lineId: string;
-  address: string;
-  taxId?: string; // 統一編號
-  companyTitle?: string; // 公司抬頭
-  notes: string;
 }
 
 export interface Quotation {

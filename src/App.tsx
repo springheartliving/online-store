@@ -25,7 +25,7 @@ import { ProductDetailModal } from "./components/ProductDetailModal";
 import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG, getLineConsultationUrl, formatQuoteForLineText } from "./utils/formatters";
-import { sendQuoteViaLiff } from "./utils/liff";
+import { getLiffCustomer, sendQuoteViaLiff } from "./utils/liff";
 import { resolveProductCategories } from "./utils/categories";
 import {
   fetchProductsFromFirestore,
@@ -60,6 +60,7 @@ export default function App() {
 
   // Line Official Account & LIFF Config
   const lineConfig = DEFAULT_LINE_CONFIG;
+  const [customer, setCustomer] = useState<CustomerInfo>({ name: "", lineId: "" });
 
   // Order history
   const [orderHistory, setOrderHistory] = useState<Quotation[]>(() => {
@@ -96,6 +97,12 @@ export default function App() {
   };
 
   // Load data from Firestore Database on mount
+  useEffect(() => {
+    getLiffCustomer(lineConfig).then((profile) => {
+      if (profile) setCustomer(profile);
+    });
+  }, []);
+
   useEffect(() => {
     async function loadFirestoreData() {
       // Fetch products and categories from Firestore
@@ -259,8 +266,10 @@ export default function App() {
     setLineNotifyError(null);
 
     try {
+      const quotationWithCustomer = { ...quotation, customer };
+
       // Save quotation to local history
-      saveQuotationToHistory(quotation);
+      saveQuotationToHistory(quotationWithCustomer);
 
       // Trigger celebratory visual effect
       confetti({
@@ -270,7 +279,7 @@ export default function App() {
       });
 
       // Send via LIFF text message or Deep Link fallback
-      const result = await sendQuoteViaLiff(quotation, lineConfig);
+      const result = await sendQuoteViaLiff(quotationWithCustomer, lineConfig);
 
       if (result.success) {
         setLineNotifySuccess(result.message || "已為您產生商品清單並傳送至官方 LINE！");
@@ -525,6 +534,7 @@ export default function App() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
+        customer={customer}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onSendLineNotify={handleSendLineNotify}
