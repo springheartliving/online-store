@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { 
   X, 
   Trash2, 
@@ -10,7 +10,7 @@ import {
   FileText,
   Sparkles
 } from "lucide-react";
-import { CartItem, CustomerInfo, Quotation, LineOfficialConfig } from "../types";
+import { CartItem, CustomerInfo, Quotation } from "../types";
 import { formatNTD, generateQuoteNumber, formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 
@@ -18,10 +18,8 @@ interface QuoteCalculatorProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
-  lineConfig: LineOfficialConfig;
   onUpdateQuantity: (productId: number, newQty: number) => void;
   onRemoveItem: (productId: number) => void;
-  onClearCart: () => void;
   onSendLineNotify: (quotation: Quotation, customer: CustomerInfo) => void;
   isSendingLine: boolean;
   lineNotifySuccess: string | null;
@@ -32,10 +30,8 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   isOpen,
   onClose,
   cart,
-  lineConfig,
   onUpdateQuantity,
   onRemoveItem,
-  onClearCart,
   onSendLineNotify,
   isSendingLine,
   lineNotifySuccess,

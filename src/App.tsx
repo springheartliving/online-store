@@ -172,14 +172,6 @@ export default function App() {
     } catch {}
   };
 
-  const handleClearHistory = () => {
-    setOrderHistory([]);
-    try {
-      localStorage.removeItem("springheart_history");
-      localStorage.removeItem("meetspa_history");
-    } catch {}
-  };
-
   const handleDeleteHistoryItem = (quoteNo: string) => {
     setOrderHistory((prev) => {
       const updated = prev.filter((q) => q.quoteNo !== quoteNo);
@@ -533,10 +525,8 @@ export default function App() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
-        lineConfig={lineConfig}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        onClearCart={handleClearCart}
         onSendLineNotify={handleSendLineNotify}
         isSendingLine={isSendingLine}
         lineNotifySuccess={lineNotifySuccess}
@@ -548,9 +538,7 @@ export default function App() {
         onClose={() => setIsHistoryModalOpen(false)}
         history={orderHistory}
         onSelectQuote={handleSelectQuoteFromHistory}
-        onClearHistory={handleClearHistory}
         onDeleteItem={handleDeleteHistoryItem}
-        lineConfig={lineConfig}
       />
 
     </div>

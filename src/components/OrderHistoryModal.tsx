@@ -9,8 +9,8 @@ import {
   Eye,
   EyeOff
 } from "lucide-react";
-import { Quotation, LineOfficialConfig } from "../types";
-import { formatNTD, DEFAULT_LINE_CONFIG, formatImageUrl } from "../utils/formatters";
+import { Quotation } from "../types";
+import { formatNTD, formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 
 interface OrderHistoryModalProps {
@@ -18,9 +18,7 @@ interface OrderHistoryModalProps {
   onClose: () => void;
   history: Quotation[];
   onSelectQuote: (quote: Quotation) => void;
-  onClearHistory: () => void;
   onDeleteItem?: (quoteNo: string) => void;
-  lineConfig?: LineOfficialConfig;
 }
 
 export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
@@ -28,9 +26,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
   onClose,
   history,
   onSelectQuote,
-  onClearHistory,
   onDeleteItem,
-  lineConfig = DEFAULT_LINE_CONFIG,
 }) => {
   const [expandedQuoteNo, setExpandedQuoteNo] = useState<string | null>(null);
   useBodyScrollLock(isOpen);
