@@ -6,13 +6,11 @@ import {
   FileText, 
   Trash2, 
   Plus, 
-  Share2,
   Eye,
   EyeOff
 } from "lucide-react";
 import { Quotation, LineOfficialConfig } from "../types";
 import { formatNTD, DEFAULT_LINE_CONFIG, formatImageUrl } from "../utils/formatters";
-import { sendQuoteViaLiff } from "../utils/liff";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 
 interface OrderHistoryModalProps {
@@ -134,18 +132,6 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
                       <button
                         type="button"
                         onClick={() => {
-                          sendQuoteViaLiff(quote, lineConfig);
-                        }}
-                        className="px-2 sm:px-2.5 py-1.5 rounded-sm bg-white hover:bg-[#F0EEE6] text-[#7C8B7C] text-[11px] sm:text-xs font-semibold uppercase tracking-wider flex items-center gap-1 border border-[#E5E2D9] transition cursor-pointer shrink-0"
-                        title="LINE LIFF 諮詢傳送"
-                      >
-                        <Share2 className="w-3.5 h-3.5 text-[#7C8B7C]" />
-                        <span className="whitespace-nowrap">LINE</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
                           onSelectQuote(quote);
                           onClose();
                         }}
@@ -153,7 +139,7 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
                         title="重新加入諮詢清單"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        <span className="whitespace-nowrap">重新加入</span>
+                        <span className="whitespace-nowrap">重新加入清單</span>
                       </button>
 
                       {onDeleteItem && (

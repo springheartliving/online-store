@@ -78,11 +78,11 @@ export function formatQuoteForLineText(quote: {
   const itemsText = quote.items
     .map(
       (item, idx) =>
-        `${idx + 1}. ${item.name} (型號: ${item.sku || "無"})\n   數量: ${item.quantity} x NT$${item.price.toLocaleString()} = NT$${(item.quantity * item.price).toLocaleString()}`
+        `${idx + 1}. ${item.name}-${item.sku}\n   ${item.quantity} x NT$${item.price.toLocaleString()} = NT$${(item.quantity * item.price).toLocaleString()}`
     )
     .join("\n");
 
-  return `🌿【泉心生活 Spring Heart Living - 官方諮詢】
+  return `🌿【泉心生活 - 官方諮詢】
 
 📄 諮詢單號：${quote.quoteNo}
 ━━━━━━━━━━━━━━
