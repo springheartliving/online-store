@@ -68,10 +68,6 @@ export function getLineShareUrl(text: string): string {
 export function formatQuoteForLineText(quote: {
   quoteNo: string;
   items: { name: string; sku?: string; quantity: number; price: number }[];
-  subtotal: number;
-  discountAmount?: number;
-  shippingFee?: number;
-  taxAmount?: number;
   totalAmount: number;
 }): string {
   const itemsText = quote.items

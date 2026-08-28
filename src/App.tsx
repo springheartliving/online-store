@@ -17,7 +17,7 @@ import {
   Info
 } from "lucide-react";
 
-import { Product, Category, CartItem, CustomerInfo, Quotation, LineOfficialConfig } from "./types";
+import { Product, Category, CartItem, CustomerInfo, Quotation } from "./types";
 import { Header } from "./components/Header";
 import { CategoryNav } from "./components/CategoryNav";
 import { ProductCard } from "./components/ProductCard";
@@ -323,7 +323,7 @@ export default function App() {
                 is_published: true,
                 short_description: "",
                 description: "",
-                categories: [{ id: 0, name: item.category, slug: "custom" }],
+                categories: [{ id: 0, name: "泉心生活", slug: "custom" }],
                 tags: [],
                 images: item.image ? [{ id: 0, src: item.image }] : [],
                 attributes: [],

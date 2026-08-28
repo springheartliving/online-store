@@ -42,11 +42,9 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   useBodyScrollLock(isOpen);
 
   // Dynamic calculations
-  const subtotal = useMemo(() => {
+  const totalAmount = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
-
-  const totalAmount = subtotal;
 
   // Build Quotation payload
   const currentQuotation: Quotation = useMemo(() => {
@@ -59,21 +57,12 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
         sku: item.product.sku,
         price: item.product.price,
         quantity: item.quantity,
-        category: item.product.categories?.[0]?.name || "泉心生活",
         image: formatImageUrl(item.product.images?.[0]?.src),
       })),
-      subtotal,
-      discountRate: 0,
-      discountAmount: 0,
-      shippingMethod: "專人洽詢",
-      shippingFee: 0,
-      includeTax: false,
-      taxAmount: 0,
       totalAmount,
       customer,
-      status: "draft",
     };
-  }, [cart, subtotal, totalAmount, customer]);
+  }, [cart, totalAmount, customer]);
 
   if (!isOpen) return null;
 

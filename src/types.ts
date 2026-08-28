@@ -1,5 +1,5 @@
 export interface Category {
-  id: number | string;
+  id: number;
   name: string;
   slug: string;
 }
@@ -54,20 +54,10 @@ export interface Quotation {
     sku: string;
     price: number;
     quantity: number;
-    category: string;
     image?: string;
   }[];
-  subtotal: number;
-  discountRate: number;
-  discountAmount: number;
-  couponCode?: string;
-  shippingMethod: string;
-  shippingFee: number;
-  includeTax: boolean;
-  taxAmount: number;
   totalAmount: number;
   customer: CustomerInfo;
-  status?: "draft" | "submitted" | "confirmed";
 }
 
 export interface LineOfficialConfig {
@@ -78,9 +68,3 @@ export interface LineOfficialConfig {
   useOaMessage?: boolean;
 }
 
-export interface LineNotifyConfig {
-  userToken: string;
-  isConfigured: boolean;
-  lastTestStatus?: "success" | "error" | null;
-  lastTestMessage?: string;
-}
