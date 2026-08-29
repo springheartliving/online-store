@@ -37,7 +37,8 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
       referrerPolicy="no-referrer"
       onError={() => setHasError(true)}
       onClick={onClick}
-      draggable={draggable}
+      onContextMenu={(event) => event.preventDefault()}
+      draggable={draggable ?? false}
       className={className}
       loading="lazy"
     />
