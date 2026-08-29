@@ -2,6 +2,7 @@ export interface Category {
   id: number | string;
   name: string;
   slug: string;
+  sort_order?: number;
 }
 
 export interface ProductAttribute {
