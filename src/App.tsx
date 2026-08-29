@@ -15,6 +15,7 @@ import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG } from "./utils/formatters";
 import { getLiffCustomer, sendQuoteViaLiff } from "./utils/liff";
+import { saveQuotationToGoogleSheet } from "./utils/googleSheets";
 import { resolveProductCategories } from "./utils/categories";
 import {
   fetchProductsFromFirestore,
@@ -257,6 +258,7 @@ export default function App() {
 
       // Save quotation to local history
       saveQuotationToHistory(quotationWithCustomer);
+      await saveQuotationToGoogleSheet(quotationWithCustomer);
 
       // Trigger celebratory visual effect
       confetti({

@@ -43,6 +43,7 @@ jobs:
           VITE_LINE_URL: ${{ vars.VITE_LINE_URL }}
           VITE_LIFF_ID: ${{ vars.VITE_LIFF_ID }}
           VITE_LIFF_URL: ${{ vars.VITE_LIFF_URL }}
+          VITE_GOOGLE_SHEETS_WEB_APP_URL: ${{ vars.VITE_GOOGLE_SHEETS_WEB_APP_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -41,10 +41,11 @@ cp .env.example .env
 | `VITE_LINE_URL` | LINE 官方帳號加入好友連結 |
 | `VITE_LIFF_ID` | LINE LIFF App ID |
 | `VITE_LIFF_URL` | LINE LIFF 應用程式 URL |
+| `VITE_GOOGLE_SHEETS_WEB_APP_URL` | Google Apps Script Web App URL |
 
 > **Firebase** 設定直接寫在 `firebase-applet-config.json`（已含公開 API Key，無需加進 `.env`）。
 
-部署至 GitHub Pages 時，請在 GitHub Repository → **Settings** → **Secrets and variables** → **Actions** → **Variables** 建立以下 Repository Variables。GitHub Actions 會在建置時將它們注入 `DEFAULT_LINE_CONFIG`：
+部署至 GitHub Pages 時，請在 GitHub Repository → **Settings** → **Secrets and variables** → **Actions** → **Variables** 建立以下 Repository Variables。GitHub Actions 會在建置時將它們注入前端：
 
 | Variable | 說明 |
 |----------|------|
@@ -52,6 +53,7 @@ cp .env.example .env
 | `VITE_LINE_URL` | LINE 官方帳號加入好友連結 |
 | `VITE_LIFF_ID` | LINE LIFF App ID |
 | `VITE_LIFF_URL` | LINE LIFF 應用程式 URL |
+| `VITE_GOOGLE_SHEETS_WEB_APP_URL` | Google Apps Script Web App URL |
 
 本機開發則使用 `.env` 中相同名稱的變數。
 
@@ -144,6 +146,115 @@ online-store/
 4. 在歷史紀錄查看或重新加入過往諮詢單
 
 商品圖片支援一般圖片網址，也會自動轉換 Google Drive 圖片連結。
+
+## Google 試算表紀錄
+
+送出 LINE 諮詢時，前端會將管理者需要的資料送至 Google Apps Script Web App，分別寫入「諮詢紀錄」主表與「諮詢商品明細」明細表。兩個頁籤透過「諮詢單號」關聯。
+
+「諮詢紀錄」主表每張諮詢單一列：
+
+| 欄位名稱 | 內容 |
+|----------|------|
+| 諮詢單號 | 系統產生的諮詢單號 |
+| 建立時間 | 諮詢單建立時間 |
+| 客戶名稱 | LINE profile 顯示名稱 |
+| LINE User ID | LINE profile user ID |
+| 商品項數 | 不同商品的項目數 |
+| 總金額 | 諮詢單總金額 |
+
+「諮詢商品明細」每個商品一列：
+
+| 欄位名稱 | 內容 |
+|----------|------|
+| 諮詢單號 | 對應主表的諮詢單號 |
+| 商品名稱 | 商品名稱 |
+| SKU | 商品 SKU |
+| 數量 | 詢價數量 |
+| 單價 | 商品單價 |
+| 小計 | 單價乘以數量 |
+
+不會送出商品圖片網址或商品內部 ID。若未設定 `VITE_GOOGLE_SHEETS_WEB_APP_URL`，則不會寫入試算表，但不影響 LINE 諮詢功能。
+
+### Apps Script 建立方式
+
+1. 建立 Google 試算表，開啟 **擴充功能 → Apps Script**。
+2. 貼上以下程式碼並儲存。試算表頁籤會自動建立為「諮詢紀錄」與「諮詢商品明細」，第一列會套用中文欄位名稱與網站相符的基本樣式。
+
+```javascript
+const ORDER_SHEET_NAME = "諮詢紀錄";
+const ITEM_SHEET_NAME = "諮詢商品明細";
+const ORDER_HEADERS = ["諮詢單號", "建立時間", "客戶名稱", "LINE User ID", "商品項數", "總金額"];
+const ITEM_HEADERS = ["諮詢單號", "商品名稱", "SKU", "數量", "單價", "小計"];
+
+function doPost(e) {
+     try {
+          const data = JSON.parse(e.postData.contents);
+          const orderSheet = getSheet(ORDER_SHEET_NAME, ORDER_HEADERS);
+          const itemSheet = getSheet(ITEM_SHEET_NAME, ITEM_HEADERS);
+          const items = Array.isArray(data.items) ? data.items : [];
+
+          orderSheet.appendRow([
+               data.quoteNo || "",
+               data.createdAt ? new Date(data.createdAt) : new Date(),
+               data.customerName || "",
+               data.lineUserId || "",
+               items.length,
+               Number(data.totalAmount) || 0,
+          ]);
+
+          if (items.length > 0) {
+               itemSheet.getRange(itemSheet.getLastRow() + 1, 1, items.length, ITEM_HEADERS.length)
+                    .setValues(items.map((item) => [
+                         data.quoteNo || "",
+                         item.name || "",
+                         item.sku || "",
+                         Number(item.quantity) || 0,
+                         Number(item.price) || 0,
+                         Number(item.subtotal) || 0,
+                    ]));
+          }
+
+          return ContentService
+               .createTextOutput(JSON.stringify({ success: true }))
+               .setMimeType(ContentService.MimeType.JSON);
+     } catch (error) {
+          return ContentService
+               .createTextOutput(JSON.stringify({ success: false, message: String(error) }))
+               .setMimeType(ContentService.MimeType.JSON);
+     }
+}
+
+function getSheet(sheetName, headers) {
+     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+     let sheet = spreadsheet.getSheetByName(sheetName);
+     if (!sheet) sheet = spreadsheet.insertSheet(sheetName);
+
+     if (sheet.getLastRow() === 0) {
+          sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+          sheet.setFrozenRows(1);
+          sheet.getRange(1, 1, 1, headers.length)
+               .setBackground("#7C8B7C")
+               .setFontColor("#FFFFFF")
+               .setFontWeight("bold")
+               .setHorizontalAlignment("center");
+          headers.forEach((header, index) => sheet.setColumnWidth(index + 1, header === "LINE User ID" ? 230 : 140));
+          if (sheetName === ITEM_SHEET_NAME) {
+               sheet.setColumnWidth(2, 260);
+               sheet.setColumnWidth(3, 120);
+               sheet.getRange("E:F").setNumberFormat('"NT$ "#,##0');
+          } else {
+               sheet.setColumnWidth(6, 120);
+               sheet.getRange("F:F").setNumberFormat('"NT$ "#,##0');
+          }
+     }
+
+     return sheet;
+}
+```
+
+3. 在 Apps Script 選擇 **部署 → 新增部署 → 網頁應用程式**。
+4. **執行身分**選擇「我」，**誰可以存取**選擇「任何人」，完成授權後複製 Web App URL。
+5. 將 URL 填入本機 `.env` 的 `VITE_GOOGLE_SHEETS_WEB_APP_URL`，或填入 GitHub Actions 的同名 Repository Variable，再重新建置部署。
 
 ## Firebase Firestore 資料結構
 
