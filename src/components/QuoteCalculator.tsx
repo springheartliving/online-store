@@ -6,6 +6,7 @@ import {
   Minus, 
   Calculator, 
   MessageSquare, 
+  LoaderCircle,
   Check, 
   FileText,
   Sparkles
@@ -293,6 +294,15 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           <div className="p-4 sm:p-6 bg-white border-t border-[#E5E2D9] space-y-2.5">
             <div>
               {/* Send to Official LINE Button (LIFF / Deep Link) */}
+              {isSendingLine && (
+                <p
+                  className="mb-2 text-center text-xs text-[#6E6A5E]"
+                  role="status"
+                  aria-live="polite"
+                >
+                  正在送出諮詢單，請稍候...
+                </p>
+              )}
               <button
                 id="send-line-notify-btn"
                 type="button"
@@ -300,8 +310,17 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                 disabled={isSendingLine}
                 className="w-full py-3 px-3 sm:px-4 rounded-sm bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer transition active:scale-98 disabled:opacity-60"
               >
-                <MessageSquare className="w-4 h-4 fill-current" />
-                <span>LINE 官方諮詢</span>
+                {isSendingLine ? (
+                  <>
+                    <LoaderCircle className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    <span>正在送出諮詢單...</span>
+                  </>
+                ) : (
+                  <>
+                    <MessageSquare className="w-4 h-4 fill-current" />
+                    <span>LINE 官方諮詢</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
