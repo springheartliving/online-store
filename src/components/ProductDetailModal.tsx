@@ -223,9 +223,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {images.length > 1 && (
               <div 
                 ref={thumbnailsContainerRef}
-                className="w-full max-w-md mt-3 sm:mt-4 overflow-x-auto py-1 px-1 no-scrollbar scroll-smooth"
+                className="thumbnail-scroll w-full max-w-md mt-3 sm:mt-4 overflow-x-auto py-1 px-1 scroll-smooth"
               >
-                <div className="flex gap-2 w-max min-w-full justify-center px-1">
+                <div className="flex gap-2 w-max min-w-full justify-center px-1 pb-1">
                   {images.map((img, idx) => {
                     const isSelected = selectedImgIndex === idx;
                     return (

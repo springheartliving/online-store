@@ -44,12 +44,25 @@
   touch-action: pan-x;
 }
 
+.thumbnail-scroll {
+  touch-action: pan-x;
+}
+
 @media (max-width: 639px) {
   .category-scroll::-webkit-scrollbar {
     display: none;
   }
 
   .category-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .thumbnail-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thumbnail-scroll {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
