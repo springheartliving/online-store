@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Plus, Check, Eye, Sparkles, Layers } from "lucide-react";
+import { Plus, Check, Eye, Layers } from "lucide-react";
 import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 interface ProductCardProps {
   product: Product;
@@ -16,7 +17,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onQuickView,
 }) => {
-  const [imgError, setImgError] = useState(false);
   const [qty, setQty] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
 
@@ -43,22 +43,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="relative aspect-[4/3] w-full bg-[#F0EEE6] flex items-center justify-center overflow-hidden rounded-xs p-3 mb-3">
           <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"></div>
 
-          {imageSrc && !imgError ? (
-            <img
-              src={imageSrc}
-              alt={product.name}
-              referrerPolicy="no-referrer"
-              onError={() => setImgError(true)}
-              className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center text-[#8A8576] p-4 text-center">
-              <Sparkles className="w-8 h-8 text-[#7C8B7C] mb-1.5" />
-              <span className="text-[10px] font-mono tracking-widest">{product.sku}</span>
-              <span className="text-[11px] font-light text-[#6E6A5E] mt-0.5">精選商品</span>
-            </div>
-          )}
+          <ImageWithFallback
+            src={imageSrc}
+            alt={product.name}
+            className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
+            fallbackClassName="flex w-full h-full items-center justify-center text-[#8A8576]"
+            iconClassName="w-10 h-10 text-[#7C8B7C]"
+          />
 
           {/* Top Badges */}
           <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-20">

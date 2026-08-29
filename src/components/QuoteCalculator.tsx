@@ -14,6 +14,7 @@ import {
 import { CartItem, CustomerInfo, Quotation } from "../types";
 import { formatNTD, generateQuoteNumber, formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 interface QuoteCalculatorProps {
   isOpen: boolean;
@@ -144,18 +145,13 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                       {/* Top Row: Thumbnail + Product Details + Delete Button */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3 flex-1 min-w-0">
-                          {item.product.images?.[0]?.src ? (
-                            <img
-                              src={formatImageUrl(item.product.images[0].src)}
-                              alt={item.product.name}
-                              referrerPolicy="no-referrer"
-                              className="w-14 h-14 sm:w-16 sm:h-16 rounded-xs object-contain bg-[#F0EEE6] p-1 border border-[#E5E2D9] shrink-0"
-                            />
-                          ) : (
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xs bg-[#F0EEE6] flex items-center justify-center text-[#7C8B7C] text-[10px] font-mono shrink-0 border border-[#E5E2D9]">
-                              SPA
-                            </div>
-                          )}
+                          <ImageWithFallback
+                            src={formatImageUrl(item.product.images?.[0]?.src)}
+                            alt={item.product.name}
+                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-xs object-contain bg-[#F0EEE6] p-1 border border-[#E5E2D9] shrink-0"
+                            fallbackClassName="w-14 h-14 sm:w-16 sm:h-16 rounded-xs bg-[#F0EEE6] flex items-center justify-center text-[#7C8B7C] shrink-0 border border-[#E5E2D9]"
+                            iconClassName="w-6 h-6"
+                          />
 
                           <div className="flex-1 min-w-0 pr-1">
                             <h4 className="text-xs sm:text-sm font-light font-medium text-[#2D2D2D] leading-snug group-hover:text-[#7C8B7C] transition-colors break-words">

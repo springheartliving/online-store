@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { 
   X, 
   Plus, 
-  Sparkles, 
+  Sparkles,
   Layers,
   ChevronLeft,
   ChevronRight,
@@ -10,6 +10,7 @@ import {
 import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -200,23 +201,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
             >
-              {currentImg ? (
-                <img
-                  key={`detail-img-${selectedImgIndex}-${currentImg}`}
-                  src={currentImg}
-                  alt={product.name}
-                  referrerPolicy="no-referrer"
-                  draggable={false}
-                  onClick={() => setIsImageViewerOpen(true)}
-                  className="w-full h-full object-contain cursor-zoom-in animate-img-fade"
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center text-[#8A8576]">
-                  <Sparkles className="w-12 h-12 text-[#7C8B7C] mb-2" />
-                  <span className="text-xs font-mono tracking-wider">{product.sku}</span>
-                  <span className="text-[11px] font-light text-[#6E6A5E] mt-0.5">精選商品</span>
-                </div>
-              )}
+              <ImageWithFallback
+                key={`detail-img-${selectedImgIndex}-${currentImg}`}
+                src={currentImg}
+                alt={product.name}
+                className="w-full h-full object-contain cursor-zoom-in animate-img-fade"
+                fallbackClassName="flex h-full w-full items-center justify-center text-[#8A8576]"
+                iconClassName="w-12 h-12 text-[#7C8B7C]"
+                onClick={() => setIsImageViewerOpen(true)}
+                draggable={false}
+              />
 
               {product.isOnHot && (
                 <span className="absolute top-3 left-3 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-xs bg-rose-700 text-white">
@@ -246,11 +240,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         }`}
                         aria-label={`切換至第 ${idx + 1} 張圖片`}
                       >
-                        <img
+                        <ImageWithFallback
                           src={formatImageUrl(img.src)}
                           alt="thumbnail"
-                          referrerPolicy="no-referrer"
                           className="w-full h-full object-contain pointer-events-none"
+                          fallbackClassName="flex h-full w-full items-center justify-center text-[#8A8576]"
+                          iconClassName="w-5 h-5 text-[#7C8B7C]"
                         />
                       </button>
                     );
@@ -433,13 +428,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7" strokeWidth={2.5} />
             </button>
 
-            <img
+            <ImageWithFallback
               src={currentImg}
               alt={product.name}
-              referrerPolicy="no-referrer"
-              draggable={false}
-              onClick={(e) => e.stopPropagation()}
               className="max-w-full max-h-full object-contain select-none animate-img-fade"
+              fallbackClassName="flex max-w-full max-h-full items-center justify-center text-white"
+              iconClassName="w-16 h-16"
+              onClick={() => undefined}
+              draggable={false}
             />
 
             <button

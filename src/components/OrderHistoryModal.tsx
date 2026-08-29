@@ -12,6 +12,7 @@ import {
 import { Quotation } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 interface OrderHistoryModalProps {
   isOpen: boolean;
@@ -165,18 +166,13 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
                             className="py-2.5 flex justify-between items-center gap-4 text-[11px]"
                           >
                             <div className="flex items-center gap-2 min-w-0">
-                              {item.image ? (
-                                <img
-                                  src={formatImageUrl(item.image)}
-                                  alt={item.name}
-                                  className="w-8 h-8 object-cover rounded-xs border border-[#E5E2D9] shrink-0"
-                                  referrerPolicy="no-referrer"
-                                />
-                              ) : (
-                                <div className="w-8 h-8 rounded-xs bg-[#E5E2D9] flex items-center justify-center text-[#8A8576] text-[10px] shrink-0">
-                                  商品
-                                </div>
-                              )}
+                              <ImageWithFallback
+                                src={formatImageUrl(item.image)}
+                                alt={item.name}
+                                className="w-8 h-8 object-cover rounded-xs border border-[#E5E2D9] shrink-0"
+                                fallbackClassName="w-8 h-8 rounded-xs bg-[#E5E2D9] flex items-center justify-center text-[#8A8576] shrink-0"
+                                iconClassName="w-4 h-4"
+                              />
                               <div className="min-w-0 flex-1">
                                 <span className="font-medium text-[#2D2D2D] block line-clamp-2 leading-tight break-words">{item.name}</span>
                               </div>
