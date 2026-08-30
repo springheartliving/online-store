@@ -137,9 +137,18 @@ export async function sendQuoteViaLiff(
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const targetLiffId = getTargetLiffId(config.liffId);
+  const textMessage = formatQuoteForLineText(quotation);
 
-  if (!targetLiffId || !isLikelyLiffContext()) {
-    const url = getLineConsultationUrl(config, formatQuoteForLineText(quotation));
+  const isValidLiffSendContext = Boolean(
+    targetLiffId &&
+    isLikelyLiffContext() &&
+    (await initLiffIfNeeded(targetLiffId)) &&
+    liff.isLoggedIn?.() &&
+    canSendMessageInCurrentLiffContext()
+  );
+
+  if (!isValidLiffSendContext) {
+    const url = getLineConsultationUrl(config, textMessage);
     try {
       window.open(url, "_blank");
     } catch {
@@ -150,51 +159,6 @@ export async function sendQuoteViaLiff(
       success: true,
       method: "deeplink",
       message: "已開啟 LINE 官方對話框，請在對話框點擊送出即可由小編為您服務。",
-    };
-  }
-
-  if (!(await initLiffIfNeeded(targetLiffId))) {
-    const url = getLineConsultationUrl(config, formatQuoteForLineText(quotation));
-    try {
-      window.open(url, "_blank");
-    } catch {
-      window.location.href = url;
-    }
-
-    return {
-      success: true,
-      method: "deeplink",
-      message: "LIFF 尚未完成授權，已改為開啟 LINE 官方對話框。",
-    };
-  }
-
-  if (!liff.isLoggedIn?.()) {
-    const url = getLineConsultationUrl(config, formatQuoteForLineText(quotation));
-    try {
-      window.open(url, "_blank");
-    } catch {
-      window.location.href = url;
-    }
-
-    return {
-      success: true,
-      method: "deeplink",
-      message: "LIFF 尚未完成授權，已改為開啟 LINE 官方對話框。",
-    };
-  }
-
-  if (!canSendMessageInCurrentLiffContext()) {
-    const url = getLineConsultationUrl(config, formatQuoteForLineText(quotation));
-    try {
-      window.open(url, "_blank");
-    } catch {
-      window.location.href = url;
-    }
-
-    return {
-      success: true,
-      method: "deeplink",
-      message: "LIFF 目前沒有有效的接收對話來源，已改為開啟官方 LINE。",
     };
   }
 
@@ -227,7 +191,7 @@ export async function sendQuoteViaLiff(
       message: "LINE 訊息傳送失敗：目前 LIFF 不支援發送此訊息。",
     };
   } catch (error: any) {
-    const url = getLineConsultationUrl(config, formatQuoteForLineText(quotation));
+    const url = getLineConsultationUrl(config, textMessage);
     try {
       window.open(url, "_blank");
     } catch {

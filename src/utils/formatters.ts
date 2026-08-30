@@ -53,6 +53,7 @@ export function formatQuoteForLineText(quote: {
   quoteNo: string;
   items: { name: string; sku?: string; quantity: number; price: number }[];
   totalAmount: number;
+  customer?: { name?: string; lineId?: string };
 }): string {
   const itemsText = quote.items
     .map(
@@ -61,8 +62,11 @@ export function formatQuoteForLineText(quote: {
     )
     .join("\n");
 
+  const customerName = quote.customer?.name?.trim() || "未提供姓名";
+
   return `🌿【泉心生活】商品諮詢單
 
+👤 顧客：${customerName}
 📄 諮詢單號：${quote.quoteNo}
 ━━━━━━━━━━━━━━
 📦 諮詢商品明細：
@@ -72,6 +76,7 @@ ${itemsText}
 }
 
 export function createQuoteFlexMessage(quote: Quotation) {
+  const customerName = quote.customer?.name?.trim() || "未提供姓名";
   const itemRows = quote.items.map((item, idx) => ({
     type: "box",
     layout: "horizontal",
@@ -140,6 +145,28 @@ export function createQuoteFlexMessage(quote: Quotation) {
         spacing: "md",
         paddingAll: "16px",
         contents: [
+          {
+            type: "box",
+            layout: "horizontal",
+            contents: [
+              {
+                type: "text",
+                text: "顧客名稱",
+                size: "xs",
+                color: "#8A8576",
+                flex: 0,
+              },
+              {
+                type: "text",
+                text: customerName,
+                size: "xs",
+                color: "#2D2D2D",
+                align: "end",
+                weight: "bold",
+                wrap: true,
+              },
+            ],
+          },
           {
             type: "box",
             layout: "horizontal",
