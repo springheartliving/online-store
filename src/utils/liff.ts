@@ -102,6 +102,20 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
   }
 }
 
+export async function logoutLiffSession(): Promise<boolean> {
+  try {
+    if (typeof liff.logout === "function") {
+      await liff.logout();
+    }
+    return true;
+  } catch (err) {
+    console.warn("LIFF logout failed:", err);
+    return false;
+  } finally {
+    isLiffInitialized = false;
+  }
+}
+
 export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boolean; reason?: string; profile?: CustomerInfo }> {
   const targetLiffId = getTargetLiffId(liffId);
   const hostname = typeof window !== "undefined" ? window.location.hostname : "unknown";

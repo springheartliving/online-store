@@ -14,7 +14,7 @@ import { ProductDetailModal } from "./components/ProductDetailModal";
 import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG } from "./utils/formatters";
-import { getLiffCustomer, sendQuoteViaLiff } from "./utils/liff";
+import { getLiffCustomer, logoutLiffSession, sendQuoteViaLiff } from "./utils/liff";
 import { saveQuotationToGoogleSheet } from "./utils/googleSheets";
 import { resolveProductCategories } from "./utils/categories";
 import {
@@ -261,6 +261,36 @@ export default function App() {
     } finally {
       setIsBindingLine(false);
     }
+  };
+
+  const handleUnbindLineAccount = async () => {
+    setIsBindingLine(true);
+    setLineNotifyError(null);
+    setLineNotifySuccess(null);
+
+    try {
+      const result = await logoutLiffSession();
+      if (result) {
+        setCustomer({ name: "", lineId: "" });
+        setLineNotifySuccess("已解除 LINE 綁定，現在可重新取得授權。");
+        return;
+      }
+
+      setLineNotifyError("解除綁定失敗，請再試一次。");
+    } catch (err: any) {
+      setLineNotifyError(`解除綁定失敗: ${err.message || "請再試一次。"}`);
+    } finally {
+      setIsBindingLine(false);
+    }
+  };
+
+  const handleToggleLineBind = async () => {
+    if (customer.name?.trim() || customer.lineId?.trim()) {
+      await handleUnbindLineAccount();
+      return;
+    }
+
+    await handleBindLineAccount();
   };
 
   // Handle Send LINE Consultation via LIFF / Deep Link
@@ -556,7 +586,7 @@ export default function App() {
         customer={customer}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        onBindLine={handleBindLineAccount}
+        onBindLine={handleToggleLineBind}
         onSendLineNotify={handleSendLineNotify}
         isBindingLine={isBindingLine}
         isSendingLine={isSendingLine}
