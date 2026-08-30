@@ -14,7 +14,7 @@ import { ProductDetailModal } from "./components/ProductDetailModal";
 import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG } from "./utils/formatters";
-import { getLiffCustomer, sendQuoteViaLiff } from "./utils/liff";
+import { getLiffCustomer, isLiffEnvironmentAllowed, sendQuoteViaLiff } from "./utils/liff";
 import { saveQuotationToGoogleSheet } from "./utils/googleSheets";
 import { resolveProductCategories } from "./utils/categories";
 import {
@@ -243,17 +243,13 @@ export default function App() {
 
   useEffect(() => {
     const syncLiffCustomer = async () => {
-      if (!lineConfig.liffId?.trim()) {
-        return;
-      }
-
-      if (!window.location.href.toLowerCase().includes("liff") && !document.referrer.toLowerCase().includes("liff")) {
+      if (!lineConfig.liffId?.trim() || !isLiffEnvironmentAllowed()) {
         return;
       }
 
       try {
         const profile = await getLiffCustomer(lineConfig);
-        if (profile) {
+        if (profile?.name) {
           setCustomer(profile);
         }
       } catch {
@@ -274,21 +270,17 @@ export default function App() {
       let activeCustomer = customer;
       const hasProfile = Boolean(customer.name?.trim()) && Boolean(customer.lineId?.trim());
 
-      if (!hasProfile && lineConfig.liffId?.trim()) {
-        const shouldTryLiffProfile =
-          window.location.href.toLowerCase().includes("liff") ||
-          document.referrer.toLowerCase().includes("liff");
-
-        if (shouldTryLiffProfile) {
-          const freshProfile = await getLiffCustomer(lineConfig);
-          if (freshProfile) {
-            setCustomer(freshProfile);
-            activeCustomer = freshProfile;
-          }
+      if (!hasProfile && lineConfig.liffId?.trim() && isLiffEnvironmentAllowed()) {
+        const freshProfile = await getLiffCustomer(lineConfig);
+        if (freshProfile?.name) {
+          setCustomer(freshProfile);
+          activeCustomer = freshProfile;
         }
       }
 
-      const resolvedCustomer = activeCustomer.lineId?.trim() ? activeCustomer : { name: "", lineId: "" };
+      const resolvedCustomer = activeCustomer.lineId?.trim() || activeCustomer.name?.trim()
+        ? activeCustomer
+        : { name: "", lineId: "" };
       const quotationWithCustomer = { ...quotation, customer: resolvedCustomer };
 
       // Save quotation to local history

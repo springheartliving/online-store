@@ -72,9 +72,15 @@ export function isLiffEnvironmentAllowed(): boolean {
     search.includes("liff.state") ||
     hash.includes("liff.state");
 
+  const isLikelyLineLiffContext =
+    (typeof liff !== "undefined" && !!liff?.getContext?.()) ||
+    /liff\.state|liff\.line\.me|line\.me\/r\/liff/i.test(href) ||
+    /liff\.state|liff\.line\.me|line\.me\/r\/liff/i.test(search) ||
+    /liff\.state|liff\.line\.me|line\.me\/r\/liff/i.test(hash);
+
   const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1";
 
-  return Boolean(hasLiffRuntimeSignals || hasLiffUrlSignals || (isLocalDev && !!getTargetLiffId()));
+  return Boolean(hasLiffRuntimeSignals || hasLiffUrlSignals || isLikelyLineLiffContext || (isLocalDev && !!getTargetLiffId()));
 }
 
 function getTargetLiffId(liffId?: string): string {
@@ -267,7 +273,11 @@ export async function sendQuoteViaLiff(
   if (!useLiffFlow) {
     const lineText = formatQuoteForLineText(quotation);
     const consultationUrl = getLineConsultationUrl(config, lineText);
-    window.open(consultationUrl, "_blank");
+    try {
+      window.open(consultationUrl, "_blank");
+    } catch {
+      window.location.href = consultationUrl;
+    }
 
     return {
       success: true,
