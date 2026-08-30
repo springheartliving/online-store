@@ -64,10 +64,50 @@ function canSendMessageInCurrentLiffContext(): boolean {
     if (!context) return false;
 
     const allowedTypes = ["utou", "room", "group"];
-    return allowedTypes.includes(context.type || "");
-  } catch {
+    const contextType = context.type || "unknown";
+    const result = allowedTypes.includes(contextType);
+
+    if (!result) {
+      console.info("[LIFF debug] sendMessages blocked because context.type is not valid", {
+        contextType,
+        context,
+      });
+    }
+
+    return result;
+  } catch (error) {
+    console.info("[LIFF debug] sendMessages blocked because getContext failed", error);
     return false;
   }
+}
+
+function logLiffSendDecision(label: string, payload: Record<string, unknown>) {
+  console.info(`[LIFF debug] ${label}`, payload);
+
+  try {
+    const snapshot = JSON.stringify({
+      label,
+      ...payload,
+      timestamp: new Date().toISOString(),
+    });
+    window.sessionStorage.setItem("liff_debug_snapshot", snapshot);
+  } catch {
+    // Ignore storage failures in restricted environments.
+  }
+}
+
+function getLiffDebugReason(
+  targetLiffId: string,
+  likelyLiffContext: boolean,
+  loggedIn: boolean,
+  contextType: string,
+  sendContextAllowed: boolean
+): string {
+  if (!targetLiffId) return "missing LIFF ID";
+  if (!likelyLiffContext) return "not in LIFF context";
+  if (!loggedIn) return "user not logged in";
+  if (!sendContextAllowed) return `invalid chat context (type=${contextType})`;
+  return "valid LIFF send context";
 }
 
 export async function getLiffCustomer(config: LineOfficialConfig): Promise<CustomerInfo | null> {
@@ -139,15 +179,42 @@ export async function sendQuoteViaLiff(
   const targetLiffId = getTargetLiffId(config.liffId);
   const textMessage = formatQuoteForLineText(quotation);
 
+  const liffContext = typeof liff?.getContext === "function" ? liff.getContext() : null;
+  const contextType = liffContext?.type || "unknown";
+  const isLoggedIn = !!liff.isLoggedIn?.();
+  const canSendMessages = !!liff.isApiAvailable?.("sendMessages");
+  const canShareTargetPicker = !!liff.isApiAvailable?.("shareTargetPicker");
+  const sendContextAllowed = canSendMessageInCurrentLiffContext();
+
   const isValidLiffSendContext = Boolean(
     targetLiffId &&
     isLikelyLiffContext() &&
     (await initLiffIfNeeded(targetLiffId)) &&
-    liff.isLoggedIn?.() &&
-    canSendMessageInCurrentLiffContext()
+    isLoggedIn &&
+    sendContextAllowed
   );
 
+  logLiffSendDecision("send decision", {
+    targetLiffId,
+    isLikelyLiffContext: isLikelyLiffContext(),
+    isLoggedIn,
+    contextType,
+    canSendMessages,
+    canShareTargetPicker,
+    sendContextAllowed,
+    isValidLiffSendContext,
+    href: typeof window !== "undefined" ? window.location.href : "",
+  });
+
   if (!isValidLiffSendContext) {
+    const reason = getLiffDebugReason(
+      targetLiffId,
+      isLikelyLiffContext(),
+      isLoggedIn,
+      contextType,
+      sendContextAllowed
+    );
+    const debugSummary = `LIFF 狀態: ${reason}; context=${contextType}; loggedIn=${isLoggedIn}; sendSupported=${canSendMessages}; shareSupported=${canShareTargetPicker}`;
     const url = getLineConsultationUrl(config, textMessage);
     try {
       window.open(url, "_blank");
@@ -158,7 +225,7 @@ export async function sendQuoteViaLiff(
     return {
       success: true,
       method: "deeplink",
-      message: "已開啟 LINE 官方對話框，請在對話框點擊送出即可由小編為您服務。",
+      message: `已開啟 LINE 官方對話框，因為目前沒有有效 LIFF 發送條件（${debugSummary}），已改用官方對話框。`,
     };
   }
 
@@ -191,6 +258,14 @@ export async function sendQuoteViaLiff(
       message: "LINE 訊息傳送失敗：目前 LIFF 不支援發送此訊息。",
     };
   } catch (error: any) {
+    const reason = getLiffDebugReason(
+      targetLiffId,
+      isLikelyLiffContext(),
+      isLoggedIn,
+      contextType,
+      sendContextAllowed
+    );
+    const debugSummary = `LIFF 狀態: ${reason}; context=${contextType}; loggedIn=${isLoggedIn}; sendSupported=${canSendMessages}; shareSupported=${canShareTargetPicker}; error=${error?.message || "unknown"}`;
     const url = getLineConsultationUrl(config, textMessage);
     try {
       window.open(url, "_blank");
@@ -201,7 +276,7 @@ export async function sendQuoteViaLiff(
     return {
       success: true,
       method: "deeplink",
-      message: `LINE 訊息傳送失敗: ${error?.message || "請改用官方 LINE 對話框"}`,
+      message: `LINE 訊息傳送失敗，已改用官方對話框。(${debugSummary})`,
     };
   }
 }
