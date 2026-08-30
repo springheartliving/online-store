@@ -45,10 +45,24 @@ function fallbackToLineDeepLink(config: LineOfficialConfig, quotation: Quotation
 
 export function isLiffEnvironmentAllowed(): boolean {
   if (typeof window === "undefined") return false;
+
   const liffId = (import.meta as any).env?.VITE_LIFF_ID || "";
+  if (!liffId.trim()) return false;
+
   const href = window.location.href.toLowerCase();
   const hostname = window.location.hostname.toLowerCase();
-  return Boolean(liffId.trim()) && (hostname.includes("liff") || hostname.includes("line.me") || href.includes("liff.line.me") || hostname === "localhost");
+  const search = window.location.search || "";
+  const hash = window.location.hash || "";
+
+  const hasLiffState = search.includes("liff.state") || hash.includes("liff.state");
+
+  return (
+    hostname === "localhost" ||
+    hostname.includes("liff") ||
+    hostname.includes("line.me") ||
+    href.includes("liff.line.me") ||
+    hasLiffState
+  );
 }
 
 /**
@@ -76,18 +90,31 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
 
 export async function getLiffCustomer(config: LineOfficialConfig): Promise<CustomerInfo | null> {
   const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
-  if (!liffId || !(await initLiffIfNeeded(liffId)) || !liff.isLoggedIn()) {
+  if (!liffId || !(await initLiffIfNeeded(liffId))) {
     return null;
   }
 
   try {
     const profile = await liff.getProfile();
     return {
-      name: profile.displayName,
-      lineId: profile.userId,
+      name: profile.displayName || "LINE 使用者",
+      lineId: profile.userId || "",
     };
   } catch (err) {
     console.warn("Unable to load LINE profile:", err);
+
+    try {
+      const context = liff.getContext();
+      if (context?.userId) {
+        return {
+          name: "LINE 使用者",
+          lineId: context.userId,
+        };
+      }
+    } catch {
+      // Ignore context fallback failure.
+    }
+
     return null;
   }
 }
