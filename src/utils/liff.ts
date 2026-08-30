@@ -38,6 +38,15 @@ function safeLiffIsInClient(): boolean {
   }
 }
 
+function isLikelyLineAppClient(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const userAgent = window.navigator?.userAgent || "";
+  return /Line|LINE/i.test(userAgent) || /line\.me|line-apps\.com|liff/i.test(document.referrer || "");
+}
+
 export function isLiffEnvironmentAllowed(): boolean {
   if (typeof window === "undefined") {
     return false;
@@ -50,7 +59,7 @@ export function isLiffEnvironmentAllowed(): boolean {
   const hash = window.location.hash.toLowerCase();
   const referrer = document.referrer?.toLowerCase?.() || "";
 
-  const isLikelyLineLiffContext =
+  const hasLineUrlSignal =
     hostname.includes("liff") ||
     hostname.includes("line.me") ||
     hostname.includes("line-apps.com") ||
@@ -66,11 +75,16 @@ export function isLiffEnvironmentAllowed(): boolean {
     href.includes("liff-app") ||
     href.includes("liff.state") ||
     search.includes("liff.state") ||
-    hash.includes("liff.state");
+    hash.includes("liff.state") ||
+    search.includes("code=") ||
+    search.includes("state=") ||
+    hash.includes("code=") ||
+    hash.includes("state=");
 
+  const isLineApp = isLikelyLineAppClient();
   const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1";
 
-  return Boolean(isLikelyLineLiffContext || (isLocalDev && !!getTargetLiffId()));
+  return Boolean(hasLineUrlSignal || isLineApp || (isLocalDev && !!getTargetLiffId()));
 }
 
 function getTargetLiffId(liffId?: string): string {
@@ -168,8 +182,8 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
   try {
     const profile = await liff.getProfile();
     return {
-      name: profile.displayName,
-      lineId: profile.userId,
+      name: profile?.displayName?.trim() || profile?.userId || "LINE 使用者",
+      lineId: profile?.userId || "",
     };
   } catch (err) {
     console.warn("Unable to load LINE profile:", err);
@@ -258,7 +272,7 @@ export async function sendQuoteViaLiff(
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const liffId = getTargetLiffId(config.liffId);
-  const useLiffFlow = Boolean(liffId && isLiffEnvironmentAllowed());
+  const useLiffFlow = Boolean(liffId && (isLiffEnvironmentAllowed() || isLikelyLineAppClient()));
 
   if (!useLiffFlow) {
     const lineText = formatQuoteForLineText(quotation);
@@ -290,7 +304,7 @@ export async function sendQuoteViaLiff(
       };
     }
 
-    const profile = await liff.getProfile();
+    const profile = await liff.getProfile().catch(() => null);
     console.info("LIFF profile acquired before send:", profile);
 
     const flexMessage = createQuoteFlexMessage(quotation);
