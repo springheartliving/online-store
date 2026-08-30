@@ -243,7 +243,7 @@ export default function App() {
 
   useEffect(() => {
     const syncLiffCustomer = async () => {
-      if (!lineConfig.liffId?.trim() || !isLiffEnvironmentAllowed()) {
+      if (!lineConfig.liffId?.trim()) {
         return;
       }
 

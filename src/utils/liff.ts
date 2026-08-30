@@ -55,13 +55,14 @@ export function isLiffEnvironmentAllowed(): boolean {
   const hash = window.location.hash || "";
   const hasLiffState = search.includes("liff.state") || hash.includes("liff.state");
 
-  return (
+  const isLikelyLiffHost =
     hostname === "localhost" ||
     hostname.includes("liff") ||
     hostname.includes("line.me") ||
     href.includes("liff.line.me") ||
-    hasLiffState
-  );
+    hasLiffState;
+
+  return isLikelyLiffHost || Boolean(liffId.trim());
 }
 
 /**
@@ -95,23 +96,27 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
 
   try {
     const profile = await liff.getProfile();
-    if (!profile?.userId && !profile?.displayName) {
+    const rawDisplayName = (profile as any)?.displayName ?? (profile as any)?.display_name ?? "";
+    const rawUserId = (profile as any)?.userId ?? (profile as any)?.user_id ?? "";
+
+    if (!rawUserId && !rawDisplayName) {
       return null;
     }
 
     return {
-      name: profile.displayName || "LINE 使用者",
-      lineId: profile.userId || "",
+      name: rawDisplayName || "LINE 使用者",
+      lineId: rawUserId || "",
     };
   } catch (err) {
     console.warn("Unable to load LINE profile:", err);
 
     try {
       const context = typeof liff.getContext === "function" ? liff.getContext() : null;
-      if (context?.userId) {
+      const contextUserId = (context as any)?.userId ?? (context as any)?.user_id ?? "";
+      if (contextUserId) {
         return {
           name: "LINE 使用者",
-          lineId: context.userId,
+          lineId: contextUserId,
         };
       }
     } catch {
