@@ -23,8 +23,15 @@ function isLiffPermissionDeniedError(error: any): boolean {
 function fallbackToLineDeepLink(config: LineOfficialConfig, quotation: Quotation, reason?: string) {
   const lineText = formatQuoteForLineText(quotation);
   const consultationUrl = getLineConsultationUrl(config, lineText);
+
   try {
-    window.open(consultationUrl, "_blank");
+    const popup = window.open(consultationUrl, "_blank", "noopener,noreferrer");
+    if (!popup) {
+      window.location.href = consultationUrl;
+    } else {
+      // Force the user to the LINE chat flow when the browser blocks popup windows.
+      window.location.href = consultationUrl;
+    }
   } catch {
     window.location.href = consultationUrl;
   }

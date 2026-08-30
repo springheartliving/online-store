@@ -27,12 +27,12 @@ export const DEFAULT_LINE_CONFIG: LineOfficialConfig = {
 export function getLineConsultationUrl(config: LineOfficialConfig, messageText: string): string {
   const encodedText = encodeURIComponent(messageText);
 
-  // Official Account Deep Link (oaMessage) opens the target chat directly.
-  // If lineId is provided (e.g. "@springheart" or "springheart")
+  // Use the LINE OA deep-link format that preserves the target chat and fills text.
+  // The LINE ID should keep the @ prefix, not be URL-encoded.
   const rawId = config.lineId ? config.lineId.trim() : "";
   if (rawId) {
     const formattedId = rawId.startsWith("@") ? rawId : `@${rawId}`;
-    return `https://line.me/R/oaMessage/${encodeURIComponent(formattedId)}/?${encodedText}`;
+    return `https://line.me/R/oaMessage/${formattedId}/?text=${encodedText}`;
   }
 
   // Use LIFF as a fallback only when no Official Account ID is configured.
