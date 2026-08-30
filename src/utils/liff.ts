@@ -6,6 +6,20 @@ import {
   getLineConsultationUrl,
 } from "./formatters";
 
+declare global {
+  interface Window {
+    __LINE_LIFF_DEBUG__?: {
+      initialized: boolean;
+      ready: boolean;
+      reason?: string;
+      hostname?: string;
+      loggedIn?: boolean;
+      inClient?: boolean;
+      hasLiffId?: boolean;
+    };
+  }
+}
+
 let isLiffInitialized = false;
 
 function isLiffEnvironmentAllowed(): boolean {
@@ -82,30 +96,68 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
 
 export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boolean; reason?: string; profile?: CustomerInfo }> {
   const targetLiffId = getTargetLiffId(liffId);
+  const hostname = typeof window !== "undefined" ? window.location.hostname : "unknown";
+  const debugState = {
+    initialized: isLiffInitialized,
+    ready: false,
+    reason: undefined as string | undefined,
+    hostname,
+    loggedIn: typeof liff !== "undefined" ? liff.isLoggedIn?.() : false,
+    inClient: typeof liff !== "undefined" ? liff.isInClient?.() : false,
+    hasLiffId: !!targetLiffId,
+  };
+
   if (!targetLiffId) {
-    return { ready: false, reason: "LIFF ID is missing." };
+    debugState.reason = "LIFF ID is missing.";
+    if (typeof window !== "undefined") {
+      window.__LINE_LIFF_DEBUG__ = debugState;
+    }
+    return { ready: false, reason: debugState.reason };
   }
 
   if (!isLiffEnvironmentAllowed()) {
-    const hostname = typeof window !== "undefined" ? window.location.hostname : "unknown";
-    return { ready: false, reason: `LIFF environment not allowed for host: ${hostname}` };
+    debugState.reason = `LIFF environment not allowed for host: ${hostname}`;
+    if (typeof window !== "undefined") {
+      window.__LINE_LIFF_DEBUG__ = debugState;
+    }
+    return { ready: false, reason: debugState.reason };
   }
 
   try {
     const initialized = await initLiffIfNeeded(targetLiffId);
+    debugState.initialized = initialized;
     if (!initialized) {
-      return { ready: false, reason: "LIFF SDK initialization failed." };
+      debugState.reason = "LIFF SDK initialization failed.";
+      if (typeof window !== "undefined") {
+        window.__LINE_LIFF_DEBUG__ = debugState;
+      }
+      return { ready: false, reason: debugState.reason };
     }
 
-    if (!liff.isLoggedIn()) {
-      return { ready: false, reason: "LIFF user is not logged in." };
+    debugState.loggedIn = liff.isLoggedIn();
+    if (!debugState.loggedIn) {
+      debugState.reason = "LIFF user is not logged in.";
+      if (typeof window !== "undefined") {
+        window.__LINE_LIFF_DEBUG__ = debugState;
+      }
+      return { ready: false, reason: debugState.reason };
     }
 
-    if (!liff.isInClient()) {
-      return { ready: false, reason: "App is not running inside the LINE client." };
+    debugState.inClient = liff.isInClient();
+    if (!debugState.inClient) {
+      debugState.reason = "App is not running inside the LINE client.";
+      if (typeof window !== "undefined") {
+        window.__LINE_LIFF_DEBUG__ = debugState;
+      }
+      return { ready: false, reason: debugState.reason };
     }
 
     const profile = await liff.getProfile();
+    debugState.ready = true;
+    debugState.reason = "LIFF authentication succeeded.";
+    if (typeof window !== "undefined") {
+      window.__LINE_LIFF_DEBUG__ = debugState;
+    }
     return {
       ready: true,
       profile: {
@@ -114,7 +166,11 @@ export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boole
       },
     };
   } catch (error: any) {
-    return { ready: false, reason: error?.message || "LIFF authorization check failed." };
+    debugState.reason = error?.message || "LIFF authorization check failed.";
+    if (typeof window !== "undefined") {
+      window.__LINE_LIFF_DEBUG__ = debugState;
+    }
+    return { ready: false, reason: debugState.reason };
   }
 }
 
