@@ -298,7 +298,7 @@ export default function App() {
       const result = await sendQuoteViaLiff(quotationWithCustomer, lineConfig);
 
       if (result.success) {
-        setLineNotifySuccess(result.message || "已為您產生商品清單並傳送至官方 LINE！");
+        setLineNotifySuccess(result.message || "已為您產生商品清單並傳送至官方 LINE");
         handleClearCart();
       } else {
         setLineNotifyError(result.message || "LINE 訊息傳送失敗，請稍後再試。 ");

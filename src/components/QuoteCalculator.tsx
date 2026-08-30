@@ -95,20 +95,20 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             {customer.name?.trim() && (
-              <div className="inline-flex items-center gap-2 px-3 py-2 text-[#2D2D2D] text-[11px] font-medium">
-                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#7C8B7C] text-white">
+              <div className="flex min-w-0 max-w-[45vw] items-center gap-2 px-2.5 py-1.5 text-[#2D2D2D] text-[11px] font-medium">
+                <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#7C8B7C] text-white">
                   <UserRound className="w-3 h-3" />
                 </span>
-                <span>{customer.name}</span>
+                <span className="min-w-0 truncate">{customer.name}</span>
               </div>
             )}
 
             <button
               id="close-quote-drawer-btn"
               onClick={onClose}
-              className="p-2 rounded-sm bg-[#F0EEE6] hover:bg-[#E5E2D9] text-[#6E6A5E] hover:text-[#2D2D2D] transition cursor-pointer"
+              className="shrink-0 p-2 rounded-sm bg-[#F0EEE6] hover:bg-[#E5E2D9] text-[#6E6A5E] hover:text-[#2D2D2D] transition cursor-pointer"
               title="關閉清單"
               aria-label="關閉清單"
             >

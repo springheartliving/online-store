@@ -135,7 +135,7 @@ export async function sendQuoteViaLiff(
         return {
           success: true,
           method: "liff_send",
-          message: "已將諮詢單傳送至官方 LINE 聊天室！",
+          message: "已將諮詢單傳送至官方 LINE 聊天室",
         };
       } catch (sendErr: any) {
         console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
