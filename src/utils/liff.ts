@@ -50,11 +50,7 @@ export function isLiffEnvironmentAllowed(): boolean {
   const hash = window.location.hash.toLowerCase();
   const referrer = document.referrer?.toLowerCase?.() || "";
 
-  const hasLiffRuntimeSignals =
-    typeof liff !== "undefined" &&
-    (safeLiffIsLoggedIn() || safeLiffIsInClient() || !!liff?.getContext?.());
-
-  const hasLiffUrlSignals =
+  const isLikelyLineLiffContext =
     hostname.includes("liff") ||
     hostname.includes("line.me") ||
     hostname.includes("line-apps.com") ||
@@ -72,15 +68,9 @@ export function isLiffEnvironmentAllowed(): boolean {
     search.includes("liff.state") ||
     hash.includes("liff.state");
 
-  const isLikelyLineLiffContext =
-    (typeof liff !== "undefined" && !!liff?.getContext?.()) ||
-    /liff\.state|liff\.line\.me|line\.me\/r\/liff/i.test(href) ||
-    /liff\.state|liff\.line\.me|line\.me\/r\/liff/i.test(search) ||
-    /liff\.state|liff\.line\.me|line\.me\/r\/liff/i.test(hash);
-
   const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1";
 
-  return Boolean(hasLiffRuntimeSignals || hasLiffUrlSignals || isLikelyLineLiffContext || (isLocalDev && !!getTargetLiffId()));
+  return Boolean(isLikelyLineLiffContext || (isLocalDev && !!getTargetLiffId()));
 }
 
 function getTargetLiffId(liffId?: string): string {
