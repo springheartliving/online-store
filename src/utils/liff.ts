@@ -75,9 +75,24 @@ export async function sendQuoteViaLiff(
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
+  const environmentAllowed = isLiffEnvironmentAllowed();
+  const hostname = typeof window !== "undefined" ? window.location.hostname : "unknown";
 
-  if (liffId && isLiffEnvironmentAllowed()) {
+  console.info("LIFF send attempt", {
+    hostname,
+    hasLiffId: !!liffId,
+    environmentAllowed,
+    isInClient: typeof liff !== "undefined" ? liff.isInClient?.() : false,
+  });
+
+  if (liffId && environmentAllowed) {
     const initialized = await initLiffIfNeeded(liffId);
+    console.info("LIFF initialization outcome", {
+      initialized,
+      isInClient: typeof liff !== "undefined" ? liff.isInClient?.() : false,
+      isLoggedIn: typeof liff !== "undefined" ? liff.isLoggedIn?.() : false,
+    });
+
     if (initialized && liff.isInClient()) {
       const flexMessage = createQuoteFlexMessage(quotation);
       const messagesPayload = [flexMessage];
@@ -95,7 +110,6 @@ export async function sendQuoteViaLiff(
         lastError = sendErr?.message || lastError;
       }
 
-      // Let the user choose the Official Account when the current chat cannot receive it.
       if (liff.isApiAvailable("shareTargetPicker")) {
         try {
           const res = await liff.shareTargetPicker(messagesPayload as any);
@@ -118,9 +132,20 @@ export async function sendQuoteViaLiff(
         message: `LINE 訊息傳送失敗：${lastError}`,
       };
     }
+
+    console.warn("LIFF flow skipped because the app is not running inside LINE client.", {
+      initialized,
+      isInClient: liff.isInClient?.(),
+      hostname,
+    });
+  } else {
+    console.warn("LIFF flow skipped because environment is not allowed or LIFF ID is missing.", {
+      hostname,
+      hasLiffId: !!liffId,
+      environmentAllowed,
+    });
   }
 
-  // 4. Fallback to LINE Deep Link
   const lineText = formatQuoteForLineText(quotation);
   const consultationUrl = getLineConsultationUrl(config, lineText);
   window.open(consultationUrl, "_blank");
