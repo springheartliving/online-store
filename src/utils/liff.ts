@@ -27,9 +27,18 @@ function isLiffEnvironmentAllowed(): boolean {
     return false;
   }
 
-  // Do not block endpoint URLs here. LIFF may be served from an authorized endpoint URL
-  // instead of liff.line.me, and the real authorization check happens during init/login.
-  return true;
+  const href = window.location.href.toLowerCase();
+
+  const isLiffHostname =
+    window.location.hostname.includes("liff") ||
+    window.location.hostname.includes("line.me") ||
+    window.location.hostname.includes("line-apps.com");
+
+  const isLiffUrl = /liff\.line\.me|\/liff\//i.test(href) || href.includes("line.me/r/liff") || href.includes("liff-app");
+
+  const isLocalDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+  return Boolean(isLiffHostname || isLiffUrl || (isLocalDev && !!getTargetLiffId()));
 }
 
 function getTargetLiffId(liffId?: string): string {
@@ -71,23 +80,17 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
     return null;
   }
 
+  if (!isLiffEnvironmentAllowed()) {
+    return null;
+  }
+
   if (!(await initLiffIfNeeded(liffId))) {
     return null;
   }
 
   if (!liff.isLoggedIn()) {
-    console.info("LIFF user is not logged in; triggering LINE login flow.");
-    try {
-      await liff.login();
-    } catch (err) {
-      console.warn("LIFF login request failed:", err);
-      return null;
-    }
-
-    if (!liff.isLoggedIn()) {
-      console.warn("LIFF user is still not logged in after login request.");
-      return null;
-    }
+    console.info("LIFF user is not logged in; skipping profile fetch until the user is already authenticated in LIFF.");
+    return null;
   }
 
   try {
@@ -99,20 +102,6 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
   } catch (err) {
     console.warn("Unable to load LINE profile:", err);
     return null;
-  }
-}
-
-export async function logoutLiffSession(): Promise<boolean> {
-  try {
-    if (typeof liff.logout === "function") {
-      await liff.logout();
-    }
-    return true;
-  } catch (err) {
-    console.warn("LIFF logout failed:", err);
-    return false;
-  } finally {
-    isLiffInitialized = false;
   }
 }
 
@@ -154,15 +143,6 @@ export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boole
         window.__LINE_LIFF_DEBUG__ = debugState;
       }
       return { ready: false, reason: debugState.reason };
-    }
-
-    if (!liff.isLoggedIn()) {
-      console.info("LIFF user is not logged in; attempting LINE login before authorization check.");
-      try {
-        await liff.login();
-      } catch (loginErr) {
-        console.warn("LIFF login call failed:", loginErr);
-      }
     }
 
     debugState.loggedIn = liff.isLoggedIn();
@@ -241,13 +221,14 @@ export async function sendQuoteViaLiff(
     }
 
     if (!liff.isLoggedIn()) {
-      console.info("User clicked LINE official contact. Triggering LIFF login before sending.");
-      await liff.login();
+      const lineText = formatQuoteForLineText(quotation);
+      const consultationUrl = getLineConsultationUrl(config, lineText);
+      window.open(consultationUrl, "_blank");
 
       return {
-        success: false,
-        method: "error",
-        message: "請完成 LINE Login / 授權後，再點擊一次「LINE 官方諮詢」送出。",
+        success: true,
+        method: "deeplink",
+        message: "已開啟 LINE 官方對話框，請在對話框點擊送出即可由小編為您服務。",
       };
     }
 

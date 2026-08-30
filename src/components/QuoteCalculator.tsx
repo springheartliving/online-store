@@ -24,9 +24,7 @@ interface QuoteCalculatorProps {
   customer: CustomerInfo;
   onUpdateQuantity: (productId: number, newQty: number) => void;
   onRemoveItem: (productId: number) => void;
-  onBindLine: () => Promise<void> | void;
   onSendLineNotify: (quotation: Quotation, customer: CustomerInfo) => void;
-  isBindingLine: boolean;
   isSendingLine: boolean;
   lineNotifySuccess: string | null;
   lineNotifyError: string | null;
@@ -39,9 +37,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   customer,
   onUpdateQuantity,
   onRemoveItem,
-  onBindLine,
   onSendLineNotify,
-  isBindingLine,
   isSendingLine,
   lineNotifySuccess,
   lineNotifyError,
@@ -101,32 +97,12 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            {!isLineBound ? (
-              <button
-                type="button"
-                onClick={onBindLine}
-                disabled={isBindingLine}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-sm bg-[#F0EEE6] hover:bg-[#E5E2D9] text-[#2D2D2D] text-[11px] font-medium border border-[#E5E2D9] transition cursor-pointer disabled:opacity-60"
-              >
-                <UserRound className="w-3.5 h-3.5" />
-                <span>{isBindingLine ? "綁定中..." : "綁定官方 LINE"}</span>
-              </button>
-            ) : (
-              <div className="inline-flex items-center gap-2 rounded-sm bg-[#F0EEE6] border border-[#E5E2D9] text-[#2D2D2D] text-[11px] font-medium overflow-hidden">
-                <span className="inline-flex items-center gap-2 px-3 py-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#7C8B7C] text-white">
-                    <UserRound className="w-3 h-3" />
-                  </span>
-                  <span>{customer.name}</span>
+            {customer.name?.trim() && (
+              <div className="inline-flex items-center gap-2 px-3 py-2 rounded-sm bg-[#F0EEE6] border border-[#E5E2D9] text-[#2D2D2D] text-[11px] font-medium">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#7C8B7C] text-white">
+                  <UserRound className="w-3 h-3" />
                 </span>
-                <button
-                  type="button"
-                  onClick={onBindLine}
-                  disabled={isBindingLine}
-                  className="px-3 py-2 border-l border-[#E5E2D9] bg-[#F0EEE6] hover:bg-[#E5E2D9] text-[#2D2D2D] transition cursor-pointer disabled:opacity-60"
-                >
-                  {isBindingLine ? "解除中..." : "解除綁定"}
-                </button>
+                <span>{customer.name}</span>
               </div>
             )}
 

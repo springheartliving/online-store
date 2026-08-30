@@ -14,7 +14,7 @@ import { ProductDetailModal } from "./components/ProductDetailModal";
 import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
 import { DEFAULT_LINE_CONFIG } from "./utils/formatters";
-import { getLiffCustomer, logoutLiffSession, sendQuoteViaLiff } from "./utils/liff";
+import { getLiffCustomer, sendQuoteViaLiff } from "./utils/liff";
 import { saveQuotationToGoogleSheet } from "./utils/googleSheets";
 import { resolveProductCategories } from "./utils/categories";
 import {
@@ -62,7 +62,6 @@ export default function App() {
 
   // Line notify sending state
   const [isSendingLine, setIsSendingLine] = useState(false);
-  const [isBindingLine, setIsBindingLine] = useState(false);
   const [lineNotifySuccess, setLineNotifySuccess] = useState<string | null>(null);
   const [lineNotifyError, setLineNotifyError] = useState<string | null>(null);
 
@@ -242,56 +241,24 @@ export default function App() {
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
 
-  const handleBindLineAccount = async () => {
-    setIsBindingLine(true);
-    setLineNotifyError(null);
-    setLineNotifySuccess(null);
-
-    try {
-      const profile = await getLiffCustomer(lineConfig);
-      if (profile) {
-        setCustomer(profile);
-        setLineNotifySuccess("已完成官方 LINE 綁定。");
+  useEffect(() => {
+    const syncLiffCustomer = async () => {
+      if (!lineConfig.liffId?.trim()) {
         return;
       }
 
-      setLineNotifyError("請在 LIFF 頁面內完成 LINE 授權後再綁定。");
-    } catch (err: any) {
-      setLineNotifyError(`LINE 綁定失敗: ${err.message || "請再試一次。"}`);
-    } finally {
-      setIsBindingLine(false);
-    }
-  };
-
-  const handleUnbindLineAccount = async () => {
-    setIsBindingLine(true);
-    setLineNotifyError(null);
-    setLineNotifySuccess(null);
-
-    try {
-      const result = await logoutLiffSession();
-      if (result) {
-        setCustomer({ name: "", lineId: "" });
-        setLineNotifySuccess("已解除 LINE 綁定，現在可重新取得授權。");
-        return;
+      try {
+        const profile = await getLiffCustomer(lineConfig);
+        if (profile) {
+          setCustomer(profile);
+        }
+      } catch {
+        // Ignore LIFF profile fetch failures when the user is not inside LIFF.
       }
+    };
 
-      setLineNotifyError("解除綁定失敗，請再試一次。");
-    } catch (err: any) {
-      setLineNotifyError(`解除綁定失敗: ${err.message || "請再試一次。"}`);
-    } finally {
-      setIsBindingLine(false);
-    }
-  };
-
-  const handleToggleLineBind = async () => {
-    if (customer.name?.trim() || customer.lineId?.trim()) {
-      await handleUnbindLineAccount();
-      return;
-    }
-
-    await handleBindLineAccount();
-  };
+    syncLiffCustomer();
+  }, [lineConfig.liffId]);
 
   // Handle Send LINE Consultation via LIFF / Deep Link
   const handleSendLineNotify = async (quotation: Quotation, customer: CustomerInfo) => {
@@ -300,20 +267,7 @@ export default function App() {
     setLineNotifyError(null);
 
     try {
-      let resolvedCustomer = customer;
-
-      if (lineConfig.liffId?.trim()) {
-        try {
-          const profile = await getLiffCustomer(lineConfig);
-          if (profile) {
-            resolvedCustomer = profile;
-            setCustomer(profile);
-          }
-        } catch {
-          // Do not block the submission flow outside LIFF or when profile access fails.
-        }
-      }
-
+      const resolvedCustomer = customer.lineId?.trim() ? customer : { name: "", lineId: "" };
       const quotationWithCustomer = { ...quotation, customer: resolvedCustomer };
 
       // Save quotation to local history
@@ -586,9 +540,7 @@ export default function App() {
         customer={customer}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        onBindLine={handleToggleLineBind}
         onSendLineNotify={handleSendLineNotify}
-        isBindingLine={isBindingLine}
         isSendingLine={isSendingLine}
         lineNotifySuccess={lineNotifySuccess}
         lineNotifyError={lineNotifyError}
