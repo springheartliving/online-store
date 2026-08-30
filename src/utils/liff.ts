@@ -39,7 +39,7 @@ function fallbackToLineDeepLink(config: LineOfficialConfig, quotation: Quotation
   return {
     success: true,
     method: "deeplink" as const,
-    message: reason || "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
+    message: reason,
   };
 }
 
@@ -62,7 +62,7 @@ export function isLiffEnvironmentAllowed(): boolean {
     href.includes("liff.line.me") ||
     hasLiffState;
 
-  return isLikelyLiffHost || Boolean(liffId.trim());
+  return isLikelyLiffHost;
 }
 
 /**
@@ -144,7 +144,7 @@ export async function sendQuoteViaLiff(
           return fallbackToLineDeepLink(
             config,
             quotation,
-            "LIFF 尚未授權發送訊息，已改用 LINE 官方對話框。"
+            "尚未授權發送訊息，已改用 LINE 官方對話框。"
           );
         }
 
@@ -180,6 +180,6 @@ export async function sendQuoteViaLiff(
   return fallbackToLineDeepLink(
     config,
     quotation,
-    "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。"
+    "已開啟 LINE 官方對話框，請在對話框點擊送出即可由小編為您服務。"
   );
 }

@@ -43,7 +43,6 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   lineNotifyError,
 }) => {
   useBodyScrollLock(isOpen);
-  const isLineBound = Boolean(customer.name?.trim() || customer.lineId?.trim());
 
   // Dynamic calculations
   const totalAmount = useMemo(() => {
@@ -98,7 +97,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
 
           <div className="flex items-center gap-2">
             {customer.name?.trim() && (
-              <div className="inline-flex items-center gap-2 px-3 py-2 rounded-sm bg-[#F0EEE6] border border-[#E5E2D9] text-[#2D2D2D] text-[11px] font-medium">
+              <div className="inline-flex items-center gap-2 px-3 py-2 text-[#2D2D2D] text-[11px] font-medium">
                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#7C8B7C] text-white">
                   <UserRound className="w-3 h-3" />
                 </span>
@@ -300,16 +299,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
         {cart.length > 0 && (
           <div className="p-4 sm:p-6 bg-white border-t border-[#E5E2D9] space-y-2.5">
             <div>
-              {/* Send to Official LINE Button (LIFF / Deep Link) */}
-              {isSendingLine && (
-                <p
-                  className="mb-2 text-center text-xs text-[#6E6A5E]"
-                  role="status"
-                  aria-live="polite"
-                >
-                  正在送出諮詢單，請稍候...
-                </p>
-              )}
+              {/* Send to Official LINE Button (LIFF / Deep Link) */}              
               <button
                 id="send-line-notify-btn"
                 type="button"
