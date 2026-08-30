@@ -8,6 +8,34 @@ import {
 
 let isLiffInitialized = false;
 
+function isLiffPermissionDeniedError(error: any): boolean {
+  const message = String(error?.message || "").toLowerCase();
+  const code = String(error?.code || "").toLowerCase();
+  return (
+    message.includes("user doesn't grant required permissions yet") ||
+    message.includes("doesn't grant required permissions") ||
+    message.includes("permission") ||
+    code.includes("permission") ||
+    code.includes("not_granted")
+  );
+}
+
+function fallbackToLineDeepLink(config: LineOfficialConfig, quotation: Quotation, reason?: string) {
+  const lineText = formatQuoteForLineText(quotation);
+  const consultationUrl = getLineConsultationUrl(config, lineText);
+  try {
+    window.open(consultationUrl, "_blank");
+  } catch {
+    window.location.href = consultationUrl;
+  }
+
+  return {
+    success: true,
+    method: "deeplink" as const,
+    message: reason || "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
+  };
+}
+
 export function isLiffEnvironmentAllowed(): boolean {
   if (typeof window === "undefined") return false;
   const liffId = (import.meta as any).env?.VITE_LIFF_ID || "";
@@ -82,6 +110,15 @@ export async function sendQuoteViaLiff(
         };
       } catch (sendErr: any) {
         console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
+
+        if (isLiffPermissionDeniedError(sendErr)) {
+          return fallbackToLineDeepLink(
+            config,
+            quotation,
+            "LIFF 尚未授權發送訊息，已改用 LINE 官方對話框。"
+          );
+        }
+
         lastError = sendErr?.message || lastError;
       }
 
@@ -111,13 +148,9 @@ export async function sendQuoteViaLiff(
   }
 
   // 4. Fallback to LINE Deep Link
-  const lineText = formatQuoteForLineText(quotation);
-  const consultationUrl = getLineConsultationUrl(config, lineText);
-  window.open(consultationUrl, "_blank");
-
-  return {
-    success: true,
-    method: "deeplink",
-    message: "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
-  };
+  return fallbackToLineDeepLink(
+    config,
+    quotation,
+    "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。"
+  );
 }
