@@ -267,7 +267,18 @@ export default function App() {
     setLineNotifyError(null);
 
     try {
-      const resolvedCustomer = customer.lineId?.trim() ? customer : { name: "", lineId: "" };
+      let activeCustomer = customer;
+      const hasProfile = Boolean(customer.name?.trim()) && Boolean(customer.lineId?.trim());
+
+      if (!hasProfile && lineConfig.liffId?.trim()) {
+        const freshProfile = await getLiffCustomer(lineConfig);
+        if (freshProfile) {
+          setCustomer(freshProfile);
+          activeCustomer = freshProfile;
+        }
+      }
+
+      const resolvedCustomer = activeCustomer.lineId?.trim() ? activeCustomer : { name: "", lineId: "" };
       const quotationWithCustomer = { ...quotation, customer: resolvedCustomer };
 
       // Save quotation to local history

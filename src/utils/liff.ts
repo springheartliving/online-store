@@ -31,6 +31,8 @@ function isLiffEnvironmentAllowed(): boolean {
   const hostname = window.location.hostname.toLowerCase();
   const pathname = window.location.pathname.toLowerCase();
   const search = window.location.search.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  const referrer = document.referrer?.toLowerCase?.() || "";
 
   const hasLiffRuntimeSignals =
     typeof liff !== "undefined" &&
@@ -43,11 +45,16 @@ function isLiffEnvironmentAllowed(): boolean {
     pathname.includes("/liff") ||
     pathname.includes("liff") ||
     search.includes("liff") ||
+    hash.includes("liff") ||
+    referrer.includes("liff") ||
+    referrer.includes("line.me") ||
+    referrer.includes("line-apps.com") ||
     href.includes("liff.line.me") ||
     href.includes("line.me/r/liff") ||
     href.includes("liff-app") ||
     href.includes("liff.state") ||
-    search.includes("liff.state");
+    search.includes("liff.state") ||
+    hash.includes("liff.state");
 
   const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1";
 
@@ -185,13 +192,6 @@ export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boole
     }
 
     debugState.inClient = liff.isInClient();
-    if (!debugState.inClient) {
-      debugState.reason = "App is not running inside the LINE client.";
-      if (typeof window !== "undefined") {
-        window.__LINE_LIFF_DEBUG__ = debugState;
-      }
-      return { ready: false, reason: debugState.reason };
-    }
 
     const profile = await liff.getProfile();
     debugState.ready = true;
