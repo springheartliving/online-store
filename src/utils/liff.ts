@@ -8,12 +8,30 @@ import {
 
 let isLiffInitialized = false;
 
+function isLiffEnvironmentAllowed(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const hostname = window.location.hostname.toLowerCase();
+  const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.");
+  const isLiffHost = hostname.includes("liff.line.me") || hostname.includes("liff.me") || hostname.includes("line-apps.com");
+
+  return isLocalDev || isLiffHost;
+}
+
 /**
- * Initializes LIFF SDK if a LIFF ID is provided or in URL params
+ * Initializes LIFF SDK only when the app is running in a valid LIFF environment.
+ * This avoids hitting 400 errors when the page is opened before the LIFF app is approved.
  */
 export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
   const targetLiffId = liffId || (import.meta as any).env?.VITE_LIFF_ID;
   if (!targetLiffId || !targetLiffId.trim()) {
+    return false;
+  }
+
+  if (!isLiffEnvironmentAllowed()) {
+    console.info("Skipping LIFF initialization outside a valid LIFF environment.");
     return false;
   }
 
@@ -58,7 +76,7 @@ export async function sendQuoteViaLiff(
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
 
-  if (liffId) {
+  if (liffId && isLiffEnvironmentAllowed()) {
     const initialized = await initLiffIfNeeded(liffId);
     if (initialized && liff.isInClient()) {
       const flexMessage = createQuoteFlexMessage(quotation);
