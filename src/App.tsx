@@ -86,12 +86,6 @@ export default function App() {
 
   // Load data from Firestore Database on mount
   useEffect(() => {
-    getLiffCustomer(lineConfig).then((profile) => {
-      if (profile) setCustomer(profile);
-    });
-  }, []);
-
-  useEffect(() => {
     async function loadFirestoreData() {
       // Fetch products and categories from Firestore
       try {
@@ -254,7 +248,21 @@ export default function App() {
     setLineNotifyError(null);
 
     try {
-      const quotationWithCustomer = { ...quotation, customer };
+      let resolvedCustomer = customer;
+
+      if (lineConfig.liffId?.trim()) {
+        try {
+          const profile = await getLiffCustomer(lineConfig);
+          if (profile) {
+            resolvedCustomer = profile;
+            setCustomer(profile);
+          }
+        } catch {
+          // Do not block the submission flow outside LIFF or when profile access fails.
+        }
+      }
+
+      const quotationWithCustomer = { ...quotation, customer: resolvedCustomer };
 
       // Save quotation to local history
       saveQuotationToHistory(quotationWithCustomer);
