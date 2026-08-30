@@ -62,6 +62,7 @@ export default function App() {
 
   // Line notify sending state
   const [isSendingLine, setIsSendingLine] = useState(false);
+  const [isBindingLine, setIsBindingLine] = useState(false);
   const [lineNotifySuccess, setLineNotifySuccess] = useState<string | null>(null);
   const [lineNotifyError, setLineNotifyError] = useState<string | null>(null);
 
@@ -240,6 +241,27 @@ export default function App() {
   const totalCartAmount = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
+
+  const handleBindLineAccount = async () => {
+    setIsBindingLine(true);
+    setLineNotifyError(null);
+    setLineNotifySuccess(null);
+
+    try {
+      const profile = await getLiffCustomer(lineConfig);
+      if (profile) {
+        setCustomer(profile);
+        setLineNotifySuccess("已完成官方 LINE 綁定。");
+        return;
+      }
+
+      setLineNotifyError("請在 LIFF 頁面內完成 LINE 授權後再綁定。");
+    } catch (err: any) {
+      setLineNotifyError(`LINE 綁定失敗: ${err.message || "請再試一次。"}`);
+    } finally {
+      setIsBindingLine(false);
+    }
+  };
 
   // Handle Send LINE Consultation via LIFF / Deep Link
   const handleSendLineNotify = async (quotation: Quotation, customer: CustomerInfo) => {
@@ -534,7 +556,9 @@ export default function App() {
         customer={customer}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
+        onBindLine={handleBindLineAccount}
         onSendLineNotify={handleSendLineNotify}
+        isBindingLine={isBindingLine}
         isSendingLine={isSendingLine}
         lineNotifySuccess={lineNotifySuccess}
         lineNotifyError={lineNotifyError}
