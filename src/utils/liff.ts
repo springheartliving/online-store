@@ -53,7 +53,6 @@ export function isLiffEnvironmentAllowed(): boolean {
   const hostname = window.location.hostname.toLowerCase();
   const search = window.location.search || "";
   const hash = window.location.hash || "";
-
   const hasLiffState = search.includes("liff.state") || hash.includes("liff.state");
 
   return (
@@ -96,6 +95,10 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
 
   try {
     const profile = await liff.getProfile();
+    if (!profile?.userId && !profile?.displayName) {
+      return null;
+    }
+
     return {
       name: profile.displayName || "LINE 使用者",
       lineId: profile.userId || "",
@@ -104,7 +107,7 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
     console.warn("Unable to load LINE profile:", err);
 
     try {
-      const context = liff.getContext();
+      const context = typeof liff.getContext === "function" ? liff.getContext() : null;
       if (context?.userId) {
         return {
           name: "LINE 使用者",
@@ -112,7 +115,7 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
         };
       }
     } catch {
-      // Ignore context fallback failure.
+      // Ignore context read failure.
     }
 
     return null;
