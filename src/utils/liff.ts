@@ -78,8 +78,18 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
   }
 
   if (!liff.isLoggedIn()) {
-    console.warn("LIFF user is not logged in; cannot fetch LINE profile.");
-    return null;
+    console.info("LIFF user is not logged in; triggering LINE login flow.");
+    try {
+      await liff.login();
+    } catch (err) {
+      console.warn("LIFF login request failed:", err);
+      return null;
+    }
+
+    if (!liff.isLoggedIn()) {
+      console.warn("LIFF user is still not logged in after login request.");
+      return null;
+    }
   }
 
   try {
@@ -132,6 +142,15 @@ export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boole
         window.__LINE_LIFF_DEBUG__ = debugState;
       }
       return { ready: false, reason: debugState.reason };
+    }
+
+    if (!liff.isLoggedIn()) {
+      console.info("LIFF user is not logged in; attempting LINE login before authorization check.");
+      try {
+        await liff.login();
+      } catch (loginErr) {
+        console.warn("LIFF login call failed:", loginErr);
+      }
     }
 
     debugState.loggedIn = liff.isLoggedIn();
