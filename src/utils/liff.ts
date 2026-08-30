@@ -213,11 +213,47 @@ export async function sendQuoteViaLiff(
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const liffId = getTargetLiffId(config.liffId);
-  const authStatus = await getLiffAuthStatus(liffId);
 
-  console.info("LIFF auth check before sending", authStatus);
+  if (!liffId) {
+    const lineText = formatQuoteForLineText(quotation);
+    const consultationUrl = getLineConsultationUrl(config, lineText);
+    window.open(consultationUrl, "_blank");
 
-  if (authStatus.ready) {
+    return {
+      success: true,
+      method: "deeplink",
+      message: "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
+    };
+  }
+
+  try {
+    const initialized = await initLiffIfNeeded(liffId);
+    if (!initialized) {
+      const lineText = formatQuoteForLineText(quotation);
+      const consultationUrl = getLineConsultationUrl(config, lineText);
+      window.open(consultationUrl, "_blank");
+
+      return {
+        success: true,
+        method: "deeplink",
+        message: "LIFF 仍未初始化，已改為開啟 LINE 對話框。",
+      };
+    }
+
+    if (!liff.isLoggedIn()) {
+      console.info("User clicked LINE official contact. Triggering LIFF login before sending.");
+      await liff.login();
+
+      return {
+        success: false,
+        method: "error",
+        message: "請完成 LINE Login / 授權後，再點擊一次「LINE 官方諮詢」送出。",
+      };
+    }
+
+    const profile = await liff.getProfile();
+    console.info("LIFF profile acquired before send:", profile);
+
     const flexMessage = createQuoteFlexMessage(quotation);
     const messagesPayload = [flexMessage];
     let lastError = "請確認 LIFF 權限與開啟來源";
@@ -255,17 +291,16 @@ export async function sendQuoteViaLiff(
       method: "error",
       message: `LINE 訊息傳送失敗：${lastError}`,
     };
+  } catch (error: any) {
+    console.warn("LIFF send flow failed:", error);
+    const lineText = formatQuoteForLineText(quotation);
+    const consultationUrl = getLineConsultationUrl(config, lineText);
+    window.open(consultationUrl, "_blank");
+
+    return {
+      success: true,
+      method: "deeplink",
+      message: "LINE 授權流程未完成，已改為開啟官方對話框。",
+    };
   }
-
-  console.warn("LIFF flow skipped before send because auth was not ready.", authStatus);
-
-  const lineText = formatQuoteForLineText(quotation);
-  const consultationUrl = getLineConsultationUrl(config, lineText);
-  window.open(consultationUrl, "_blank");
-
-  return {
-    success: true,
-    method: "deeplink",
-    message: "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
-  };
 }
