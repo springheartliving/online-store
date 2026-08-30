@@ -89,8 +89,18 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
   }
 
   if (!liff.isLoggedIn()) {
-    console.info("LIFF user is not logged in; skipping profile fetch until the user is already authenticated in LIFF.");
-    return null;
+    console.info("LIFF user is not logged in; starting LIFF login flow for LIFF entry.");
+    try {
+      await liff.login();
+    } catch (err) {
+      console.warn("LIFF login request failed:", err);
+      return null;
+    }
+
+    if (!liff.isLoggedIn()) {
+      console.warn("LIFF user is still not logged in after login attempt.");
+      return null;
+    }
   }
 
   try {
