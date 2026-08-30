@@ -32,7 +32,7 @@ export function getLineConsultationUrl(config: LineOfficialConfig, messageText: 
   const rawId = config.lineId ? config.lineId.trim() : "";
   if (rawId) {
     const formattedId = rawId.startsWith("@") ? rawId : `@${rawId}`;
-    return `https://line.me/R/oaMessage/${formattedId}/?text=${encodedText}`;
+    return `https://line.me/R/oaMessage/${formattedId}/?${encodedText}`;
   }
 
   // Use LIFF as a fallback only when no Official Account ID is configured.
@@ -43,7 +43,7 @@ export function getLineConsultationUrl(config: LineOfficialConfig, messageText: 
   }
 
   if (config.liffId && config.liffId.trim()) {
-    return `https://liff.line.me/${config.liffId.trim()}?text=${encodedText}`;
+    return `https://liff.line.me/${config.liffId.trim()}?${encodedText}`;
   }
 
   return `https://line.me/R/msg/text/?${encodedText}`;
@@ -58,15 +58,12 @@ export function formatQuoteForLineText(quote: {
   const itemsText = quote.items
     .map(
       (item, idx) =>
-        `${idx + 1}. ${item.name}-${item.sku}\n   ${item.quantity} x NT$${item.price.toLocaleString()} = NT$${(item.quantity * item.price).toLocaleString()}`
+        `${idx + 1}. ${item.name}\n   ${item.quantity} x NT$${item.price.toLocaleString()} = NT$${(item.quantity * item.price).toLocaleString()}`
     )
-    .join("\n");
-
-  const customerName = quote.customer?.name?.trim() || "未提供姓名";
+    .join("\n");  
 
   return `🌿【泉心生活】商品諮詢單
 
-👤 顧客：${customerName}
 📄 諮詢單號：${quote.quoteNo}
 ━━━━━━━━━━━━━━
 📦 諮詢商品明細：
@@ -76,7 +73,7 @@ ${itemsText}
 }
 
 export function createQuoteFlexMessage(quote: Quotation) {
-  const customerName = quote.customer?.name?.trim() || "未提供姓名";
+  const customerName = quote.customer?.name?.trim();
   const itemRows = quote.items.map((item, idx) => ({
     type: "box",
     layout: "horizontal",

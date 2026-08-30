@@ -104,24 +104,11 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
     }
 
     return {
-      name: rawDisplayName || "LINE 使用者",
-      lineId: rawUserId || "",
+      name: rawDisplayName,
+      lineId: rawUserId,
     };
   } catch (err) {
-    console.warn("Unable to load LINE profile:", err);
-
-    try {
-      const context = typeof liff.getContext === "function" ? liff.getContext() : null;
-      const contextUserId = (context as any)?.userId ?? (context as any)?.user_id ?? "";
-      if (contextUserId) {
-        return {
-          name: "LINE 使用者",
-          lineId: contextUserId,
-        };
-      }
-    } catch {
-      // Ignore context read failure.
-    }
+    console.warn("Unable to load LINE profile:", err);    
 
     return null;
   }
