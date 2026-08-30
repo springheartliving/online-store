@@ -28,21 +28,60 @@ function isLiffEnvironmentAllowed(): boolean {
   }
 
   const href = window.location.href.toLowerCase();
+  const hostname = window.location.hostname.toLowerCase();
+  const pathname = window.location.pathname.toLowerCase();
+  const search = window.location.search.toLowerCase();
 
-  const isLiffHostname =
-    window.location.hostname.includes("liff") ||
-    window.location.hostname.includes("line.me") ||
-    window.location.hostname.includes("line-apps.com");
+  const hasLiffRuntimeSignals =
+    typeof liff !== "undefined" &&
+    (liff.isLoggedIn?.() === true || liff.isInClient?.() === true);
 
-  const isLiffUrl = /liff\.line\.me|\/liff\//i.test(href) || href.includes("line.me/r/liff") || href.includes("liff-app");
+  const hasLiffUrlSignals =
+    hostname.includes("liff") ||
+    hostname.includes("line.me") ||
+    hostname.includes("line-apps.com") ||
+    pathname.includes("/liff") ||
+    pathname.includes("liff") ||
+    search.includes("liff") ||
+    href.includes("liff.line.me") ||
+    href.includes("line.me/r/liff") ||
+    href.includes("liff-app") ||
+    href.includes("liff.state") ||
+    search.includes("liff.state");
 
-  const isLocalDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1";
 
-  return Boolean(isLiffHostname || isLiffUrl || (isLocalDev && !!getTargetLiffId()));
+  return Boolean(hasLiffRuntimeSignals || hasLiffUrlSignals || (isLocalDev && !!getTargetLiffId()));
 }
 
 function getTargetLiffId(liffId?: string): string {
   return (liffId || (import.meta as any).env?.VITE_LIFF_ID || "").trim();
+}
+
+async function ensureLiffSession(liffId?: string): Promise<boolean> {
+  const targetLiffId = getTargetLiffId(liffId);
+  if (!targetLiffId || !isLiffEnvironmentAllowed()) {
+    return false;
+  }
+
+  if (!(await initLiffIfNeeded(targetLiffId))) {
+    return false;
+  }
+
+  if (!liff.isLoggedIn()) {
+    try {
+      await liff.login();
+    } catch (err) {
+      console.warn("LIFF login request failed while ensuring session:", err);
+      return false;
+    }
+
+    if (!liff.isLoggedIn()) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -80,27 +119,8 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
     return null;
   }
 
-  if (!isLiffEnvironmentAllowed()) {
+  if (!(await ensureLiffSession(liffId))) {
     return null;
-  }
-
-  if (!(await initLiffIfNeeded(liffId))) {
-    return null;
-  }
-
-  if (!liff.isLoggedIn()) {
-    console.info("LIFF user is not logged in; starting LIFF login flow for LIFF entry.");
-    try {
-      await liff.login();
-    } catch (err) {
-      console.warn("LIFF login request failed:", err);
-      return null;
-    }
-
-    if (!liff.isLoggedIn()) {
-      console.warn("LIFF user is still not logged in after login attempt.");
-      return null;
-    }
   }
 
   try {
@@ -217,8 +237,8 @@ export async function sendQuoteViaLiff(
   }
 
   try {
-    const initialized = await initLiffIfNeeded(liffId);
-    if (!initialized) {
+    const hasReadyLiffSession = await ensureLiffSession(liffId);
+    if (!hasReadyLiffSession) {
       const lineText = formatQuoteForLineText(quotation);
       const consultationUrl = getLineConsultationUrl(config, lineText);
       window.open(consultationUrl, "_blank");
@@ -226,19 +246,7 @@ export async function sendQuoteViaLiff(
       return {
         success: true,
         method: "deeplink",
-        message: "LIFF 仍未初始化，已改為開啟 LINE 對話框。",
-      };
-    }
-
-    if (!liff.isLoggedIn()) {
-      const lineText = formatQuoteForLineText(quotation);
-      const consultationUrl = getLineConsultationUrl(config, lineText);
-      window.open(consultationUrl, "_blank");
-
-      return {
-        success: true,
-        method: "deeplink",
-        message: "已開啟 LINE 官方對話框，請在對話框點擊送出即可由小編為您服務。",
+        message: "LIFF 尚未完成授權，已改為開啟 LINE 官方對話框。",
       };
     }
 
