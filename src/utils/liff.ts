@@ -27,11 +27,9 @@ function isLiffEnvironmentAllowed(): boolean {
     return false;
   }
 
-  const hostname = window.location.hostname.toLowerCase();
-  const isLocalDev = hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.");
-  const isLiffHost = hostname.includes("liff.line.me") || hostname.includes("liff.me") || hostname.includes("line-apps.com");
-
-  return isLocalDev || isLiffHost;
+  // Do not block endpoint URLs here. LIFF may be served from an authorized endpoint URL
+  // instead of liff.line.me, and the real authorization check happens during init/login.
+  return true;
 }
 
 function getTargetLiffId(liffId?: string): string {
