@@ -22,7 +22,23 @@ declare global {
 
 let isLiffInitialized = false;
 
-function isLiffEnvironmentAllowed(): boolean {
+function safeLiffIsLoggedIn(): boolean {
+  try {
+    return !!liff?.isLoggedIn?.();
+  } catch {
+    return false;
+  }
+}
+
+function safeLiffIsInClient(): boolean {
+  try {
+    return !!liff?.isInClient?.();
+  } catch {
+    return false;
+  }
+}
+
+export function isLiffEnvironmentAllowed(): boolean {
   if (typeof window === "undefined") {
     return false;
   }
@@ -36,7 +52,7 @@ function isLiffEnvironmentAllowed(): boolean {
 
   const hasLiffRuntimeSignals =
     typeof liff !== "undefined" &&
-    (liff.isLoggedIn?.() === true || liff.isInClient?.() === true);
+    (safeLiffIsLoggedIn() || safeLiffIsInClient() || !!liff?.getContext?.());
 
   const hasLiffUrlSignals =
     hostname.includes("liff") ||
@@ -62,12 +78,17 @@ function isLiffEnvironmentAllowed(): boolean {
 }
 
 function getTargetLiffId(liffId?: string): string {
-  return (liffId || (import.meta as any).env?.VITE_LIFF_ID || "").trim();
+  const envLiffId = (import.meta as any).env?.VITE_LIFF_ID || "";
+  return (liffId || envLiffId).trim();
 }
 
 async function ensureLiffSession(liffId?: string): Promise<boolean> {
   const targetLiffId = getTargetLiffId(liffId);
-  if (!targetLiffId || !isLiffEnvironmentAllowed()) {
+  if (!targetLiffId) {
+    return false;
+  }
+
+  if (!isLiffEnvironmentAllowed()) {
     return false;
   }
 
@@ -75,7 +96,7 @@ async function ensureLiffSession(liffId?: string): Promise<boolean> {
     return false;
   }
 
-  if (!liff.isLoggedIn()) {
+  if (!safeLiffIsLoggedIn()) {
     try {
       await liff.login();
     } catch (err) {
@@ -83,7 +104,7 @@ async function ensureLiffSession(liffId?: string): Promise<boolean> {
       return false;
     }
 
-    if (!liff.isLoggedIn()) {
+    if (!safeLiffIsLoggedIn()) {
       return false;
     }
   }
@@ -98,11 +119,20 @@ async function ensureLiffSession(liffId?: string): Promise<boolean> {
 export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
   const targetLiffId = getTargetLiffId(liffId);
   if (!targetLiffId) {
+    console.warn("[LIFF] liffId is missing before init", {
+      passedLiffId: liffId,
+      envLiffId: (import.meta as any).env?.VITE_LIFF_ID,
+      href: typeof window !== "undefined" ? window.location.href : "",
+    });
     return false;
   }
 
   if (!isLiffEnvironmentAllowed()) {
-    console.info("Skipping LIFF initialization outside a valid LIFF environment.");
+    console.info("[LIFF] Skipping LIFF initialization outside a valid LIFF environment.", {
+      href: typeof window !== "undefined" ? window.location.href : "",
+      hostname: typeof window !== "undefined" ? window.location.hostname : "",
+      targetLiffId,
+    });
     return false;
   }
 
@@ -110,12 +140,21 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
     return true;
   }
 
+  console.info("[LIFF] Initializing LIFF SDK", {
+    targetLiffId,
+    href: typeof window !== "undefined" ? window.location.href : "",
+    hostname: typeof window !== "undefined" ? window.location.hostname : "",
+  });
+
   try {
     await liff.init({ liffId: targetLiffId });
     isLiffInitialized = true;
     return true;
   } catch (err) {
-    console.warn("LIFF initialization error:", err);
+    console.warn("[LIFF] initialization error:", err, {
+      targetLiffId,
+      href: typeof window !== "undefined" ? window.location.href : "",
+    });
     return false;
   }
 }
@@ -223,8 +262,9 @@ export async function sendQuoteViaLiff(
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
   const liffId = getTargetLiffId(config.liffId);
+  const useLiffFlow = Boolean(liffId && isLiffEnvironmentAllowed());
 
-  if (!liffId) {
+  if (!useLiffFlow) {
     const lineText = formatQuoteForLineText(quotation);
     const consultationUrl = getLineConsultationUrl(config, lineText);
     window.open(consultationUrl, "_blank");
@@ -232,7 +272,7 @@ export async function sendQuoteViaLiff(
     return {
       success: true,
       method: "deeplink",
-      message: "已開啟 LINE 對話框，請在對話框點擊送出即可由小編為您服務。",
+      message: "已開啟 LINE 官方對話框，請在對話框點擊送出即可由小編為您服務。",
     };
   }
 

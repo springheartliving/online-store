@@ -247,6 +247,10 @@ export default function App() {
         return;
       }
 
+      if (!window.location.href.toLowerCase().includes("liff") && !document.referrer.toLowerCase().includes("liff")) {
+        return;
+      }
+
       try {
         const profile = await getLiffCustomer(lineConfig);
         if (profile) {
@@ -271,10 +275,16 @@ export default function App() {
       const hasProfile = Boolean(customer.name?.trim()) && Boolean(customer.lineId?.trim());
 
       if (!hasProfile && lineConfig.liffId?.trim()) {
-        const freshProfile = await getLiffCustomer(lineConfig);
-        if (freshProfile) {
-          setCustomer(freshProfile);
-          activeCustomer = freshProfile;
+        const shouldTryLiffProfile =
+          window.location.href.toLowerCase().includes("liff") ||
+          document.referrer.toLowerCase().includes("liff");
+
+        if (shouldTryLiffProfile) {
+          const freshProfile = await getLiffCustomer(lineConfig);
+          if (freshProfile) {
+            setCustomer(freshProfile);
+            activeCustomer = freshProfile;
+          }
         }
       }
 
