@@ -298,9 +298,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </span>
                 )}
               </div>
-              <div className={`mt-2 text-xs font-medium ${product.in_stock ? "text-[#7C8B7C]" : "text-rose-700"}`}>
-                {product.in_stock ? "庫存充足，可加入諮詢清單" : "目前缺貨，暫停加入諮詢清單"}
-              </div>
+              {!product.in_stock && (
+                <div className="mt-2 text-xs font-medium text-rose-700">
+                  目前缺貨，暫停加入諮詢清單
+                </div>
+              )}
+              
             </div>
 
             {/* Description & Key Features */}
@@ -391,7 +394,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           >
             <Plus className="w-4 h-4 shrink-0" />
             <span className="truncate">
-              {product.in_stock ? `加入諮詢清單 (${formatNTD(product.price * qty)})` : "目前缺貨"}
+              {product.in_stock ? `加入諮詢清單 (${formatNTD(product.price * qty)})` : "暫無供應"}
             </span>
           </button>
         </div>

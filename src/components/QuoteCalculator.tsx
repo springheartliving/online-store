@@ -139,7 +139,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                   諮詢清單目前尚無商品
                 </p>
                 <p className="text-xs text-[#8A8576] mt-1 font-light">
-                  請在商品展示區瀏覽並點擊「加入諮詢」以整理諮詢清單。
+                  請瀏覽商品並點擊「加入諮詢」以建立諮詢清單。
                 </p>
               </div>
             ) : (

@@ -63,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
             {!product.in_stock && (
               <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
-                暫停供應
+                暫無供應
               </span>
             )}
           </div>
@@ -187,7 +187,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <span>
                   {product.in_stock
                     ? inCartCount > 0 ? `已選 (${inCartCount})` : "加入諮詢"
-                    : "暫停供應"}
+                    : "暫無供應"}
                 </span>
               </>
             )}
