@@ -20,13 +20,17 @@ function isLiffEnvironmentAllowed(): boolean {
   return isLocalDev || isLiffHost;
 }
 
+function getTargetLiffId(liffId?: string): string {
+  return (liffId || (import.meta as any).env?.VITE_LIFF_ID || "").trim();
+}
+
 /**
  * Initializes LIFF SDK only when the app is running in a valid LIFF environment.
  * This avoids hitting 400 errors when the page is opened before the LIFF app is approved.
  */
 export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
-  const targetLiffId = liffId || (import.meta as any).env?.VITE_LIFF_ID;
-  if (!targetLiffId || !targetLiffId.trim()) {
+  const targetLiffId = getTargetLiffId(liffId);
+  if (!targetLiffId) {
     return false;
   }
 
@@ -40,7 +44,7 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
   }
 
   try {
-    await liff.init({ liffId: targetLiffId.trim() });
+    await liff.init({ liffId: targetLiffId });
     isLiffInitialized = true;
     return true;
   } catch (err) {
@@ -50,8 +54,17 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
 }
 
 export async function getLiffCustomer(config: LineOfficialConfig): Promise<CustomerInfo | null> {
-  const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
-  if (!liffId || !(await initLiffIfNeeded(liffId)) || !liff.isLoggedIn()) {
+  const liffId = getTargetLiffId(config.liffId);
+  if (!liffId) {
+    return null;
+  }
+
+  if (!(await initLiffIfNeeded(liffId))) {
+    return null;
+  }
+
+  if (!liff.isLoggedIn()) {
+    console.warn("LIFF user is not logged in; cannot fetch LINE profile.");
     return null;
   }
 
@@ -67,6 +80,44 @@ export async function getLiffCustomer(config: LineOfficialConfig): Promise<Custo
   }
 }
 
+export async function getLiffAuthStatus(liffId?: string): Promise<{ ready: boolean; reason?: string; profile?: CustomerInfo }> {
+  const targetLiffId = getTargetLiffId(liffId);
+  if (!targetLiffId) {
+    return { ready: false, reason: "LIFF ID is missing." };
+  }
+
+  if (!isLiffEnvironmentAllowed()) {
+    const hostname = typeof window !== "undefined" ? window.location.hostname : "unknown";
+    return { ready: false, reason: `LIFF environment not allowed for host: ${hostname}` };
+  }
+
+  try {
+    const initialized = await initLiffIfNeeded(targetLiffId);
+    if (!initialized) {
+      return { ready: false, reason: "LIFF SDK initialization failed." };
+    }
+
+    if (!liff.isLoggedIn()) {
+      return { ready: false, reason: "LIFF user is not logged in." };
+    }
+
+    if (!liff.isInClient()) {
+      return { ready: false, reason: "App is not running inside the LINE client." };
+    }
+
+    const profile = await liff.getProfile();
+    return {
+      ready: true,
+      profile: {
+        name: profile.displayName,
+        lineId: profile.userId,
+      },
+    };
+  } catch (error: any) {
+    return { ready: false, reason: error?.message || "LIFF authorization check failed." };
+  }
+}
+
 /**
  * Transmits consultation message using LIFF text messaging or falls back to Deep Link
  */
@@ -74,77 +125,52 @@ export async function sendQuoteViaLiff(
   quotation: Quotation,
   config: LineOfficialConfig
 ): Promise<{ success: boolean; method: "liff_send" | "liff_share" | "deeplink" | "error"; message?: string }> {
-  const liffId = config.liffId?.trim() || (import.meta as any).env?.VITE_LIFF_ID;
-  const environmentAllowed = isLiffEnvironmentAllowed();
-  const hostname = typeof window !== "undefined" ? window.location.hostname : "unknown";
+  const liffId = getTargetLiffId(config.liffId);
+  const authStatus = await getLiffAuthStatus(liffId);
 
-  console.info("LIFF send attempt", {
-    hostname,
-    hasLiffId: !!liffId,
-    environmentAllowed,
-    isInClient: typeof liff !== "undefined" ? liff.isInClient?.() : false,
-  });
+  console.info("LIFF auth check before sending", authStatus);
 
-  if (liffId && environmentAllowed) {
-    const initialized = await initLiffIfNeeded(liffId);
-    console.info("LIFF initialization outcome", {
-      initialized,
-      isInClient: typeof liff !== "undefined" ? liff.isInClient?.() : false,
-      isLoggedIn: typeof liff !== "undefined" ? liff.isLoggedIn?.() : false,
-    });
+  if (authStatus.ready) {
+    const flexMessage = createQuoteFlexMessage(quotation);
+    const messagesPayload = [flexMessage];
+    let lastError = "請確認 LIFF 權限與開啟來源";
 
-    if (initialized && liff.isInClient()) {
-      const flexMessage = createQuoteFlexMessage(quotation);
-      const messagesPayload = [flexMessage];
-      let lastError = "請確認 LIFF 權限與開啟來源";
-
-      try {
-        await liff.sendMessages(messagesPayload as any);
-        return {
-          success: true,
-          method: "liff_send",
-          message: "已將諮詢單傳送至官方 LINE 聊天室！",
-        };
-      } catch (sendErr: any) {
-        console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
-        lastError = sendErr?.message || lastError;
-      }
-
-      if (liff.isApiAvailable("shareTargetPicker")) {
-        try {
-          const res = await liff.shareTargetPicker(messagesPayload as any);
-          if (res) {
-            return {
-              success: true,
-              method: "liff_share",
-              message: "已成功轉發諮詢單！",
-            };
-          }
-        } catch (shareErr: any) {
-          console.warn("LIFF shareTargetPicker failed or user canceled:", shareErr);
-          lastError = shareErr?.message || lastError;
-        }
-      }
-
+    try {
+      await liff.sendMessages(messagesPayload as any);
       return {
-        success: false,
-        method: "error",
-        message: `LINE 訊息傳送失敗：${lastError}`,
+        success: true,
+        method: "liff_send",
+        message: "已將諮詢單傳送至官方 LINE 聊天室！",
       };
+    } catch (sendErr: any) {
+      console.warn("LIFF sendMessages failed, trying shareTargetPicker:", sendErr);
+      lastError = sendErr?.message || lastError;
     }
 
-    console.warn("LIFF flow skipped because the app is not running inside LINE client.", {
-      initialized,
-      isInClient: liff.isInClient?.(),
-      hostname,
-    });
-  } else {
-    console.warn("LIFF flow skipped because environment is not allowed or LIFF ID is missing.", {
-      hostname,
-      hasLiffId: !!liffId,
-      environmentAllowed,
-    });
+    if (liff.isApiAvailable("shareTargetPicker")) {
+      try {
+        const res = await liff.shareTargetPicker(messagesPayload as any);
+        if (res) {
+          return {
+            success: true,
+            method: "liff_share",
+            message: "已成功轉發諮詢單！",
+          };
+        }
+      } catch (shareErr: any) {
+        console.warn("LIFF shareTargetPicker failed or user canceled:", shareErr);
+        lastError = shareErr?.message || lastError;
+      }
+    }
+
+    return {
+      success: false,
+      method: "error",
+      message: `LINE 訊息傳送失敗：${lastError}`,
+    };
   }
+
+  console.warn("LIFF flow skipped before send because auth was not ready.", authStatus);
 
   const lineText = formatQuoteForLineText(quotation);
   const consultationUrl = getLineConsultationUrl(config, lineText);
