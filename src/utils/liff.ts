@@ -13,8 +13,16 @@ function getTargetLiffId(liffId?: string): string {
   return (liffId || envLiffId).trim();
 }
 
+function hasValidLiffId(liffId?: string): boolean {
+  const value = getTargetLiffId(liffId).trim();
+  if (!value) return false;
+  if (value === "undefined" || value === "null") return false;
+  return value.length > 10;
+}
+
 function isLikelyLiffContext(): boolean {
   if (typeof window === "undefined") return false;
+  if (!hasValidLiffId()) return false;
 
   const href = window.location.href.toLowerCase();
   const hostname = window.location.hostname.toLowerCase();
@@ -30,7 +38,7 @@ function isLikelyLiffContext(): boolean {
     href.includes("line.me/r/liff") ||
     referrer.includes("liff") ||
     referrer.includes("line.me") ||
-    (hostname === "localhost" && !!getTargetLiffId())
+    hostname === "localhost"
   );
 }
 
@@ -40,7 +48,12 @@ export function isLiffEnvironmentAllowed(): boolean {
 
 export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
   const targetLiffId = getTargetLiffId(liffId);
-  if (!targetLiffId || !isLikelyLiffContext()) {
+
+  if (!hasValidLiffId(targetLiffId) || !isLikelyLiffContext()) {
+    console.info("[LIFF debug] skip liff.init because no valid LIFF ID or not in LIFF context", {
+      targetLiffId,
+      href: typeof window !== "undefined" ? window.location.href : "",
+    });
     return false;
   }
 
@@ -52,7 +65,8 @@ export async function initLiffIfNeeded(liffId?: string): Promise<boolean> {
     await liff.init({ liffId: targetLiffId });
     isLiffInitialized = true;
     return true;
-  } catch {
+  } catch (error) {
+    console.error("[LIFF debug] liff.init failed", error);
     isLiffInitialized = false;
     return false;
   }
