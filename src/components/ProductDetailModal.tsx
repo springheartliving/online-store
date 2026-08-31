@@ -115,6 +115,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   // Touch handlers for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
+      e.preventDefault();
       pinchStartDistance.current = getTouchDistance(e.touches[0], e.touches[1]);
       return;
     }
@@ -126,6 +127,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && pinchStartDistance.current) {
+      e.preventDefault();
       const distance = getTouchDistance(e.touches[0], e.touches[1]);
       const nextScale = viewerScale * (distance / pinchStartDistance.current);
       handleZoom(nextScale);
@@ -133,7 +135,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       return;
     }
 
-    touchEndX.current = e.targetTouches[0].clientX;
+    if (e.touches.length === 1 && touchStartX.current !== null) {
+      touchEndX.current = e.targetTouches[0].clientX;
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -440,7 +444,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
         {isImageViewerOpen && currentImg && (
           <div
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-3 pb-14 sm:p-8 sm:pb-16"
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-3 pb-14 sm:p-8 sm:pb-16 touch-none"
             role="dialog"
             aria-modal="true"
             aria-label={`${product.name} 圖片瀏覽器`}
@@ -472,7 +476,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </button>
 
             <div
-              className="relative z-10 flex max-h-[85vh] max-w-[85vw] items-center justify-center overflow-hidden"
+              className="relative z-10 flex max-h-[85vh] max-w-[85vw] items-center justify-center overflow-hidden touch-none"
               onClick={(e) => e.stopPropagation()}
             >
               <ImageWithFallback
