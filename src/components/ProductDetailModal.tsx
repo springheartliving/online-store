@@ -444,14 +444,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
         {isImageViewerOpen && currentImg && (
           <div
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-3 pb-14 sm:p-8 sm:pb-16 touch-none"
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-3 pb-14 sm:p-8 sm:pb-16"
             role="dialog"
             aria-modal="true"
             aria-label={`${product.name} 圖片瀏覽器`}
             onClick={() => setIsImageViewerOpen(false)}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
             onWheel={handleViewerWheel}
           >
             <button
@@ -476,13 +473,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </button>
 
             <div
-              className="relative z-10 flex max-h-[85vh] max-w-[85vw] items-center justify-center overflow-hidden touch-none"
+              className="relative z-10 flex max-h-[85vh] max-w-[85vw] items-center justify-center overflow-hidden"
               onClick={(e) => e.stopPropagation()}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               <ImageWithFallback
                 src={currentImg}
                 alt={product.name}
-                className="max-w-full max-h-[75vh] object-contain select-none animate-img-fade transition-transform duration-150 ease-out"
+                className="max-w-full max-h-[75vh] object-contain select-none animate-img-fade transition-transform duration-150 ease-out touch-none"
                 fallbackClassName="flex max-h-[75vh] max-w-[85vw] items-center justify-center text-white"
                 iconClassName="w-16 h-16"
                 onClick={() => undefined}
@@ -493,6 +493,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   willChange: "transform",
                   maxWidth: "100%",
                   maxHeight: "75vh",
+                  touchAction: "none",
                 }}
               />
             </div>
