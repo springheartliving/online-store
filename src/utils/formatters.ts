@@ -9,8 +9,9 @@ export function generateQuoteNumber(): string {
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
-  const rand = Math.floor(1000 + Math.random() * 9000);
-  return `SH-${yyyy}${mm}${dd}-${rand}`;
+
+  const suffix = crypto.randomUUID().slice(0, 8).toUpperCase();
+  return `SH-${yyyy}${mm}${dd}-${suffix}`;
 }
 
 export const DEFAULT_LINE_CONFIG: LineOfficialConfig = {
