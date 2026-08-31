@@ -29,13 +29,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [selectedImgIndex, setSelectedImgIndex] = useState(0);
   const [qty, setQty] = useState(1);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
-  const [viewerScale, setViewerScale] = useState(1);
 
   // Swipe / Drag state
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-  const pinchStartDistance = useRef<number | null>(null);
   const isDragging = useRef<boolean>(false);
   const thumbnailsContainerRef = useRef<HTMLDivElement | null>(null);
   const activeThumbnailRef = useRef<HTMLButtonElement | null>(null);
@@ -50,7 +48,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       setSelectedImgIndex(0);
       setQty(1);
       setIsImageViewerOpen(false);
-      setViewerScale(1);
     }
   }, [product?.id, isOpen]);
 
@@ -100,51 +97,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setSelectedImgIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
   };
 
-  const handleZoom = (nextScale: number) => {
-    const safeScale = Math.min(3, Math.max(1, nextScale));
-    setViewerScale(safeScale);
-  };
-
-  const getTouchDistance = (touchA: React.Touch, touchB: React.Touch) => {
-    return Math.hypot(
-      touchA.clientX - touchB.clientX,
-      touchA.clientY - touchB.clientY,
-    );
-  };
-
   // Touch handlers for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-      pinchStartDistance.current = getTouchDistance(e.touches[0], e.touches[1]);
-      return;
-    }
-
     touchStartX.current = e.targetTouches[0].clientX;
     touchStartY.current = e.targetTouches[0].clientY;
     touchEndX.current = null;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && pinchStartDistance.current) {
-      e.preventDefault();
-      const distance = getTouchDistance(e.touches[0], e.touches[1]);
-      const nextScale = viewerScale * (distance / pinchStartDistance.current);
-      handleZoom(nextScale);
-      pinchStartDistance.current = distance;
-      return;
-    }
-
-    if (e.touches.length === 1 && touchStartX.current !== null) {
-      touchEndX.current = e.targetTouches[0].clientX;
-    }
+    touchEndX.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length === 0) {
-      pinchStartDistance.current = null;
-    }
-
     if (touchStartX.current === null || touchEndX.current === null) return;
     
     const deltaX = touchStartX.current - touchEndX.current;
@@ -195,13 +159,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     }
     touchStartX.current = null;
     touchEndX.current = null;
-  };
-
-  const handleViewerWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const delta = event.deltaY < 0 ? 0.15 : -0.15;
-    handleZoom(viewerScale + delta);
   };
 
   const handleAdd = () => {
@@ -449,12 +406,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             aria-modal="true"
             aria-label={`${product.name} 圖片瀏覽器`}
             onClick={() => setIsImageViewerOpen(false)}
-            onWheel={handleViewerWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             <button
               type="button"
               onClick={() => setIsImageViewerOpen(false)}
-              className="absolute top-3 right-3 z-30 sm:top-6 sm:right-6 p-2.5 rounded-sm bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+              className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10 p-2.5 rounded-sm bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
               aria-label="關閉圖片瀏覽器"
             >
               <X className="w-5 h-5" />
@@ -472,31 +431,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7" strokeWidth={2.5} />
             </button>
 
-            <div
-              className="relative z-10 flex max-h-[85vh] max-w-[85vw] items-center justify-center overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            >
-              <ImageWithFallback
-                src={currentImg}
-                alt={product.name}
-                className="max-w-full max-h-[75vh] object-contain select-none animate-img-fade transition-transform duration-150 ease-out touch-none"
-                fallbackClassName="flex max-h-[75vh] max-w-[85vw] items-center justify-center text-white"
-                iconClassName="w-16 h-16"
-                onClick={() => undefined}
-                draggable={false}
-                style={{
-                  transform: `scale(${viewerScale})`,
-                  transformOrigin: "center center",
-                  willChange: "transform",
-                  maxWidth: "100%",
-                  maxHeight: "75vh",
-                  touchAction: "none",
-                }}
-              />
-            </div>
+            <ImageWithFallback
+              src={currentImg}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain select-none animate-img-fade"
+              fallbackClassName="flex max-w-full max-h-full items-center justify-center text-white"
+              iconClassName="w-16 h-16"
+              onClick={() => undefined}
+              draggable={false}
+            />
 
             <button
               type="button"
