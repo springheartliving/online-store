@@ -9,6 +9,7 @@ interface ImageWithFallbackProps {
   iconClassName?: string;
   onClick?: () => void;
   draggable?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
@@ -19,6 +20,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   iconClassName,
   onClick,
   draggable,
+  style,
 }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -41,6 +43,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
       draggable={draggable ?? false}
       className={className}
       loading="lazy"
+      style={style}
     />
   );
 };
