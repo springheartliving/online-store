@@ -97,7 +97,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
 
           <div className="flex items-center gap-2 min-w-0">
             {customer.name?.trim() && (
-              <div className="flex min-w-0 max-w-[40vw] items-center gap-2 px-2.5 text-[#2D2D2D] text-[11px] font-medium">
+              <div className="flex min-w-0 max-w-[40vw] items-center gap-2 px-2.5 text-[#2D2D2D] text-xs font-medium">
                 <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#7C8B7C] text-white">
                   <UserRound className="w-3 h-3" />
                 </span>
@@ -194,7 +194,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                             )}
 
                             {/* Product Tags in Cart */}
-                            {item.product.tags && item.product.tags.length > 0 && (
+                            {/* {item.product.tags && item.product.tags.length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-1">
                                 {item.product.tags.map((t, idx) => (
                                   <span
@@ -205,7 +205,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                                   </span>
                                 ))}
                               </div>
-                            )}
+                            )} */}
                           </div>
                         </div>
 
@@ -269,7 +269,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
             <div className="bg-white p-5 rounded-sm border border-[#E5E2D9] text-xs sm:text-sm">
               <div className="flex items-baseline justify-between">
                 <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#2D2D2D]">諮詢清單總計</span>
-                <span className="text-2xl sm:text-3xl font-mono font-bold text-[#2D2D2D] tracking-tight">
+                <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                   {formatNTD(totalAmount)}
                 </span>
               </div>

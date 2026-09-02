@@ -143,7 +143,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               type="button"
               onClick={() => setQty(Math.max(1, qty - 1))}
               disabled={!product.in_stock}
-              className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs"
+              className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs sm:text-sm"
               aria-label="減少數量"
             >
               -
@@ -155,7 +155,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               type="button"
               onClick={() => setQty(qty + 1)}
               disabled={!product.in_stock}
-              className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs"
+              className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs sm:text-sm"
               aria-label="增加數量"
             >
               +

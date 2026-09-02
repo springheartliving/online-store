@@ -281,7 +281,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
 
             {/* Title */}
-            <h2 className="text-xl sm:text-2xl font-light text-[#2D2D2D] leading-snug">
+            <h2 className="text-lg sm:text-xl font-light text-[#2D2D2D] leading-snug">
               {product.name}
             </h2>
 
@@ -289,7 +289,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className="bg-white p-3.5 sm:p-4 rounded-sm border border-[#E5E2D9] shadow-xs">
               <div className="flex items-baseline gap-3">
                 <span className="text-[10px] text-[#8A8576] uppercase tracking-widest font-medium">售價</span>
-                <span className="text-2xl sm:text-3xl font-mono font-bold text-[#2D2D2D] tracking-tight">
+                <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                   {formatNTD(product.price)}
                 </span>
                 {product.regular_price > product.price && (
