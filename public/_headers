@@ -2,14 +2,11 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
 
-/assets/*
-  Content-Type: application/javascript; charset=UTF-8
-
-/*.js
-  Content-Type: application/javascript; charset=UTF-8
-
-/*.mjs
-  Content-Type: application/javascript; charset=UTF-8
-
-/*.css
+/assets/*.css
   Content-Type: text/css; charset=UTF-8
+
+/assets/*.js
+  Content-Type: application/javascript; charset=UTF-8
+
+/assets/*.mjs
+  Content-Type: application/javascript; charset=UTF-8
