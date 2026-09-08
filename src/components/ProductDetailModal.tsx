@@ -310,7 +310,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className="space-y-2">
               <h4 className="text-[11px] font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#7C8B7C]" />
-                商品特點與介紹
+                產品介紹
               </h4>
 
               <div className="bg-white p-4 sm:p-5 rounded-sm border border-[#E5E2D9] shadow-xs space-y-3">
@@ -340,7 +340,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="space-y-1.5">
                 <h4 className="text-[11px] font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-[#7C8B7C]" />
-                  產品規格與參數
+                  產品規格
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   {product.attributes.map((attr, idx) => (
