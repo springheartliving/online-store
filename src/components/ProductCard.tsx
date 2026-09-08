@@ -102,7 +102,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
 
           {/* Attributes summary if any */}
-          {product.attributes && product.attributes.length > 0 && (
+          {/* {product.attributes && product.attributes.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-2.5">
               {product.attributes.slice(0, 2).map((attr, idx) => (
                 <span
@@ -114,7 +114,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </span>
               ))}
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
