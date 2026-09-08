@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <circle cx="50" cy="50" r="50" fill="#FAF8F2"/>
+
   <!-- Water Droplet Outer Contour -->
   <path d="M 50 8 C 50 8, 81 48, 81 66 C 81 83.12, 67.12 93, 50 93 C 32.88 93, 19 83.12, 19 66 C 19 48, 50 8, 50 8 Z" stroke="#2E4F2D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
   
