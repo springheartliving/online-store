@@ -242,6 +242,10 @@ export default function App() {
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
 
+  const totalCartPv = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.product.pv * item.quantity, 0);
+  }, [cart]);
+
   useEffect(() => {
     const syncLiffCustomer = async () => {
       if (!lineConfig.liffId?.trim()) {
@@ -513,6 +517,9 @@ export default function App() {
               <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#8A8576]">諮詢清單：{cart.length} 項商品</div>
               <div className="text-xs sm:text-sm font-mono font-bold text-[#2D2D2D] truncate">
                 總金額：<span className="text-[#7C8B7C]">NT$ {totalCartAmount.toLocaleString()}</span>
+                {!canViewPv && (
+                  <span className="ml-2 text-[#7C8B7C]">{totalCartPv}PV</span>
+                )}
               </div>
             </div>
           </div>

@@ -133,7 +133,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
             {canViewPv && (
               <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap block">
-                {product.pv} pv
+                {product.pv}PV
               </span>
             )}
           </div>

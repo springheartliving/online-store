@@ -183,7 +183,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                               </span>
                               {canViewPv && (
                                 <span className="text-[#7C8B7C] font-medium whitespace-nowrap">
-                                  {item.product.pv} pv
+                                  {item.product.pv}PV
                                 </span>
                               )}
                             </div>
@@ -267,7 +267,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                           </span>
                           {canViewPv && (
                             <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
-                              {itemPv} pv
+                              {itemPv}PV
                             </span>
                           )}
                         </div>
@@ -290,7 +290,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                   </span>
                   {canViewPv && (
                     <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium whitespace-nowrap">
-                      {totalPv} pv
+                      {totalPv}PV
                     </span>
                   )}
                 </div>

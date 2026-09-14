@@ -301,7 +301,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 )}
                 {canViewPv && (
                   <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
-                    {product.pv} pv
+                    {product.pv}PV
                   </span>
                 )}
               </div>
