@@ -335,6 +335,7 @@ export default function App() {
                 name: item.name,
                 sku: item.sku,
                 price: item.price,
+                pv: 0,
                 regular_price: item.price,
                 is_published: true,
                 short_description: "",

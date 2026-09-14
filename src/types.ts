@@ -22,6 +22,7 @@ export interface Product {
   slug: string;
   sku: string;
   price: number;
+  pv: number;
   regular_price: number;
   is_published: boolean;
   isOnHot?: boolean;

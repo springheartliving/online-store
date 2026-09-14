@@ -116,18 +116,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="pt-2.5 border-t border-[#E5E2D9] mt-2">
         <div className="flex items-baseline justify-between mb-2.5">
           <div>
-            <span className="text-[10px] text-[#8A8576] uppercase tracking-widest font-medium block">
+            <span className="text-[11px] text-[#2D2D2D] uppercase tracking-widest font-medium block">
               售價
             </span>
             <span className="font-mono font-bold text-base sm:text-lg text-[#2D2D2D] tracking-tight">
               {formatNTD(product.price)}
             </span>
           </div>
-          {product.regular_price > product.price && (
-            <span className="text-[11px] font-mono text-[#8A8576] line-through">
-              {formatNTD(product.regular_price)}
+          <div className="text-right">
+            {product.regular_price > product.price && (
+              <span className="text-sm sm:text-base font-mono text-[#8A8576] line-through block">
+                {formatNTD(product.regular_price)}
+              </span>
+            )}
+            <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap block">
+              {product.pv} pv
             </span>
-          )}
+          </div>
         </div>
 
         {/* Quantity Selector & Add to Inquiry Button (Touch friendly) */}

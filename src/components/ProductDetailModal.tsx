@@ -288,15 +288,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Price Box */}
             <div className="bg-white p-3.5 sm:p-4 rounded-sm border border-[#E5E2D9] shadow-xs">
               <div className="flex items-baseline gap-3">
-                <span className="text-[10px] text-[#8A8576] uppercase tracking-widest font-medium">售價</span>
+                <span className="text-[11px] text-[#2D2D2D] uppercase tracking-widest font-medium">售價</span>
                 <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                   {formatNTD(product.price)}
                 </span>
                 {product.regular_price > product.price && (
-                  <span className="text-xs font-mono text-[#8A8576] line-through">
+                  <span className="text-sm sm:text-base font-mono text-[#8A8576] line-through">
                     {formatNTD(product.regular_price)}
                   </span>
                 )}
+                <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
+                  {product.pv} pv
+                </span>
               </div>
               {!product.in_stock && (
                 <div className="mt-2 text-xs font-medium text-rose-700">

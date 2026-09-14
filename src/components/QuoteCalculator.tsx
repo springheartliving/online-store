@@ -49,6 +49,10 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
 
+  const totalPv = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.product.pv * item.quantity, 0);
+  }, [cart]);
+
   // Build Quotation payload
   const currentQuotation: Quotation = useMemo(() => {
     return {
@@ -146,6 +150,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
               <div className="space-y-3">
                 {cart.map((item, idx) => {
                   const itemTotal = item.product.price * item.quantity;
+                  const itemPv = item.product.pv * item.quantity;
                   return (
                     <div
                       key={`cart-item-${item.product.id}-${idx}`}
@@ -171,8 +176,11 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                               <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[10px] text-[#6E6A5E]">
                                 {item.product.sku}
                               </span>
-                              <span className="font-mono text-[#6E6A5E]">
+                              <span className="font-mono text-[#2D2D2D]">
                                 單價 {formatNTD(item.product.price)}
+                              </span>
+                              <span className="text-[#7C8B7C] font-medium whitespace-nowrap">
+                                {item.product.pv} pv
                               </span>
                             </div>
 
@@ -253,6 +261,9 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                           <span className="text-sm sm:text-base font-mono font-bold text-[#2D2D2D] tracking-tight">
                             {formatNTD(itemTotal)}
                           </span>
+                          <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
+                            {itemPv} pv
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -267,9 +278,14 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
             <div className="bg-white p-5 rounded-sm border border-[#E5E2D9] text-xs sm:text-sm">
               <div className="flex items-baseline justify-between">
                 <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#2D2D2D]">諮詢清單總計</span>
-                <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
-                  {formatNTD(totalAmount)}
-                </span>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
+                    {formatNTD(totalAmount)}
+                  </span>
+                  <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium whitespace-nowrap">
+                    {totalPv} pv
+                  </span>
+                </div>
               </div>
             </div>
           )}
