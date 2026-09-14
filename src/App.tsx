@@ -13,7 +13,7 @@ import { ProductCard } from "./components/ProductCard";
 import { ProductDetailModal } from "./components/ProductDetailModal";
 import { QuoteCalculator } from "./components/QuoteCalculator";
 import { OrderHistoryModal } from "./components/OrderHistoryModal";
-import { DEFAULT_LINE_CONFIG } from "./utils/formatters";
+import { canViewPvForLineId, DEFAULT_LINE_CONFIG } from "./utils/formatters";
 import { getLiffCustomer, isLiffEnvironmentAllowed, sendQuoteViaLiff } from "./utils/liff";
 import { saveQuotationToGoogleSheet } from "./utils/googleSheets";
 import { resolveProductCategories } from "./utils/categories";
@@ -49,6 +49,7 @@ export default function App() {
   // Line Official Account & LIFF Config
   const lineConfig = DEFAULT_LINE_CONFIG;
   const [customer, setCustomer] = useState<CustomerInfo>({ name: "", lineId: "" });
+  const canViewPv = canViewPvForLineId(customer.lineId);
 
   // Order history
   const [orderHistory, setOrderHistory] = useState<Quotation[]>(() => {
@@ -487,6 +488,7 @@ export default function App() {
               <ProductCard
                 key={`prod-${product.id}-${idx}`}
                 product={product}
+                canViewPv={canViewPv}
                 inCartCount={inCartCountMap[product.id] || 0}
                 onAddToCart={handleAddToCart}
                 onQuickView={setSelectedProductForDetail}
@@ -542,6 +544,7 @@ export default function App() {
       <ProductDetailModal
         product={selectedProductForDetail}
         isOpen={Boolean(selectedProductForDetail)}
+        canViewPv={canViewPv}
         onClose={() => setSelectedProductForDetail(null)}
         onAddToCart={handleAddToCart}
         inCartCount={selectedProductForDetail ? inCartCountMap[selectedProductForDetail.id] || 0 : 0}
@@ -552,6 +555,7 @@ export default function App() {
         onClose={() => setIsCartOpen(false)}
         cart={cart}
         customer={customer}
+        canViewPv={canViewPv}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onSendLineNotify={handleSendLineNotify}

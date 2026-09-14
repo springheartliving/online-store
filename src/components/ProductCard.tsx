@@ -6,6 +6,7 @@ import { ImageWithFallback } from "./ImageWithFallback";
 
 interface ProductCardProps {
   product: Product;
+  canViewPv: boolean;
   inCartCount: number;
   onAddToCart: (product: Product, quantity: number) => void;
   onQuickView: (product: Product) => void;
@@ -13,6 +14,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
+  canViewPv,
   inCartCount,
   onAddToCart,
   onQuickView,
@@ -129,9 +131,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 {formatNTD(product.regular_price)}
               </span>
             )}
-            <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap block">
-              {product.pv} pv
-            </span>
+            {canViewPv && (
+              <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap block">
+                {product.pv} pv
+              </span>
+            )}
           </div>
         </div>
 

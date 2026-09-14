@@ -40,6 +40,7 @@ cp .env.example .env
 | `VITE_LINE_ID` | LINE 官方帳號 ID（如 `@springheart`） |
 | `VITE_LINE_URL` | LINE 官方帳號加入好友連結 |
 | `VITE_LIFF_ID` | LINE LIFF App ID |
+| `VITE_PV_ALLOWED_LINE_IDS` | 可查看 PV 的 LINE User ID，可用逗號、分號、空白、`|` 或 `/` 分隔多個 ID |
 | `VITE_LIFF_URL` | LINE LIFF 應用程式 URL |
 | `VITE_GOOGLE_SHEETS_WEB_APP_URL` | Google Apps Script Web App URL |
 
@@ -52,6 +53,7 @@ cp .env.example .env
 | `VITE_LINE_ID` | LINE 官方帳號 ID（如 `@springheart`） |
 | `VITE_LINE_URL` | LINE 官方帳號加入好友連結 |
 | `VITE_LIFF_ID` | LINE LIFF App ID |
+| `VITE_PV_ALLOWED_LINE_IDS` | 可查看 PV 的 LINE User ID，可用逗號、分號、空白、`|` 或 `/` 分隔多個 ID |
 | `VITE_LIFF_URL` | LINE LIFF 應用程式 URL |
 | `VITE_GOOGLE_SHEETS_WEB_APP_URL` | Google Apps Script Web App URL |
 

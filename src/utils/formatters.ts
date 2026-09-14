@@ -22,6 +22,18 @@ export const DEFAULT_LINE_CONFIG: LineOfficialConfig = {
   useOaMessage: true,
 };
 
+const PV_ALLOWED_LINE_IDS = String(
+  (import.meta as any).env?.VITE_PV_ALLOWED_LINE_IDS || ""
+)
+  .split(/[\s,，、;；|/]+/)
+  .map((lineId) => lineId.trim())
+  .filter(Boolean);
+
+export function canViewPvForLineId(lineId: string): boolean {
+  const normalizedLineId = lineId.trim();
+  return Boolean(normalizedLineId) && PV_ALLOWED_LINE_IDS.includes(normalizedLineId);
+}
+
 /**
  * Builds the official LINE chat deep link or LIFF link for direct consultation
  */

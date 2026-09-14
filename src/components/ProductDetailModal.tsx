@@ -15,6 +15,7 @@ import { ImageWithFallback } from "./ImageWithFallback";
 interface ProductDetailModalProps {
   product: Product | null;
   isOpen: boolean;
+  canViewPv: boolean;
   onClose: () => void;
   onAddToCart: (product: Product, quantity: number) => void;
   inCartCount: number;
@@ -23,6 +24,7 @@ interface ProductDetailModalProps {
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
   isOpen,
+  canViewPv,
   onClose,
   onAddToCart,
 }) => {
@@ -297,9 +299,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     {formatNTD(product.regular_price)}
                   </span>
                 )}
-                <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
-                  {product.pv} pv
-                </span>
+                {canViewPv && (
+                  <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
+                    {product.pv} pv
+                  </span>
+                )}
               </div>
               {!product.in_stock && (
                 <div className="mt-2 text-xs font-medium text-rose-700">

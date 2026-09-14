@@ -22,6 +22,7 @@ interface QuoteCalculatorProps {
   onClose: () => void;
   cart: CartItem[];
   customer: CustomerInfo;
+  canViewPv: boolean;
   onUpdateQuantity: (productId: number, newQty: number) => void;
   onRemoveItem: (productId: number) => void;
   onSendLineNotify: (quotation: Quotation, customer: CustomerInfo) => void;
@@ -35,6 +36,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   onClose,
   cart,
   customer,
+  canViewPv,
   onUpdateQuantity,
   onRemoveItem,
   onSendLineNotify,
@@ -169,19 +171,21 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                           />
 
                           <div className="flex-1 min-w-0 pr-1">
-                            <h4 className="text-xs sm:text-sm font-light font-medium text-[#2D2D2D] leading-snug group-hover:text-[#7C8B7C] transition-colors break-words">
+                            <h4 className="text-sm sm:text-base font-light font-medium text-[#2D2D2D] leading-snug group-hover:text-[#7C8B7C] transition-colors break-words">
                               {item.product.name}
                             </h4>
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-[#8A8576] mt-1">
-                              <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[10px] text-[#6E6A5E]">
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-[#8A8576] mt-1">
+                              <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[#6E6A5E]">
                                 {item.product.sku}
                               </span>
                               <span className="font-mono text-[#2D2D2D]">
                                 單價 {formatNTD(item.product.price)}
                               </span>
-                              <span className="text-[#7C8B7C] font-medium whitespace-nowrap">
-                                {item.product.pv} pv
-                              </span>
+                              {canViewPv && (
+                                <span className="text-[#7C8B7C] font-medium whitespace-nowrap">
+                                  {item.product.pv} pv
+                                </span>
+                              )}
                             </div>
 
                             {/* Product Attributes in Cart */}
@@ -261,9 +265,11 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                           <span className="text-sm sm:text-base font-mono font-bold text-[#2D2D2D] tracking-tight">
                             {formatNTD(itemTotal)}
                           </span>
-                          <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
-                            {itemPv} pv
-                          </span>
+                          {canViewPv && (
+                            <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
+                              {itemPv} pv
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -282,9 +288,11 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                   <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                     {formatNTD(totalAmount)}
                   </span>
-                  <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium whitespace-nowrap">
-                    {totalPv} pv
-                  </span>
+                  {canViewPv && (
+                    <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium whitespace-nowrap">
+                      {totalPv} pv
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
