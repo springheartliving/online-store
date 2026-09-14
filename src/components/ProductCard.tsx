@@ -91,15 +91,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.name}
           </h3>
 
-          {product.short_description ? (
-            <p className="text-xs text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light">
-              {product.short_description}
-            </p>
-          ) : (
-            <p className="text-xs text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light">
-              泉心生活 Spring Heart Living 頂級水療與漢方養生系列，專為身心療癒設計。
-            </p>
-          )}
+          <p className="text-xs text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light">
+            {product.short_description}
+          </p>
 
           {/* Attributes summary if any */}
           {/* {product.attributes && product.attributes.length > 0 && (

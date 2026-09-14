@@ -168,18 +168,16 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                               {item.product.name}
                             </h4>
                             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-[#8A8576] mt-1">
-                              {item.product.sku && (
-                                <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[10px] text-[#6E6A5E]">
-                                  {item.product.sku}
-                                </span>
-                              )}
+                              <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[10px] text-[#6E6A5E]">
+                                {item.product.sku}
+                              </span>
                               <span className="font-mono text-[#6E6A5E]">
                                 單價 {formatNTD(item.product.price)}
                               </span>
                             </div>
 
                             {/* Product Attributes in Cart */}
-                            {item.product.attributes && item.product.attributes.length > 0 && (
+                            {/* {item.product.attributes && item.product.attributes.length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-1.5">
                                 {item.product.attributes.map((attr, idx) => (
                                   <span
@@ -191,7 +189,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                                   </span>
                                 ))}
                               </div>
-                            )}
+                            )} */}
 
                             {/* Product Tags in Cart */}
                             {/* {item.product.tags && item.product.tags.length > 0 && (
