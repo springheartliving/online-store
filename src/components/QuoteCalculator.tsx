@@ -186,7 +186,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                               <span className="font-mono text-[#2D2D2D]">
                                 {formatNTD(item.product.price)}
                               </span> 
-                              {!canViewPv && (
+                              {canViewPv && (
                               <span className="whitespace-nowrap">
                                 <span className="text-[#7C8B7C] font-medium">
                                   {item.product.pv_usd ?? 0}PV
@@ -270,15 +270,14 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                         </div>
 
                         {/* Item Total Subtotal */}
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-xs sm:text-sm text-[#8A8576] uppercase tracking-wider">小計</span>
-                          <span className="text-base sm:text-xl font-mono font-bold text-[#2D2D2D] tracking-tight">
-                            {formatNTD(itemTotal)}
-                          </span>                          
-                        </div>
-
-                        {canViewPv && (
-                          <div className="flex items-baseline gap-1.5">                            
+                        <div className="flex flex-col items-end gap-0.5">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xs sm:text-sm text-[#8A8576] uppercase tracking-wider">小計</span>
+                            <span className="text-base sm:text-xl font-mono font-bold text-[#2D2D2D] tracking-tight">
+                              {formatNTD(itemTotal)}
+                            </span>
+                          </div>
+                          {canViewPv && (
                             <span className="whitespace-nowrap">
                               <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
                                 {itemPvUsd}PV
@@ -286,9 +285,9 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                               <span className="ml-2 text-sm sm:text-base text-[#B06F73] font-medium">
                                 {itemPvNtd}PV
                               </span>
-                            </span>                            
-                          </div>
-                        )}
+                            </span>
+                          )}
+                        </div>                        
                       </div>
                     </div>
                   );
@@ -300,15 +299,13 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           {/* Financial Breakdown */}
           {cart.length > 0 && (
             <div className="bg-white p-5 rounded-sm border border-[#E5E2D9] text-xs sm:text-sm">
-              <div className="flex items-baseline justify-between">
+              <div className="flex items-center justify-between">
                 <span className="text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2D2D2D]">諮詢清單總計</span>
-                <div className="flex items-baseline gap-3">
+                <div className="flex flex-col items-end gap-0.5">
                   <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                     {formatNTD(totalAmount)}
-                  </span>                  
-                </div>
-                {canViewPv && (
-                  <div className="flex items-baseline gap-3">                    
+                  </span>
+                  {canViewPv && (
                     <span className="whitespace-nowrap">
                       <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
                         {totalPvUsd}PV
@@ -316,9 +313,9 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                       <span className="ml-2 text-sm sm:text-base text-[#B06F73] font-medium">
                         {totalPvNtd}PV
                       </span>
-                    </span>                    
-                  </div>
-                )}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           )}
