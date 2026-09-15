@@ -406,11 +406,11 @@ export default function App() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 bg-white p-3.5 rounded-sm border border-[#E5E2D9] text-xs">
           
           {/* Status info */}
-          <div className="flex items-center gap-2 text-[#6E6A5E]">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-[#6E6A5E]">
             <span className="font-mono font-bold text-[#7C8B7C]">
               {filteredProducts.length}
             </span>
-            <span className="uppercase tracking-wider text-[11px]">項商品展示中</span>
+            <span className="uppercase tracking-wider">項商品展示中</span>
             {searchQuery && (
               <span className="text-[#8A8576] font-light truncate">
                 (關鍵字：「{searchQuery}」)
@@ -420,16 +420,16 @@ export default function App() {
 
           {/* Sort Controller */}
           <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5 text-[#8A8576] text-[11px] uppercase tracking-wider shrink-0">
+            <div className="flex items-center gap-1.5 text-[#8A8576] text-xs sm:text-sm uppercase tracking-wider shrink-0">
               <ArrowUpDown className="w-3.5 h-3.5 text-[#7C8B7C]" />
               <span>排序：</span>
             </div>
             
-            <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
+            <div className="flex items-center gap-1.5 flex-1 sm:flex-initial text-xs sm:text-sm">
               <button
                 id="sort-default-btn"
                 onClick={() => setSortBy("default")}
-                className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm text-[11px] uppercase tracking-wider transition cursor-pointer text-center ${
+                className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm uppercase tracking-wider transition cursor-pointer text-center ${
                   sortBy === "default"
                     ? "bg-[#7C8B7C] text-white font-semibold"
                     : "bg-[#FAF9F6] text-[#6E6A5E] hover:text-[#2D2D2D] border border-[#E5E2D9]"
@@ -441,7 +441,7 @@ export default function App() {
               <button
                 id="sort-price-asc-btn"
                 onClick={() => setSortBy("price-asc")}
-                className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm text-[11px] uppercase tracking-wider transition cursor-pointer text-center ${
+                className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm uppercase tracking-wider transition cursor-pointer text-center ${
                   sortBy === "price-asc"
                     ? "bg-[#7C8B7C] text-white font-semibold"
                     : "bg-[#FAF9F6] text-[#6E6A5E] hover:text-[#2D2D2D] border border-[#E5E2D9]"
@@ -453,7 +453,7 @@ export default function App() {
               <button
                 id="sort-price-desc-btn"
                 onClick={() => setSortBy("price-desc")}
-                className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm text-[11px] uppercase tracking-wider transition cursor-pointer text-center ${
+                className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm uppercase tracking-wider transition cursor-pointer text-center ${
                   sortBy === "price-desc"
                     ? "bg-[#7C8B7C] text-white font-semibold"
                     : "bg-[#FAF9F6] text-[#6E6A5E] hover:text-[#2D2D2D] border border-[#E5E2D9]"
@@ -519,23 +519,23 @@ export default function App() {
               {cart.reduce((a, b) => a + b.quantity, 0)}
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#8A8576]">諮詢清單：{cart.length} 項商品</div>
-              <div className="text-xs sm:text-sm font-mono font-bold text-[#2D2D2D] truncate">
+              <div className="text-xs sm:text-sm uppercase tracking-wider text-[#8A8576]">諮詢清單：{cart.length} 項商品</div>
+              <div className="text-sm sm:text-base font-mono font-bold text-[#2D2D2D] truncate">
                 總金額：<span className="text-[#7C8B7C]">NT$ {totalCartAmount.toLocaleString()}</span>
-                {/* {canViewPv && (
-                  <span className="ml-2 whitespace-nowrap">
-                    <span className="text-[#7C8B7C]">{totalCartPv}PV</span>
-                    <span className="ml-2 text-[#B06F73]">{totalCartPvNtd}PV</span>
-                  </span>
-                )} */}
               </div>
+              {canViewPv && (
+                <div className="text-xs sm:text-sm">
+                  <span className="text-[#7C8B7C]">{totalCartPv}PV</span>
+                  <span className="ml-2 text-[#B06F73]">{totalCartPvNtd}PV</span>                 
+                </div>
+              )}
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setIsCartOpen(true)}
-              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-sm bg-[#2D2D2D] hover:bg-[#1f1f1f] text-white text-[11px] sm:text-xs uppercase tracking-[0.1em] font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer transition active:scale-98"
+              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-sm bg-[#2D2D2D] hover:bg-[#1f1f1f] text-white text-xs sm:text-sm uppercase tracking-[0.1em] font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer transition active:scale-98"
             >
               <ShoppingBag className="w-3.5 h-3.5" />
               <span>查看諮詢清單</span>

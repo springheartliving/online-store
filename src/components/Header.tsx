@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               id="order-history-btn"
               onClick={onOpenHistory}
-              className="p-2 sm:px-3 sm:py-2 text-[11px] uppercase tracking-wider font-medium rounded-sm bg-[#FAF9F6] hover:bg-[#F0EEE6] text-[#6E6A5E] hover:text-[#2D2D2D] border border-[#E5E2D9] transition flex items-center gap-1.5 cursor-pointer"
+              className="p-2 sm:px-3 sm:py-2 text-xs uppercase tracking-wider font-medium rounded-sm bg-[#FAF9F6] hover:bg-[#F0EEE6] text-[#6E6A5E] hover:text-[#2D2D2D] border border-[#E5E2D9] transition flex items-center gap-1.5 cursor-pointer"
               title="檢視諮詢清單紀錄"
             >
               <History className="w-3.5 h-3.5 text-[#8A8576]" />
@@ -104,12 +104,12 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden xs:inline">諮詢清單</span>
               <span className="xs:hidden">清單</span>
               {totalItemCount > 0 && (
-                <span className="px-1.5 py-0.2 bg-white text-[#2D2D2D] font-mono font-bold text-[10px] rounded-xs">
+                <span className="px-1.5 py-0.2 bg-white text-[#2D2D2D] font-mono font-bold rounded-xs">
                   {totalItemCount}
                 </span>
               )}
               {totalAmount > 0 && (
-                <span className="hidden xl:inline text-[11px] font-mono text-white/90 pl-1.5 border-l border-white/30">
+                <span className="hidden xl:inline font-mono text-white/90 pl-1.5 border-l border-white/30">
                   {formatNTD(totalAmount)}
                 </span>
               )}

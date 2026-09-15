@@ -55,16 +55,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* Top Badges */}
           <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-20">
-            <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-xs bg-white/90 backdrop-blur-xs text-[#7C8B7C] border border-[#E5E2D9]">
+            <span className="px-2 py-0.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider rounded-xs bg-white/90 backdrop-blur-xs text-[#7C8B7C] border border-[#E5E2D9]">
               {primaryCategory}
             </span>
             {product.isOnHot && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-rose-700 text-white">
+              <span className="px-1.5 py-0.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-xs bg-rose-700 text-white">
                 熱銷推薦
               </span>
             )}
             {!product.in_stock && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
+              <span className="px-1.5 py-0.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-xs bg-[#2D2D2D] text-white">
                 暫無供應
               </span>
             )}
@@ -78,7 +78,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div> */}
 
           {/* Quick View overlay button */}
-          <div className="absolute inset-0 m-auto w-24 h-8 rounded-sm bg-[#2D2D2D]/90 text-white text-[10px] uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md z-20 hidden sm:flex">
+          <div className="absolute inset-0 m-auto w-24 h-8 rounded-sm bg-[#2D2D2D]/90 text-white text-[10px] sm:text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md z-20 hidden sm:flex">
             <Eye className="w-3 h-3" />
             <span>商品詳情</span>
           </div>
@@ -93,7 +93,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.name}
           </h3>
 
-          <p className="text-xs text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light">
+          <p className="text-xs sm:text-sm text-[#8A8576] line-clamp-2 mb-2 leading-relaxed font-light">
             {product.short_description}
           </p>
 
@@ -116,32 +116,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Price & Action Footer */}
       <div className="pt-2.5 border-t border-[#E5E2D9] mt-2">
-        <div className="flex items-baseline justify-between mb-2.5">
-          <div>
-            <span className="text-[11px] text-[#2D2D2D] uppercase tracking-widest font-medium block">
-              售價
+        <div className="flex items-baseline gap-3 mb-2.5">
+          {product.regular_price > product.price && (
+            <span className="text-sm sm:text-base font-mono text-[#8A8576] line-through block">
+              {formatNTD(product.regular_price)}
             </span>
-            <span className="font-mono font-bold text-base sm:text-lg text-[#2D2D2D] tracking-tight">
-              {formatNTD(product.price)}
-            </span>
-          </div>
-          <div className="text-right">
-            {product.regular_price > product.price && (
-              <span className="text-sm sm:text-base font-mono text-[#8A8576] line-through block">
-                {formatNTD(product.regular_price)}
+          )}
+          <span className="font-mono font-bold text-base sm:text-lg text-[#2D2D2D] tracking-tight">
+            {formatNTD(product.price)}
+          </span>          
+                     
+          {canViewPv && (
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
+                {product.pv_usd ?? 0}PV
               </span>
-            )}
-            {canViewPv && (
-              <div className="flex items-center justify-end gap-2 whitespace-nowrap">
-                <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
-                  {product.pv_usd ?? 0}PV
-                </span>
-                <span className="text-sm sm:text-base text-[#B06F73] font-medium">
-                  {product.pv_ntd ?? 0}PV
-                </span>
-              </div>
-            )}
-          </div>
+              <span className="text-sm sm:text-base text-[#B06F73] font-medium">
+                {product.pv_ntd ?? 0}PV
+              </span>
+            </div>
+          )}          
         </div>
 
         {/* Quantity Selector & Add to Inquiry Button (Touch friendly) */}
@@ -156,7 +150,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             >
               -
             </button>
-            <span className="w-7 text-center font-mono text-xs font-bold">
+            <span className="w-7 text-center font-mono text-xs sm:text-sm font-bold">
               {qty}
             </span>
             <button
@@ -174,7 +168,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             id={`add-to-inquiry-btn-${product.id}`}
             onClick={handleAdd}
             disabled={!product.in_stock}
-            className={`flex-1 h-8 px-2.5 sm:px-3 rounded-sm text-[11px] uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 h-8 px-2.5 sm:px-3 rounded-sm text-[11px] sm:text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               justAdded
                 ? "bg-[#6A796A] text-white"
                 : inCartCount > 0

@@ -99,7 +99,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                   {cart.length} 項
                 </span>
               </h2>
-              <p className="text-xs text-[#8A8576] font-light mt-0.5">
+              <p className="text-xs sm:text-sm text-[#8A8576] font-light mt-0.5">
                 瀏覽您喜愛的商品
               </p>
             </div>
@@ -133,11 +133,11 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           {/* 1. Item List */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <h3 className="text-xs sm:text-sm font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-[#7C8B7C]" />
                 諮詢商品明細
               </h3>
-              <span className="text-[11px] text-[#8A8576] font-light">
+              <span className="text-xs sm:text-sm text-[#8A8576] font-light">
                 可自由調整數量或刪除品項
               </span>
             </div>
@@ -179,24 +179,24 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                             <h4 className="text-sm sm:text-base font-light font-medium text-[#2D2D2D] leading-snug group-hover:text-[#7C8B7C] transition-colors break-words">
                               {item.product.name}
                             </h4>
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-[#8A8576] mt-1">
-                              <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[#6E6A5E]">
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm sm:text-base text-[#8A8576] mt-1">
+                              {/* <span className="font-mono bg-[#F0EEE6] px-1.5 py-0.5 rounded-xs text-[#6E6A5E]">
                                 {item.product.sku}
-                              </span>
+                              </span> */}
                               <span className="font-mono text-[#2D2D2D]">
-                                單價 {formatNTD(item.product.price)}
-                              </span>
-                              {canViewPv && (
-                                <span className="whitespace-nowrap">
-                                  <span className="text-[#7C8B7C] font-medium">
-                                    {item.product.pv_usd ?? 0}PV
-                                  </span>
-                                  <span className="ml-2 text-[#B06F73] font-medium">
-                                    {item.product.pv_ntd ?? 0}PV
-                                  </span>
+                                {formatNTD(item.product.price)}
+                              </span> 
+                              {!canViewPv && (
+                              <span className="whitespace-nowrap">
+                                <span className="text-[#7C8B7C] font-medium">
+                                  {item.product.pv_usd ?? 0}PV
                                 </span>
-                              )}
-                            </div>
+                                <span className="ml-2 text-[#B06F73] font-medium">
+                                  {item.product.pv_ntd ?? 0}PV
+                                </span>
+                              </span>
+                            )}                             
+                            </div>                            
 
                             {/* Product Attributes in Cart */}
                             {/* {item.product.attributes && item.product.attributes.length > 0 && (
@@ -255,7 +255,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
-                            <span className="w-8 text-center text-xs font-mono font-bold text-[#2D2D2D]">
+                            <span className="w-8 text-center text-sm sm:text-base font-mono font-bold text-[#2D2D2D]">
                               {item.quantity}
                             </span>
                             <button
@@ -270,12 +270,15 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                         </div>
 
                         {/* Item Total Subtotal */}
-                        <div className="flex items-baseline gap-1.5 text-right">
-                          <span className="text-[11px] text-[#8A8576] uppercase tracking-wider">小計</span>
-                          <span className="text-sm sm:text-base font-mono font-bold text-[#2D2D2D] tracking-tight">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-xs sm:text-sm text-[#8A8576] uppercase tracking-wider">小計</span>
+                          <span className="text-base sm:text-xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                             {formatNTD(itemTotal)}
-                          </span>
-                          {canViewPv && (
+                          </span>                          
+                        </div>
+
+                        {canViewPv && (
+                          <div className="flex items-baseline gap-1.5">                            
                             <span className="whitespace-nowrap">
                               <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
                                 {itemPvUsd}PV
@@ -283,9 +286,9 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                               <span className="ml-2 text-sm sm:text-base text-[#B06F73] font-medium">
                                 {itemPvNtd}PV
                               </span>
-                            </span>
-                          )}
-                        </div>
+                            </span>                            
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -298,22 +301,24 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           {cart.length > 0 && (
             <div className="bg-white p-5 rounded-sm border border-[#E5E2D9] text-xs sm:text-sm">
               <div className="flex items-baseline justify-between">
-                <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#2D2D2D]">諮詢清單總計</span>
+                <span className="text-sm sm:text-base font-semibold uppercase tracking-wider text-[#2D2D2D]">諮詢清單總計</span>
                 <div className="flex items-baseline gap-3">
                   <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
                     {formatNTD(totalAmount)}
-                  </span>
-                  {canViewPv && (
+                  </span>                  
+                </div>
+                {canViewPv && (
+                  <div className="flex items-baseline gap-3">                    
                     <span className="whitespace-nowrap">
-                      <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium">
+                      <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
                         {totalPvUsd}PV
                       </span>
-                      <span className="ml-2 text-xl sm:text-2xl text-[#B06F73] font-medium">
+                      <span className="ml-2 text-sm sm:text-base text-[#B06F73] font-medium">
                         {totalPvNtd}PV
                       </span>
-                    </span>
-                  )}
-                </div>
+                    </span>                    
+                  </div>
+                )}
               </div>
             </div>
           )}

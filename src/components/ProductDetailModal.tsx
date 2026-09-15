@@ -215,7 +215,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               />
 
               {product.isOnHot && (
-                <span className="absolute top-3 left-3 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-xs bg-rose-700 text-white">
+                <span className="absolute top-3 left-3 px-2 py-0.5 text-xs sm:text-sm uppercase font-bold tracking-wider rounded-xs bg-rose-700 text-white">
                   熱銷推薦
                 </span>
               )}
@@ -258,16 +258,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
 
           {/* 2. Product Details & Specifications */}
-          <div className="p-4 sm:p-6 space-y-4">
+          <div className="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
             {/* SKU, Category & Tags */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-0.5 text-[10px] font-mono rounded-xs bg-white text-[#8A8576] border border-[#E5E2D9]">
+              <span className="px-2 py-0.5 font-mono rounded-xs bg-white text-[#8A8576] border border-[#E5E2D9]">
                 {product.sku}
               </span>
               {product.categories.map((c, idx) => (
                 <span
                   key={`cat-${idx}-${c.id || c.name}`}
-                  className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold rounded-xs bg-white text-[#7C8B7C] border border-[#E5E2D9]"
+                  className="px-2 py-0.5 uppercase tracking-wider font-semibold rounded-xs bg-white text-[#7C8B7C] border border-[#E5E2D9]"
                 >
                   {c.name}
                 </span>
@@ -275,7 +275,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {product.tags && product.tags.length > 0 && product.tags.map((t, idx) => (
                 <span
                   key={`tag-${idx}-${t.id || t.name}`}
-                  className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold rounded-xs bg-white text-[#8A8576] border border-dashed border-[#E5E2D9]"
+                  className="px-2 py-0.5 uppercase tracking-wider font-semibold rounded-xs bg-white text-[#8A8576] border border-dashed border-[#E5E2D9]"
                 >
                   #{t.name}
                 </span>
@@ -289,16 +289,15 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             {/* Price Box */}
             <div className="bg-white p-3.5 sm:p-4 rounded-sm border border-[#E5E2D9] shadow-xs">
-              <div className="flex items-baseline gap-3">
-                <span className="text-[11px] text-[#2D2D2D] uppercase tracking-widest font-medium">售價</span>
-                <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
-                  {formatNTD(product.price)}
-                </span>
+              <div className="flex items-baseline gap-3">                
                 {product.regular_price > product.price && (
-                  <span className="text-sm sm:text-base font-mono text-[#8A8576] line-through">
+                  <span className="text-base sm:text-xl font-mono text-[#8A8576] line-through">
                     {formatNTD(product.regular_price)}
                   </span>
                 )}
+                <span className="text-xl sm:text-2xl font-mono font-bold text-[#2D2D2D] tracking-tight">
+                  {formatNTD(product.price)}
+                </span>                
                 {canViewPv && (
                   <div className="flex items-center gap-2 whitespace-nowrap">
                     <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
@@ -320,7 +319,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             {/* Description & Key Features */}
             <div className="space-y-2">
-              <h4 className="text-[11px] font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
+              <h4 className="text-xs sm:text-sm font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#7C8B7C]" />
                 產品介紹
               </h4>
@@ -350,7 +349,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Attributes / Specifications */}
             {product.attributes && product.attributes.length > 0 && (
               <div className="space-y-1.5">
-                <h4 className="text-[11px] font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
+                <h4 className="text-xs sm:text-sm font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-[#7C8B7C]" />
                   產品規格
                 </h4>
@@ -358,10 +357,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   {product.attributes.map((attr, idx) => (
                     <div
                       key={`attr-${idx}-${attr.id || attr.name}`}
-                      className="flex items-center justify-between p-2.5 rounded-xs bg-white border border-[#E5E2D9]"
+                      className="flex items-center justify-between p-2.5 rounded-xs bg-white border border-[#E5E2D9] text-xs sm:text-sm"
                     >
-                      <span className="text-[#8A8576] font-medium text-[11px]">{attr.name}</span>
-                      <span className="text-[#2D2D2D] font-mono text-xs">{attr.terms.join(", ")}</span>
+                      <span className="text-[#8A8576] font-medium">{attr.name}</span>
+                      <span className="text-[#2D2D2D] font-mono">{attr.terms.join(", ")}</span>
                     </div>
                   ))}
                 </div>

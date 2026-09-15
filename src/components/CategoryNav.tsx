@@ -72,7 +72,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           id="category-tab-all"
           ref={selectedCategory === "all" ? activeTabRef : null}
           onClick={() => onSelectCategory("all")}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs uppercase tracking-wider font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs sm:text-sm uppercase tracking-wider font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
             selectedCategory === "all"
               ? "bg-[#7C8B7C] text-white shadow-xs"
               : "bg-white text-[#6E6A5E] hover:bg-[#F0EEE6] hover:text-[#2D2D2D] border border-[#E5E2D9]"
@@ -81,7 +81,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           <Grid className="w-3.5 h-3.5" />
           <span>全部商品</span>
           <span
-            className={`text-[10px] font-mono px-1.5 py-0.5 rounded-xs ${
+            className={`text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded-xs ${
               selectedCategory === "all"
                 ? "bg-[#6A796A] text-white"
                 : "bg-[#F0EEE6] text-[#8A8576]"
@@ -103,7 +103,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               id={`category-tab-${cat.id}`}
               ref={isSelected ? activeTabRef : null}
               onClick={() => onSelectCategory(categoryId)}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs uppercase tracking-wider font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs sm:text-sm uppercase tracking-wider font-medium whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                 isSelected
                   ? "bg-[#7C8B7C] text-white shadow-xs"
                   : "bg-white text-[#6E6A5E] hover:bg-[#F0EEE6] hover:text-[#2D2D2D] border border-[#E5E2D9]"
@@ -112,7 +112,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               {/* {getCategoryIcon(cat.name)} */}
               <span>{cat.name}</span>
               <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded-xs ${
+                className={`text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded-xs ${
                   isSelected
                     ? "bg-[#6A796A] text-white"
                     : "bg-[#F0EEE6] text-[#8A8576]"
