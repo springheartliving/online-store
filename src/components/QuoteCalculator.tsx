@@ -51,8 +51,12 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
     return cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cart]);
 
-  const totalPv = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.product.pv * item.quantity, 0);
+  const totalPvUsd = useMemo(() => {
+    return cart.reduce((sum, item) => sum + (item.product.pv_usd ?? 0) * item.quantity, 0);
+  }, [cart]);
+
+  const totalPvNtd = useMemo(() => {
+    return cart.reduce((sum, item) => sum + (item.product.pv_ntd ?? 0) * item.quantity, 0);
   }, [cart]);
 
   // Build Quotation payload
@@ -152,7 +156,8 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
               <div className="space-y-3">
                 {cart.map((item, idx) => {
                   const itemTotal = item.product.price * item.quantity;
-                  const itemPv = item.product.pv * item.quantity;
+                  const itemPvUsd = (item.product.pv_usd ?? 0) * item.quantity;
+                  const itemPvNtd = (item.product.pv_ntd ?? 0) * item.quantity;
                   return (
                     <div
                       key={`cart-item-${item.product.id}-${idx}`}
@@ -182,8 +187,13 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                                 單價 {formatNTD(item.product.price)}
                               </span>
                               {canViewPv && (
-                                <span className="text-[#7C8B7C] font-medium whitespace-nowrap">
-                                  {item.product.pv}PV
+                                <span className="whitespace-nowrap">
+                                  <span className="text-[#7C8B7C] font-medium">
+                                    {item.product.pv_usd ?? 0}PV
+                                  </span>
+                                  <span className="ml-2 text-[#B06F73] font-medium">
+                                    {item.product.pv_ntd ?? 0}PV
+                                  </span>
                                 </span>
                               )}
                             </div>
@@ -266,8 +276,13 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                             {formatNTD(itemTotal)}
                           </span>
                           {canViewPv && (
-                            <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
-                              {itemPv}PV
+                            <span className="whitespace-nowrap">
+                              <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
+                                {itemPvUsd}PV
+                              </span>
+                              <span className="ml-2 text-sm sm:text-base text-[#B06F73] font-medium">
+                                {itemPvNtd}PV
+                              </span>
                             </span>
                           )}
                         </div>
@@ -289,8 +304,13 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                     {formatNTD(totalAmount)}
                   </span>
                   {canViewPv && (
-                    <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium whitespace-nowrap">
-                      {totalPv}PV
+                    <span className="whitespace-nowrap">
+                      <span className="text-xl sm:text-2xl text-[#7C8B7C] font-medium">
+                        {totalPvUsd}PV
+                      </span>
+                      <span className="ml-2 text-xl sm:text-2xl text-[#B06F73] font-medium">
+                        {totalPvNtd}PV
+                      </span>
                     </span>
                   )}
                 </div>

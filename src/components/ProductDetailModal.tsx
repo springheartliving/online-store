@@ -300,9 +300,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </span>
                 )}
                 {canViewPv && (
-                  <span className="text-sm sm:text-base text-[#7C8B7C] font-medium whitespace-nowrap">
-                    {product.pv}PV
-                  </span>
+                  <div className="flex items-center gap-2 whitespace-nowrap">
+                    <span className="text-sm sm:text-base text-[#7C8B7C] font-medium">
+                      {product.pv_usd ?? 0}PV
+                    </span>
+                    <span className="text-sm sm:text-base text-[#B06F73] font-medium">
+                      {product.pv_ntd ?? 0}PV
+                    </span>
+                  </div>
                 )}
               </div>
               {!product.in_stock && (

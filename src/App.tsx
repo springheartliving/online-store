@@ -243,7 +243,11 @@ export default function App() {
   }, [cart]);
 
   const totalCartPv = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.product.pv * item.quantity, 0);
+    return cart.reduce((sum, item) => sum + (item.product.pv_usd ?? 0) * item.quantity, 0);
+  }, [cart]);
+
+  const totalCartPvNtd = useMemo(() => {
+    return cart.reduce((sum, item) => sum + (item.product.pv_ntd ?? 0) * item.quantity, 0);
   }, [cart]);
 
   useEffect(() => {
@@ -340,7 +344,8 @@ export default function App() {
                 name: item.name,
                 sku: item.sku,
                 price: item.price,
-                pv: 0,
+                pv_usd: 0,
+                pv_ntd: 0,
                 regular_price: item.price,
                 is_published: true,
                 short_description: "",
@@ -517,9 +522,12 @@ export default function App() {
               <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#8A8576]">諮詢清單：{cart.length} 項商品</div>
               <div className="text-xs sm:text-sm font-mono font-bold text-[#2D2D2D] truncate">
                 總金額：<span className="text-[#7C8B7C]">NT$ {totalCartAmount.toLocaleString()}</span>
-                {canViewPv && (
-                  <span className="ml-2 text-[#7C8B7C]">{totalCartPv}PV</span>
-                )}
+                {/* {canViewPv && (
+                  <span className="ml-2 whitespace-nowrap">
+                    <span className="text-[#7C8B7C]">{totalCartPv}PV</span>
+                    <span className="ml-2 text-[#B06F73]">{totalCartPvNtd}PV</span>
+                  </span>
+                )} */}
               </div>
             </div>
           </div>
