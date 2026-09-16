@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { 
-  X, 
+  X,
+  Minus, 
   Plus, 
   Sparkles,
   Layers,
@@ -258,7 +259,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
 
           {/* 2. Product Details & Specifications */}
-          <div className="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+          <div className="p-4 sm:p-6 space-y-4 text-[10px] sm:text-sm">
             {/* SKU, Category & Tags */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="px-2 py-0.5 font-mono rounded-xs bg-white text-[#8A8576] border border-[#E5E2D9]">
@@ -380,7 +381,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               className="w-9 sm:w-10 h-10 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-sm font-bold"
               aria-label="減少數量"
             >
-              -
+              <Minus className="w-3.5 h-3.5" />
             </button>
             <span className="w-9 sm:w-10 text-center font-mono text-xs sm:text-sm font-bold">
               {qty}
@@ -392,7 +393,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               className="w-9 sm:w-10 h-10 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-sm font-bold"
               aria-label="增加數量"
             >
-              +
+              <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus, Check, Eye, Layers } from "lucide-react";
+import { Minus, Plus, Check, Eye, Layers } from "lucide-react";
 import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
 import { ImageWithFallback } from "./ImageWithFallback";
@@ -148,7 +148,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs sm:text-sm"
               aria-label="減少數量"
             >
-              -
+              <Minus className="w-3.5 h-3.5" />
             </button>
             <span className="w-7 text-center font-mono text-xs sm:text-sm font-bold">
               {qty}
@@ -160,7 +160,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs sm:text-sm"
               aria-label="增加數量"
             >
-              +
+              <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
 
