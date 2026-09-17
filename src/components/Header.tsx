@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   totalAmount,
   onLogoClick,
 }) => {
-  const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItemCount = cart.length; // cart.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <header className="w-full bg-white/95 backdrop-blur-md border-b border-[#E5E2D9] text-[#2D2D2D]">
@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden xs:inline">諮詢清單</span>
               <span className="xs:hidden">清單</span>
               {totalItemCount > 0 && (
-                <span className="px-1.5 py-0.2 bg-white text-[#2D2D2D] font-mono font-bold rounded-xs">
+                <span className="px-1.5 py-0.2 bg-white text-[11px] text-[#2D2D2D] font-mono font-bold rounded-xs">
                   {totalItemCount}
                 </span>
               )}

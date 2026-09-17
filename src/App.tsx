@@ -367,6 +367,21 @@ export default function App() {
     setIsCartOpen(true);
   };
 
+  const handleSelectCategory = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+
+    requestAnimationFrame(() => {
+      const productGrid = document.getElementById("product-grid");
+      if (!productGrid) return;
+
+      const targetY = productGrid.getBoundingClientRect().top + window.scrollY - 200;
+      window.scrollTo({
+        top: targetY,
+        behavior: "smooth",
+      });
+    });
+  };
+
   const handleResetToHome = () => {
     setSelectedCategory("all");
     setSearchQuery("");
@@ -395,7 +410,7 @@ export default function App() {
         <CategoryNav
           categories={categories}
           selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
+          onSelectCategory={handleSelectCategory}
           productCountsByCategory={productCountsByCategory}
           totalProductsCount={products.filter((product) => product.is_published !== false).length}
         />
@@ -492,7 +507,7 @@ export default function App() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div id="product-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((product, idx) => (
               <ProductCard
                 key={`prod-${product.id}-${idx}`}
