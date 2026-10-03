@@ -30,7 +30,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
+  const [sortBy, setSortBy] = useState<"recommended" | "price-asc" | "price-desc" | null>(null);
   // Cart & Quotation State
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
@@ -213,16 +213,20 @@ export default function App() {
     }
 
     // Sort
-    if (sortBy === "default") {
-      list.sort((a, b) => {
-        const orderA = a.sort_order !== undefined ? a.sort_order : a.id;
-        const orderB = b.sort_order !== undefined ? b.sort_order : b.id;
-        return orderA - orderB;
-      });
+    const compareByProductOrder = (a: Product, b: Product) => {
+      const orderA = a.sort_order !== undefined ? a.sort_order : a.id;
+      const orderB = b.sort_order !== undefined ? b.sort_order : b.id;
+      return orderA - orderB;
+    };
+
+    if (sortBy === "recommended") {
+      list.sort((a, b) => Number(Boolean(b.isOnHot)) - Number(Boolean(a.isOnHot)) || compareByProductOrder(a, b));
     } else if (sortBy === "price-asc") {
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price-desc") {
       list.sort((a, b) => b.price - a.price);
+    } else {
+      list.sort(compareByProductOrder);
     }
 
     return list;
@@ -443,19 +447,19 @@ export default function App() {
             <div className="flex items-center gap-1.5 flex-1 sm:flex-initial text-xs sm:text-sm">
               <button
                 id="sort-default-btn"
-                onClick={() => setSortBy("default")}
+                onClick={() => setSortBy((current) => current === "recommended" ? null : "recommended")}
                 className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm uppercase tracking-wider transition cursor-pointer text-center ${
-                  sortBy === "default"
+                  sortBy === "recommended"
                     ? "bg-[#7C8B7C] text-white font-semibold"
                     : "bg-[#FAF9F6] text-[#6E6A5E] hover:text-[#2D2D2D] border border-[#E5E2D9]"
                 }`}
               >
-                推薦排序
+                熱銷推薦
               </button>
 
               <button
                 id="sort-price-asc-btn"
-                onClick={() => setSortBy("price-asc")}
+                onClick={() => setSortBy((current) => current === "price-asc" ? null : "price-asc")}
                 className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm uppercase tracking-wider transition cursor-pointer text-center ${
                   sortBy === "price-asc"
                     ? "bg-[#7C8B7C] text-white font-semibold"
@@ -467,7 +471,7 @@ export default function App() {
 
               <button
                 id="sort-price-desc-btn"
-                onClick={() => setSortBy("price-desc")}
+                onClick={() => setSortBy((current) => current === "price-desc" ? null : "price-desc")}
                 className={`flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-sm uppercase tracking-wider transition cursor-pointer text-center ${
                   sortBy === "price-desc"
                     ? "bg-[#7C8B7C] text-white font-semibold"
