@@ -379,19 +379,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               type="button"
               onClick={() => setQty(Math.max(1, qty - 1))}
               disabled={!product.in_stock}
-              className="w-9 sm:w-10 h-10 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-sm font-bold"
+              className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs sm:text-sm"
               aria-label="減少數量"
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
-            <span className="w-9 sm:w-10 text-center font-mono text-xs sm:text-sm font-bold">
+            <span className="w-7 text-center font-mono text-xs sm:text-sm font-bold">
               {qty}
             </span>
             <button
               type="button"
               onClick={() => setQty(qty + 1)}
               disabled={!product.in_stock}
-              className="w-9 sm:w-10 h-10 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-sm font-bold"
+              className="w-7 h-8 flex items-center justify-center hover:bg-[#F0EEE6] text-[#8A8576] hover:text-[#2D2D2D] transition cursor-pointer text-xs sm:text-sm"
               aria-label="增加數量"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -405,9 +405,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             id="modal-add-to-quote-btn"
             onClick={handleAdd}
             disabled={!product.in_stock}
-            className={`flex-1 h-10 px-4 sm:px-6 rounded-sm text-xs sm:text-sm uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 shadow-xs active:scale-98 ${product.in_stock ? "cursor-pointer bg-[#7C8B7C] hover:bg-[#6A796A] text-white" : "cursor-not-allowed bg-[#D1CEC4] text-[#8A8576]"}`}
+            className={`min-w-0 flex-1 h-8 px-2 sm:px-3 rounded-sm text-[11px] sm:text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 shadow-xs active:scale-98 ${product.in_stock ? "cursor-pointer bg-[#7C8B7C] hover:bg-[#6A796A] text-white" : "cursor-not-allowed bg-[#D1CEC4] text-[#8A8576]"}`}
           >
-            <Plus className="w-4 h-4 shrink-0" />
+            <Plus className="w-3 h-3 shrink-0" />
             <span className="truncate">
               {product.in_stock ? `加入諮詢清單 (${formatNTD(product.price * qty)})` : "暫無供應"}
             </span>
