@@ -113,8 +113,12 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
   };
 
   const shareToInstagram = async () => {
-    await copyLink("連結已複製，請貼至 Instagram");
-    launchAppShare("instagram://app");
+    if (navigator.share) {
+      await shareNatively("請下載此APP以分享給親朋好友");
+      return;
+    }
+
+    await copyLink("請下載此APP以分享給親朋好友");
   };
 
   return (
@@ -201,7 +205,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => launchAppShare(`whatsapp://send?text=${encodeURIComponent(shareText)}`)}
+                onClick={() => openShareUrl(`https://wa.me/?text=${encodeURIComponent(shareText)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
@@ -211,7 +215,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => launchAppShare(`fb://sharer?u=${encodeURIComponent(shareUrl)}`)}
+                onClick={() => openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
