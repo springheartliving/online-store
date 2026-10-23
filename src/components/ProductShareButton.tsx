@@ -25,7 +25,9 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
   const shareUrlObject = new URL(sharePath, window.location.origin);
   shareUrlObject.searchParams.set("product", product.sku);
   const shareUrl = shareUrlObject.toString();
-  const shareText = `${product.name}\n${shareUrl}`;
+  const shareText = [product.name, product.short_description, shareUrl]
+    .filter(Boolean)
+    .join("\n");
   const productImage = formatImageUrl(product.images?.[0]?.src);
 
   useBodyScrollLock(isOpen);
@@ -199,7 +201,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => openShareUrl(`https://wa.me/?text=${encodeURIComponent(shareText)}`)}
+                onClick={() => openShareUrl(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
@@ -240,7 +242,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => void shareNatively("此裝置不支援更多分享方式，已複製連結")}
+                onClick={() => void shareNatively("此瀏覽器不支援更多分享方式，已複製連結")}
                 className="flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-sm border border-[#E5E2D9] bg-white px-3 text-sm text-[#6E6A5E] transition hover:border-[#7C8B7C] hover:text-[#2D2D2D]"
               >
                 <Share2 className="h-4 w-4" />
