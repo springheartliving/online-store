@@ -22,7 +22,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
     ? `${baseUrl}product/${encodeURIComponent(slug)}`
     : baseUrl;
   const shareUrlObject = new URL(sharePath, window.location.origin);
-  shareUrlObject.hash = `sym:${encodeURIComponent(product.sku)}`;
+  shareUrlObject.searchParams.set("product", product.sku);
   const shareUrl = shareUrlObject.toString();
   const shareText = `${product.name}\n${shareUrl}`;
   const productImage = formatImageUrl(product.images?.[0]?.src);

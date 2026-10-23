@@ -125,10 +125,7 @@ export default function App() {
     const pathSlug = window.location.pathname.startsWith(productPathPrefix)
       ? decodeURIComponent(window.location.pathname.slice(productPathPrefix.length).replace(/\/$/, ""))
       : "";
-    const hashSku = window.location.hash.startsWith("#sym:")
-      ? decodeURIComponent(window.location.hash.slice("#sym:".length))
-      : "";
-    const productKey = hashSku || pathSlug || new URLSearchParams(window.location.search).get("product");
+    const productKey = new URLSearchParams(window.location.search).get("product") || pathSlug;
     if (!productKey) return;
     const sharedProduct = products.find((product) => product.sku === productKey)
       || products.find((product) => product.slug === productKey || String(product.id) === productKey);
