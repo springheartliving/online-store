@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Copy, Facebook, Instagram, MessageCircle, Phone, Share2, X } from "lucide-react";
 import { Product } from "../types";
@@ -12,6 +12,7 @@ interface ProductShareButtonProps {
 export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product }) => {
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const appLaunchTimer = useRef<number | null>(null);
   const slug = product.slug || String(product.id);
   const baseUrl = (import.meta as any).env?.BASE_URL || "/";
   const staticShareSlugs = JSON.parse(
@@ -38,6 +39,10 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [isOpen]);
 
+  useEffect(() => () => {
+    if (appLaunchTimer.current !== null) window.clearTimeout(appLaunchTimer.current);
+  }, []);
+
   const copyLink = async (successMessage = "連結已複製") => {
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -50,6 +55,42 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
   const openShareUrl = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
     setIsOpen(false);
+  };
+
+  const launchAppShare = (appUrl: string) => {
+    let didOpenApp = false;
+    const cleanup = () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleAppOpened);
+      if (appLaunchTimer.current !== null) {
+        window.clearTimeout(appLaunchTimer.current);
+        appLaunchTimer.current = null;
+      }
+    };
+    const handleAppOpened = () => {
+      didOpenApp = true;
+      cleanup();
+      setIsOpen(false);
+    };
+    const handleVisibilityChange = () => {
+      if (document.hidden) handleAppOpened();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleAppOpened);
+    appLaunchTimer.current = window.setTimeout(() => {
+      cleanup();
+      if (didOpenApp || document.hidden) return;
+      setStatus("請下載此APP以分享給親朋好友");
+      void navigator.clipboard.writeText(shareUrl).catch(() => undefined);
+    }, 1800);
+
+    const appLink = document.createElement("a");
+    appLink.href = appUrl;
+    appLink.style.display = "none";
+    document.body.appendChild(appLink);
+    appLink.click();
+    appLink.remove();
   };
 
   const shareNatively = async (fallbackMessage: string) => {
@@ -72,8 +113,8 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
   };
 
   const shareToInstagram = async () => {
-    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
     await copyLink("連結已複製，請貼至 Instagram");
+    launchAppShare("instagram://app");
   };
 
   return (
@@ -150,7 +191,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => void shareNatively("此裝置不支援直接分享，已複製連結")}
+                onClick={() => launchAppShare(`fb-messenger://share?link=${encodeURIComponent(shareUrl)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
@@ -160,7 +201,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => openShareUrl(`https://wa.me/?text=${encodeURIComponent(shareText)}`)}
+                onClick={() => launchAppShare(`whatsapp://send?text=${encodeURIComponent(shareText)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
@@ -170,7 +211,7 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`)}
+                onClick={() => launchAppShare(`fb://sharer?u=${encodeURIComponent(shareUrl)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
