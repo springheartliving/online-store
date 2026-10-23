@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node scripts/generate-product-share-pages.mjs",
     "preview": "vite preview",
     "lint": "tsc --noEmit"
   },

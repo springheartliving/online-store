@@ -3,6 +3,7 @@ import { Minus, Plus, Check, Eye, Layers } from "lucide-react";
 import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
 import { ImageWithFallback } from "./ImageWithFallback";
+import { ProductShareButton } from "./ProductShareButton";
 
 interface ProductCardProps {
   product: Product;
@@ -139,8 +140,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Quantity Selector & Add to Inquiry Button (Touch friendly) */}
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <div className="flex items-center bg-[#FAF9F6] border border-[#E5E2D9] rounded-sm overflow-hidden text-[#2D2D2D]">
+        <div className="flex flex-nowrap items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <div className="flex shrink-0 items-center bg-[#FAF9F6] border border-[#E5E2D9] rounded-sm overflow-hidden text-[#2D2D2D]">
             <button
               type="button"
               onClick={() => setQty(Math.max(1, qty - 1))}
@@ -164,11 +165,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </button>
           </div>
 
+          <ProductShareButton product={product} />
           <button
             id={`add-to-inquiry-btn-${product.id}`}
             onClick={handleAdd}
             disabled={!product.in_stock}
-            className={`flex-1 h-8 px-2.5 sm:px-3 rounded-sm text-[11px] sm:text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`min-w-0 flex-1 h-8 px-2 sm:px-3 rounded-sm text-[11px] sm:text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               justAdded
                 ? "bg-[#6A796A] text-white"
                 : inCartCount > 0

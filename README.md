@@ -107,6 +107,8 @@ push to main
 https://springheartliving.github.io/online-store/
 ```
 
+商品分享預覽頁會在建置時從 Firestore 載入已發布商品，並產生含商品首圖與介紹的 Open Graph 標籤。請將 `firestore.rules` 部署至網站使用的 Firestore 資料庫；規則允許公開讀取商品與分類，但禁止用戶端寫入。若建置回報 `403`，分享仍可開啟指定商品，但社群平台不會顯示商品專屬預覽。
+
 ### 手動觸發部署
 
 前往 GitHub repo → **Actions** → **Deploy to GitHub Pages** → **Run workflow**

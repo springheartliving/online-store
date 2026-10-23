@@ -12,6 +12,7 @@ import { Product } from "../types";
 import { formatNTD, formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
 import { ImageWithFallback } from "./ImageWithFallback";
+import { ProductShareButton } from "./ProductShareButton";
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -396,6 +397,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          <ProductShareButton product={product} />
 
           {/* Add to Consultation List Button */}
           <button

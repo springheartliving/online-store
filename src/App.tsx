@@ -119,6 +119,22 @@ export default function App() {
     loadFirestoreData();
   }, []);
 
+  useEffect(() => {
+    const baseUrl = (import.meta as any).env?.BASE_URL || "/";
+    const productPathPrefix = `${baseUrl}product/`;
+    const pathSlug = window.location.pathname.startsWith(productPathPrefix)
+      ? decodeURIComponent(window.location.pathname.slice(productPathPrefix.length).replace(/\/$/, ""))
+      : "";
+    const hashSku = window.location.hash.startsWith("#sym:")
+      ? decodeURIComponent(window.location.hash.slice("#sym:".length))
+      : "";
+    const productKey = hashSku || pathSlug || new URLSearchParams(window.location.search).get("product");
+    if (!productKey) return;
+    const sharedProduct = products.find((product) => product.sku === productKey)
+      || products.find((product) => product.slug === productKey || String(product.id) === productKey);
+    if (sharedProduct) setSelectedProductForDetail(sharedProduct);
+  }, [products]);
+
   // Cart operations
   const handleAddToCart = (product: Product, quantity: number = 1) => {
     if (!product.in_stock) return;
