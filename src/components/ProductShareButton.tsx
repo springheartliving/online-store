@@ -201,7 +201,10 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
               </button>
               <button
                 type="button"
-                onClick={() => openShareUrl(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`)}
+                onClick={() => {
+                  window.location.assign(`https://wa.me/?text=${encodeURIComponent(shareText)}`);
+                  setIsOpen(false);
+                }}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
