@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Copy, Facebook, Instagram, MessageCircle, Phone, Share2, X } from "lucide-react";
+import { Copy, MessageCircle, Phone, Share2, X } from "lucide-react";
+import { SiFacebook, SiInstagram, SiLine, SiMessenger, SiWhatsapp } from "react-icons/si";
 import { Product } from "../types";
 import { formatImageUrl } from "../utils/formatters";
 import { useBodyScrollLock } from "../hooks/useBodyScrollLock";
@@ -184,8 +185,8 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
                 onClick={() => openShareUrl(`https://line.me/R/share?text=${encodeURIComponent(shareText)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
-                  <MessageCircle className="h-7 w-7" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#06C755] text-white">
+                  <SiLine size={24} color="currentColor" />
                 </span>
                 LINE
               </button>
@@ -194,8 +195,8 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
                 onClick={() => launchAppShare(`fb-messenger://share?link=${encodeURIComponent(shareUrl)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
-                  <MessageCircle className="h-7 w-7" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0866FF] text-white">
+                  <SiMessenger size={24} color="currentColor" />
                 </span>
                 Messenger
               </button>
@@ -207,8 +208,8 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
                 }}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
-                  <Phone className="h-6 w-6" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#25D366] text-white">
+                  <SiWhatsapp size={23} color="currentColor" />
                 </span>
                 WhatsApp
               </button>
@@ -217,8 +218,8 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
                 onClick={() => openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`)}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
-                  <Facebook className="h-7 w-7" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0866FF] text-white">
+                  <SiFacebook size={22} color="currentColor" />
                 </span>
                 Facebook
               </button>
@@ -227,8 +228,8 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
                 onClick={() => void shareToInstagram()}
                 className="flex min-w-0 cursor-pointer flex-col items-center gap-2 rounded-sm py-2 text-xs text-[#6E6A5E] transition hover:bg-[#F0EEE6] hover:text-[#2D2D2D]"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#D7DED4] bg-[#E8EDE5] text-[#52745D]">
-                  <Instagram className="h-7 w-7" />
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#D62976] text-white">
+                  <SiInstagram size={23} color="currentColor" />
                 </span>
                 Instagram
               </button>
