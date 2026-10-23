@@ -106,19 +106,13 @@ export const ProductShareButton: React.FC<ProductShareButtonProps> = ({ product 
       });
       setIsOpen(false);
     } catch (error) {
-      if (error instanceof Error && error.name !== "AbortError") {
-        setStatus("分享失敗，請複製連結再分享");
-      }
+      if (error instanceof Error && error.name === "AbortError") return;
+      await copyLink(fallbackMessage);
     }
   };
 
   const shareToInstagram = async () => {
-    if (navigator.share) {
-      await shareNatively("請下載此APP以分享給親朋好友");
-      return;
-    }
-
-    await copyLink("請下載此APP以分享給親朋好友");
+    await shareNatively("連結已複製，請至 Instagram 選擇可用的分享方式");
   };
 
   return (
