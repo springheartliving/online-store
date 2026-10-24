@@ -179,6 +179,8 @@ online-store/
 
 不會送出商品圖片網址或商品內部 ID。若未設定 `VITE_GOOGLE_SHEETS_WEB_APP_URL`，則不會寫入試算表，但不影響 LINE 諮詢功能。
 
+具備 `VITE_PV_ALLOWED_LINE_IDS` 權限的 LINE 使用者，可在諮詢清單勾選「暫存規劃」。此模式仍會送出官方 LINE 並儲存於本機歷史諮詢紀錄（標示為「暫存規劃」），但不會寫入 Google 試算表。
+
 ### Apps Script 建立方式
 
 1. 建立 Google 試算表，開啟 **擴充功能 → Apps Script**。

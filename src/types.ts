@@ -51,6 +51,7 @@ export interface CustomerInfo {
 export interface Quotation {
   quoteNo: string;
   createdAt: string;
+  isTemporary?: boolean;
   items: {
     id: number;
     name: string;

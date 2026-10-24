@@ -311,7 +311,9 @@ export default function App() {
 
       // Save quotation to local history
       saveQuotationToHistory(quotationWithCustomer);
-      await saveQuotationToGoogleSheet(quotationWithCustomer);
+      if (!quotationWithCustomer.isTemporary) {
+        await saveQuotationToGoogleSheet(quotationWithCustomer);
+      }
 
       // Trigger celebratory visual effect
       confetti({

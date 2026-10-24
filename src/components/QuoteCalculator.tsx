@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { 
   X, 
   Trash2, 
@@ -58,6 +58,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
   const totalPvNtd = useMemo(() => {
     return cart.reduce((sum, item) => sum + (item.product.pv_ntd ?? 0) * item.quantity, 0);
   }, [cart]);
+  const [isTemporary, setIsTemporary] = useState(false);
 
   // Build Quotation payload
   const currentQuotation: Quotation = useMemo(() => {
@@ -132,14 +133,27 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
           
           {/* 1. Item List */}
           <div>
-            <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
               <h3 className="text-xs sm:text-sm font-semibold text-[#2D2D2D] uppercase tracking-[0.15em] flex items-center gap-1.5">
                 <FileText className="w-3.5 h-3.5 text-[#7C8B7C]" />
                 諮詢商品明細
               </h3>
-              <span className="text-xs sm:text-sm text-[#8A8576] font-light">
-                可自由調整數量或刪除品項
-              </span>
+                <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
+                  <span className="text-xs sm:text-sm text-[#8A8576] font-light">
+                    可自由調整數量或刪除品項
+                  </span>
+                  {canViewPv && (
+                    <label className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-[#6E6A5E] cursor-pointer whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={isTemporary}
+                        onChange={(event) => setIsTemporary(event.target.checked)}
+                        className="h-4 w-4 accent-[#7C8B7C] cursor-pointer"
+                      />
+                      暫存規劃
+                    </label>
+                  )}
+                </div>
             </div>
 
             {cart.length === 0 ? (
@@ -347,7 +361,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
               <button
                 id="send-line-notify-btn"
                 type="button"
-                onClick={() => onSendLineNotify(currentQuotation, customer)}
+                onClick={() => onSendLineNotify({ ...currentQuotation, isTemporary }, customer)}
                 disabled={isSendingLine}
                 className="w-full py-3 px-3 sm:px-4 rounded-sm bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs cursor-pointer transition active:scale-98 disabled:opacity-60"
               >
@@ -359,7 +373,7 @@ export const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({
                 ) : (
                   <>
                     <MessageSquare className="w-4 h-4 fill-current" />
-                    <span>LINE 官方諮詢</span>
+                    <span>{isTemporary ? "儲存暫存並送至 LINE" : "LINE 官方諮詢"}</span>
                   </>
                 )}
               </button>

@@ -91,6 +91,11 @@ export const OrderHistoryModal: React.FC<OrderHistoryModalProps> = ({
                         <span className="font-mono text-xs font-bold text-[#7C8B7C]">
                           {quote.quoteNo}
                         </span>
+                        {quote.isTemporary && (
+                          <span className="w-fit text-[10px] px-1.5 py-0.5 rounded-xs bg-[#F0EEE6] text-[#6E6A5E] border border-[#E5E2D9]">
+                            暫存規劃
+                          </span>
+                        )}
                         <span className="text-[11px] text-[#8A8576] flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5 text-[#8A8576]" />
                           {new Date(quote.createdAt).toLocaleString("zh-TW")}
